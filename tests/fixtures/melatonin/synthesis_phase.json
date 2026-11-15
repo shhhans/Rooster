@@ -1,0 +1,190 @@
+{
+  "cases": [
+    {
+      "expected_A": 3.75192,
+      "expected_branch": "inside",
+      "label": "inside_just_after_phi_off",
+      "phase": -1.931184307179586,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 3.75192,
+      "expected_branch": "inside",
+      "label": "inside_phi_off_plus_0p1",
+      "phase": -1.8311853071795858,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 3.75192,
+      "expected_branch": "inside",
+      "label": "inside_quarter",
+      "phase": -1.490935307179586,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 3.75192,
+      "expected_branch": "inside",
+      "label": "inside_midpoint",
+      "phase": -1.0506853071795859,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 3.75192,
+      "expected_branch": "inside",
+      "label": "inside_three_quarter",
+      "phase": -0.6104353071795858,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 0.002250476789763335,
+      "expected_branch": "inside",
+      "label": "inside_just_before_phi_on",
+      "phase": -0.1701863071795858,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 6.714899241565771e-12,
+      "expected_branch": "complementary",
+      "label": "boundary_phi_off",
+      "phase": -1.931185307179586,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 6.714899241565771e-12,
+      "expected_branch": "complementary",
+      "label": "boundary_phi_on",
+      "phase": -0.1701853071795858,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 6.714899241565771e-12,
+      "expected_branch": "complementary",
+      "label": "outside_just_after_phi_on",
+      "phase": -0.1701843071795858,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 6.714899241565771e-12,
+      "expected_branch": "complementary",
+      "label": "outside_zero",
+      "phase": 0.0,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 6.714899241565771e-12,
+      "expected_branch": "complementary",
+      "label": "outside_minus_pi",
+      "phase": -3.141592653589793,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 6.714899241565771e-12,
+      "expected_branch": "complementary",
+      "label": "outside_minus_three",
+      "phase": -3.0,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 6.714899241565771e-12,
+      "expected_branch": "complementary",
+      "label": "outside_plus_three",
+      "phase": 3.0,
+      "rtol": 1e-09
+    }
+  ],
+  "complementary_constant": 6.714899241565771e-12,
+  "crossing_definition": {
+    "direction": "rising/falling of the unwrapped phase",
+    "interpolation": "bisection on the continuous phase inside the bracket",
+    "predicate": "strict branch active while phi_off < wrap(atan2(x, xc)) < phi_on",
+    "states": {
+      "SynOff": "synthesis branch becomes inactive",
+      "SynOn": "synthesis branch becomes active"
+    },
+    "utc_mapping": "a crossing instant maps to elapsed hours; a candidate test maps elapsed hours to UTC instants on its own sampling grid",
+    "wrap_handling": "the phase series is unwrapped, so rotation across +/-pi is never a crossing and the A-branch jump at phi_off is not one"
+  },
+  "description": "Piecewise synthesis drive A(phi) on the wrapped source phase, including the Lead-corrected one-sided boundary semantics.",
+  "evaluation_order": "A = a*activation/normalization and B = G*alpha*(1-n)*(1-b*x)*(1-b*xc) follow the pinned source order (multiplication is not associative).",
+  "inside_limit_at_phi_off": 3.75192,
+  "inside_limit_at_phi_on": 0.0,
+  "notes": [
+    "Strict branch selection: phi_off < phi < phi_on; the complementary branch is selected at both boundaries.",
+    "Lead source-check correction: the inside limit at phi_on is zero (not a); at phi_off the inside limit is a while the boundary selects the small constant branch, i.e. a real jump.",
+    "exp(-600*span) underflows to 0.0 in float64, so the normalization is exactly 1.0 and A(phi_off + eps) == a exactly for eps < ~0.519.",
+    "Periodicity holds because the source evaluates the branch on the wrapped atan2 output."
+  ],
+  "one_sided_limits": [
+    {
+      "epsilon": 1e-06,
+      "exact_target_A": 0.0022504767894488617,
+      "expected_A": 0.002250476789763335,
+      "expected_inside_limit": 0.0,
+      "naive_direct_A": 0.0022504767894487446,
+      "naive_wrapped_A": 0.0022504767897632374,
+      "phase": -0.1701863071795858,
+      "recovered_epsilon": 1.000000000139778e-06,
+      "rtol": 1e-09,
+      "tolerance_reason": "near-boundary regime: the source evaluates the branch on the wrapped atan2 phase, so the branch difference is recoverable only to ~1e-16 rad; with delta=600 that becomes a relative activation error of ~1e-16/eps.  The band is max(1e-9, 1e-15/eps) and applies to this family only; the global rtol stays 1e-9."
+    },
+    {
+      "epsilon": 1e-09,
+      "exact_target_A": 2.2511513246545356e-06,
+      "expected_A": 2.251151510915575e-06,
+      "expected_inside_limit": 0.0,
+      "naive_direct_A": 2.2511513248423753e-06,
+      "naive_wrapped_A": 2.251151511038794e-06,
+      "phase": -0.1701853081795858,
+      "recovered_epsilon": 1.000000082740371e-09,
+      "rtol": 1e-06,
+      "tolerance_reason": "near-boundary regime: the source evaluates the branch on the wrapped atan2 phase, so the branch difference is recoverable only to ~1e-16 rad; with delta=600 that becomes a relative activation error of ~1e-16/eps.  The band is max(1e-9, 1e-15/eps) and applies to this family only; the global rtol stays 1e-9."
+    },
+    {
+      "epsilon": 1e-12,
+      "exact_target_A": 2.2511519993246544e-09,
+      "expected_A": 2.2513521280482726e-09,
+      "expected_inside_limit": 0.0,
+      "naive_direct_A": 2.2511521862611516e-09,
+      "naive_wrapped_A": 2.2513521287237383e-09,
+      "phase": -0.1701853071805858,
+      "recovered_epsilon": 1.000088900582341e-12,
+      "rtol": 0.001,
+      "tolerance_reason": "near-boundary regime: the source evaluates the branch on the wrapped atan2 phase, so the branch difference is recoverable only to ~1e-16 rad; with delta=600 that becomes a relative activation error of ~1e-16/eps.  The band is max(1e-9, 1e-15/eps) and applies to this family only; the global rtol stays 1e-9."
+    }
+  ],
+  "periodicity": [
+    {
+      "expected_A": 3.75192,
+      "phase": -1.6311853071795859,
+      "phase_minus_2pi": -7.914370614359172,
+      "phase_plus_2pi": 4.652,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 3.75192,
+      "phase": -0.8405482457436687,
+      "phase_minus_2pi": -7.123733552923255,
+      "phase_plus_2pi": 5.442637061435917,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 6.714899241565771e-12,
+      "phase": 0.029814692820414213,
+      "phase_minus_2pi": -6.253370614359172,
+      "phase_plus_2pi": 6.313000000000001,
+      "rtol": 1e-09
+    },
+    {
+      "expected_A": 3.75192,
+      "phase": -1.0,
+      "phase_minus_2pi": -7.283185307179586,
+      "phase_plus_2pi": 5.283185307179586,
+      "rtol": 1e-09
+    }
+  ],
+  "phi_off": -1.931185307179586,
+  "phi_on": -0.1701853071795858,
+  "provenance": "contract-derived analytic constants (not frozen implementation behavior).",
+  "schema_version": 1,
+  "span_radians": 1.7610000000000001
+}

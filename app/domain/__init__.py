@@ -1,0 +1,1 @@
+"""Domain layer: HTTP-independent business logic."""

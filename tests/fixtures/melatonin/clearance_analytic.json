@@ -1,0 +1,269 @@
+{
+  "a": 0.0,
+  "cases": [
+    {
+      "H10": 50.0,
+      "H20": 80.0,
+      "expected_H1": 50.0,
+      "expected_H2": 80.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.0
+    },
+    {
+      "H10": 50.0,
+      "H20": 80.0,
+      "expected_H1": 12.21449065389553,
+      "expected_H2": 70.24142247564512,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "H10": 50.0,
+      "H20": 80.0,
+      "expected_H1": 2.983875638682025,
+      "expected_H2": 44.89970033163756,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 1.0
+    },
+    {
+      "H10": 50.0,
+      "H20": 80.0,
+      "expected_H1": 0.17807027654240123,
+      "expected_H2": 14.692774279201432,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "H10": 50.0,
+      "H20": 80.0,
+      "expected_H1": 2.2585738254282184e-06,
+      "expected_H2": 0.12054695572962672,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 6.0
+    },
+    {
+      "H10": 50.0,
+      "H20": 80.0,
+      "expected_H1": 1.0202311449818914e-13,
+      "expected_H2": 8.681916339951624e-05,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "H10": 50.0,
+      "H20": 80.0,
+      "expected_H1": 2.0817431783821217e-28,
+      "expected_H2": 4.503040524910673e-11,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 24.0
+    },
+    {
+      "H10": 100.0,
+      "H20": 0.0,
+      "expected_H1": 100.0,
+      "expected_H2": 0.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.0
+    },
+    {
+      "H10": 100.0,
+      "H20": 0.0,
+      "expected_H1": 24.42898130779106,
+      "expected_H2": 52.936018012041345,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "H10": 100.0,
+      "H20": 0.0,
+      "expected_H1": 5.96775127736405,
+      "expected_H2": 41.896607493707656,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 1.0
+    },
+    {
+      "H10": 100.0,
+      "H20": 0.0,
+      "expected_H1": 0.35614055308480247,
+      "expected_H2": 15.043813599363116,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "H10": 100.0,
+      "H20": 0.0,
+      "expected_H1": 4.517147650856437e-06,
+      "expected_H2": 0.12586403093080306,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 6.0
+    },
+    {
+      "H10": 100.0,
+      "H20": 0.0,
+      "expected_H1": 2.0404622899637827e-13,
+      "expected_H2": 9.06512932577766e-05,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "H10": 100.0,
+      "H20": 0.0,
+      "expected_H1": 4.1634863567642435e-28,
+      "expected_H2": 4.7018012148353866e-11,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 24.0
+    },
+    {
+      "H10": 10.0,
+      "H20": 200.0,
+      "expected_H1": 10.0,
+      "expected_H2": 200.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.0
+    },
+    {
+      "H10": 10.0,
+      "H20": 200.0,
+      "expected_H1": 2.442898130779106,
+      "expected_H2": 114.72713547526523,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "H10": 10.0,
+      "H20": 200.0,
+      "expected_H1": 0.596775127736405,
+      "expected_H2": 64.0681522113301,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 1.0
+    },
+    {
+      "H10": 10.0,
+      "H20": 200.0,
+      "expected_H1": 0.03561405530848025,
+      "expected_H2": 19.431550058735994,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "H10": 10.0,
+      "H20": 200.0,
+      "expected_H1": 4.5171476508564375e-07,
+      "expected_H2": 0.1566237537536433,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 6.0
+    },
+    {
+      "H10": 10.0,
+      "H20": 200.0,
+      "expected_H1": 2.0404622899637825e-14,
+      "expected_H2": 0.00011279892125234755,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "H10": 10.0,
+      "H20": 200.0,
+      "expected_H1": 4.163486356764244e-29,
+      "expected_H2": 5.850529915215985e-11,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 24.0
+    },
+    {
+      "H10": 0.0,
+      "H20": 0.0,
+      "expected_H1": 0.0,
+      "expected_H2": 0.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.0
+    },
+    {
+      "H10": 0.0,
+      "H20": 0.0,
+      "expected_H1": 0.0,
+      "expected_H2": 0.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "H10": 0.0,
+      "H20": 0.0,
+      "expected_H1": 0.0,
+      "expected_H2": 0.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 1.0
+    },
+    {
+      "H10": 0.0,
+      "H20": 0.0,
+      "expected_H1": 0.0,
+      "expected_H2": 0.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "H10": 0.0,
+      "H20": 0.0,
+      "expected_H1": 0.0,
+      "expected_H2": 0.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 6.0
+    },
+    {
+      "H10": 0.0,
+      "H20": 0.0,
+      "expected_H1": 0.0,
+      "expected_H2": 0.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "H10": 0.0,
+      "H20": 0.0,
+      "expected_H1": 0.0,
+      "expected_H2": 0.0,
+      "expected_H3": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 24.0
+    }
+  ],
+  "description": "Two-compartment clearance closed form for the oral-zero, synthesis-free case (a = 0, B = 0, H3 = 0).",
+  "k1_betaIP_per_hour": 2.8188,
+  "k2_betaCP_per_hour": 1.206,
+  "light_lux": 0.0,
+  "notes": [
+    "a = 0 is permitted only as a declared analytic-clearance parameter value.",
+    "H1(t) = H10*exp(-k1*t); H2(t) = H20*exp(-k2*t) + k1*H10*(exp(-k1*t)-exp(-k2*t))/(k2-k1).",
+    "The endocrine subsystem does not depend on the oscillator when a = 0, so the closed form is exact regardless of the coupled oscillator trajectory.",
+    "H3 (oral absorption) stays identically zero in endogenous-only operation."
+  ],
+  "provenance": "contract-derived analytic constants (not frozen implementation behavior).",
+  "schema_version": 1
+}

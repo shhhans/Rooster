@@ -1,0 +1,1 @@
+"""Rooster backend application package."""

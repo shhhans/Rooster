@@ -1,0 +1,104 @@
+{
+  "claims_explicitly_not_made": [
+    "not a literal reproduction of every printed paper equation",
+    "not a measured DLMO, saliva prediction or laboratory assay",
+    "not a personal or individualized melatonin estimate",
+    "not a clinical threshold, diagnosis or dose recommendation",
+    "not evidence of improved schedule ranking or planning quality",
+    "not biological validation of the model parameters"
+  ],
+  "description": "Recorded deviations between the pinned source transcription and the printed primary source, plus the claims this work explicitly does not make.",
+  "deviations": [
+    {
+      "decision": "the pinned numerical version is preserved; the mismatch is reported, not smoothed",
+      "difference": 1.9999999999998318e-06,
+      "id": "synthesis_constant_a",
+      "pinned_source": "0.0010422 per second (a = 3.75192 pM/h after the x3600 conversion)",
+      "printed_paper": "PMC3733227 Table 2 prints a = 1.0442e-3",
+      "tested_by": "parameters.json and deviations.json assertions",
+      "topic": "maximum synthesis drive a"
+    },
+    {
+      "decision": "the source factor 60 is used and documented (60*beta = 0.42 per hour)",
+      "id": "process_l_factor_60",
+      "pinned_source": "dn/dt carries an explicit factor 60 (source comments it as a correction of a paper typo)",
+      "printed_paper": "the printed Eq. 2 has no factor 60",
+      "tested_by": "process_l.json dark and constant-light closed forms",
+      "topic": "Process L time conversion"
+    },
+    {
+      "decision": "K = 0.55 is used and labelled as inherited",
+      "id": "inherited_K",
+      "pinned_source": "K = 0.55, commented as taken from Jewett99/Hilaire07",
+      "printed_paper": "K is not specified by Breslow et al. 2013",
+      "tested_by": "parameters.json",
+      "topic": "pacemaker parameter K"
+    },
+    {
+      "decision": "the source x3600 conversions are used; H1/H2 are pM and a is pM/hour",
+      "id": "per_second_conversions",
+      "pinned_source": "betaIP/betaCP/betaAP/a are per-second values multiplied by 3600",
+      "printed_paper": "the paper table mixes second-based and hour-based labels",
+      "tested_by": "parameters.json, clearance_analytic.json",
+      "topic": "endocrine rate units"
+    },
+    {
+      "decision": "the source convention is used and stated explicitly",
+      "id": "phase_convention",
+      "pinned_source": "atan2(x, xc) with xc on the horizontal axis (swapped-axis note)",
+      "printed_paper": "the paper text writes tan^-1(x/xc)",
+      "tested_by": "parameters.json initial_state_phase_rad",
+      "topic": "phase expression"
+    },
+    {
+      "decision": "the strict source branch is preserved; the Lead source-check correction is authoritative: the inside limit at phi_on is zero and the boundary at phi_off selects the small constant branch",
+      "id": "phase_window_boundaries",
+      "pinned_source": "strict phi_off < phi < phi_on with the complementary branch selected at the boundaries (jump at phi_off)",
+      "printed_paper": "the printed complementary inequality reverses the ordering for these defaults",
+      "tested_by": "synthesis_phase.json one-sided and boundary cases",
+      "topic": "synthesis phase window boundaries"
+    },
+    {
+      "decision": "the printed labels are not treated as establishing the source conventions; the pinned numerical RHS and its documented conversions are the executable contract",
+      "id": "printed_unit_labels",
+      "pinned_source": "mixed conventions (per-minute Process L rate, per-hour endocrine rates)",
+      "printed_paper": "some printed entries are labelled in second-based units",
+      "tested_by": "deviations.json (documentation record only)",
+      "topic": "Process L / phase-shape unit labels"
+    },
+    {
+      "decision": "no saliva concentration is produced; H3 stays identically zero in endogenous-only operation",
+      "id": "h3_is_oral_not_saliva",
+      "pinned_source": "H3 is the oral absorption compartment, driven by oral doses",
+      "printed_paper": "the 2007 saliva compartment is a different model",
+      "tested_by": "clearance_analytic.json expected_H3 = 0.0",
+      "topic": "H3 compartment meaning"
+    },
+    {
+      "decision": "neither helper is a model output: no public output may expose a DLMO derived from CBTmin - 7 h, and phase markers must be model synthesis crossings (SynOn/SynOff) instead",
+      "id": "phase_reference_and_dlmo_helpers",
+      "pinned_source": "the pinned class carries phi_ref = 0.97 and cbt_to_dlmo = 7.0 as convenience constants (the latter is the source own CBTmin - 7 h helper)",
+      "printed_paper": "a laboratory DLMO is a measured threshold analysis",
+      "tested_by": "deviations.json plus the joint-test output-key assertions",
+      "topic": "source convenience helpers phi_ref = 0.97 and cbt_to_dlmo = 7.0"
+    },
+    {
+      "decision": "the reference keeps the source multiplication order; the activation is evaluated with -expm1(-x) so the near-boundary family is mathematically exact, and that family carries an explicit per-case band max(1e-9, 1e-15/eps) that covers the phase-realization resolution of the wrapped source phase instead of widening the global rtol",
+      "id": "evaluation_order_and_cancellation",
+      "pinned_source": "A = a*activation/normalization and B = G*alpha*(1-n)*(1-b*x)*(1-b*xc)",
+      "printed_paper": "not specified",
+      "tested_by": "synthesis_phase.json one_sided_limits (rtol and tolerance_reason)",
+      "topic": "numerical evaluation order and the near-boundary cancellation regime"
+    },
+    {
+      "decision": "the reference asserts the SHA-256 pin together with the normalization state, so a checkout without the eol=lf guarantee fails with an explicit message instead of an opaque digest mismatch",
+      "id": "pinned_source_line_endings",
+      "pinned_source": "app/sleep_model/sources/circadian/models.py.txt is LF normalized (70147 bytes, no CRLF) under the eol=lf guarantee",
+      "printed_paper": "not applicable",
+      "tested_by": "the pinned-source hash test in the reference suite",
+      "topic": "pinned source byte identity"
+    }
+  ],
+  "provenance": "contract-derived analytic constants (not frozen implementation behavior); a disagreement with any implementation is adjudicated, never edited in.",
+  "schema_version": 1
+}

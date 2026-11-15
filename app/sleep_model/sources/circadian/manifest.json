@@ -1,0 +1,10 @@
+{
+  "license_path": "LICENSE.txt",
+  "repository": "https://github.com/Arcascope/circadian",
+  "reference": "Forger99 RHS and phase marker definitions",
+  "path": "circadian/models.py",
+  "modifications": "Only equations reproduced in local module; snapshot retained for verification",
+  "accessed": "2026-10-17",
+  "sha256": "d2635b34eebe9a8e4c59383f10413a452544a4405df6fcc8e3190aa4e7977435",
+  "commit": "db6eb08b6c0b0586cdac7795bf10bbbbfd323c1a"
+}

@@ -1,0 +1,9 @@
+# Byte-stable basis for the melatonin analytic fixtures.
+#
+# The fixture digests recorded in the task evidence and in
+# docs/module-decoupling-validation.md are SHA-256 digests over the LF bytes
+# produced by the generator.  Without this guarantee a Windows checkout would
+# translate the line endings and the recorded digests would no longer describe
+# the bytes on disk.  Same discipline as the pinned production source under
+# app/sleep_model/sources/** (text eol=lf).
+* text eol=lf

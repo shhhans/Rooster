@@ -1,0 +1,7 @@
+# Roster parser (ROSTER-PARSE-01) dependencies.
+# Install into conda env 205agent. Versions below are the ones used for
+# delivery; other modules keep their own requirement files.
+pypdfium2==5.14.0
+# httpx 0.27.2 is already present in the 205agent environment (shared with
+# other modules); it is required by app/roster_parser/provider.py.
+httpx>=0.24

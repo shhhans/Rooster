@@ -1,0 +1,196 @@
+{
+  "H1_threshold": 0.001,
+  "cases": [
+    {
+      "B": 0.1,
+      "H1": 0.0009,
+      "expected_S": 1.0,
+      "one_minus_mB": 0.29999999999999993,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285614285714285,
+      "H1": 0.0009,
+      "expected_S": 1.0,
+      "one_minus_mB": 7.000000000090267e-06,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714285,
+      "H1": 0.0009,
+      "expected_S": 1.0,
+      "one_minus_mB": 0.0,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285814285714285,
+      "H1": 0.0009,
+      "expected_S": 0.0,
+      "one_minus_mB": -6.999999999868223e-06,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.5,
+      "H1": 0.0009,
+      "expected_S": 0.0,
+      "one_minus_mB": -2.5,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.1,
+      "H1": 0.001,
+      "expected_S": 1.0,
+      "one_minus_mB": 0.29999999999999993,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285614285714285,
+      "H1": 0.001,
+      "expected_S": 1.0,
+      "one_minus_mB": 7.000000000090267e-06,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714285,
+      "H1": 0.001,
+      "expected_S": 1.0,
+      "one_minus_mB": 0.0,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285814285714285,
+      "H1": 0.001,
+      "expected_S": 1.0,
+      "one_minus_mB": -6.999999999868223e-06,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.5,
+      "H1": 0.001,
+      "expected_S": 1.0,
+      "one_minus_mB": -2.5,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.1,
+      "H1": 0.0011,
+      "expected_S": 1.0,
+      "one_minus_mB": 0.29999999999999993,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285614285714285,
+      "H1": 0.0011,
+      "expected_S": 1.0,
+      "one_minus_mB": 7.000000000090267e-06,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714285,
+      "H1": 0.0011,
+      "expected_S": 1.0,
+      "one_minus_mB": 0.0,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285814285714285,
+      "H1": 0.0011,
+      "expected_S": 1.0,
+      "one_minus_mB": -6.999999999868223e-06,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.5,
+      "H1": 0.0011,
+      "expected_S": 1.0,
+      "one_minus_mB": -2.5,
+      "rtol": 1e-09
+    }
+  ],
+  "description": "Light-suppression guard S(H1, B) boundary table, including one-ulp probes that pin the strict comparison.",
+  "equality_rule": "S = 1 at either boundary: H1 == 0.001 pM keeps S = 1, and 1 - m*B == 0 keeps S = 1; S = 0 only for H1 < 0.001 and 1 - m*B < 0.",
+  "m": 7.0,
+  "notes": [
+    "The guard is a published threshold switch, not a global positivity guarantee.",
+    "The exact 1/m case records the float value of 1 - m*B actually evaluated.",
+    "math.nextafter probes pin the strict comparison one ulp either side of the boundary and of the H1 threshold."
+  ],
+  "provenance": "contract-derived analytic constants (not frozen implementation behavior).",
+  "reachability": "the exact B = 1/m boundary is a reference-level property; a joint test can only reach guard outcomes through the candidate own light drive, so boundary equality is asserted here, not against a candidate.",
+  "schema_version": 1,
+  "suppression_boundary_B": 0.14285714285714285,
+  "ulp_cases": [
+    {
+      "B": 0.14285714285714282,
+      "H1": 0.0009999999999999998,
+      "expected_S": 1.0,
+      "label": "nextafter_below_boundary|below_threshold",
+      "one_minus_mB": 2.220446049250313e-16,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714282,
+      "H1": 0.001,
+      "expected_S": 1.0,
+      "label": "nextafter_below_boundary|at_threshold",
+      "one_minus_mB": 2.220446049250313e-16,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714282,
+      "H1": 0.0010000000000000002,
+      "expected_S": 1.0,
+      "label": "nextafter_below_boundary|above_threshold",
+      "one_minus_mB": 2.220446049250313e-16,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714285,
+      "H1": 0.0009999999999999998,
+      "expected_S": 1.0,
+      "label": "boundary|below_threshold",
+      "one_minus_mB": 0.0,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714285,
+      "H1": 0.001,
+      "expected_S": 1.0,
+      "label": "boundary|at_threshold",
+      "one_minus_mB": 0.0,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714285,
+      "H1": 0.0010000000000000002,
+      "expected_S": 1.0,
+      "label": "boundary|above_threshold",
+      "one_minus_mB": 0.0,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714288,
+      "H1": 0.0009999999999999998,
+      "expected_S": 0.0,
+      "label": "nextafter_above_boundary|below_threshold",
+      "one_minus_mB": -2.220446049250313e-16,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714288,
+      "H1": 0.001,
+      "expected_S": 1.0,
+      "label": "nextafter_above_boundary|at_threshold",
+      "one_minus_mB": -2.220446049250313e-16,
+      "rtol": 1e-09
+    },
+    {
+      "B": 0.14285714285714288,
+      "H1": 0.0010000000000000002,
+      "expected_S": 1.0,
+      "label": "nextafter_above_boundary|above_threshold",
+      "one_minus_mB": -2.220446049250313e-16,
+      "rtol": 1e-09
+    }
+  ]
+}

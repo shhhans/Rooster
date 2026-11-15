@@ -1,0 +1,5 @@
+# Pinned upstream snapshots are verified by their exact Git/source bytes.
+app/sleep_model/sources/** text eol=lf
+
+# Review manifests hash the exact UTF-8 case bytes.
+fixtures/*/cases.jsonl text eol=lf

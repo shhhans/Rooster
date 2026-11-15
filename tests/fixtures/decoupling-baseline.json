@@ -1,0 +1,4778 @@
+{
+  "cases": {
+    "adapter_score_empty_window": {
+      "api": "app.sleep_model.adapter.score",
+      "expected": {
+        "error": "empty evaluation window",
+        "model_version": "rooster-sleep-core-v2.1.0",
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-03T06:00:00Z",
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "id": "sleep-a",
+            "role": "main",
+            "start_utc": "2027-04-03T20:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-02T00:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T20:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 9,
+          "snapshot_id": "decouple-baseline-adapter"
+        }
+      },
+      "projection": "identity"
+    },
+    "adapter_score_forecast": {
+      "api": "app.sleep_model.adapter.score",
+      "expected": {
+        "duty_burden": 0.5803837964318341,
+        "error": null,
+        "fragmentation": 0,
+        "longest_wake_hours": 24.25,
+        "losses": {
+          "excess": 0.0,
+          "need": 0.03125,
+          "physiological": 0.09886178015998938,
+          "preference": 0.0,
+          "sleep_count": 0.0,
+          "total": 0.07051015710399311
+        },
+        "model_version": "rooster-sleep-core-v2.1.0",
+        "provenance": {
+          "configuration": {
+            "atol": 1e-10,
+            "burden_weights": [
+              0.6,
+              0.25,
+              0.15
+            ],
+            "early_minutes": 0.0,
+            "inertia_hours": 0.5,
+            "latency_minutes": 15.0,
+            "light_factor": 1.0,
+            "max_step_minutes": 15.0,
+            "rank_weights": [
+              0.65,
+              0.2,
+              0.1,
+              0.05
+            ],
+            "rtol": 1e-08,
+            "sleep_count_coefficient": 2.0,
+            "sleep_count_threshold": 4,
+            "softness": 0.05,
+            "tau_s": 4.2,
+            "tau_w": 18.2,
+            "threshold": 0.6
+          },
+          "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+          "equation_source": "sources/circadian/manifest.json",
+          "initialization": {
+            "checkpoint_reused": false,
+            "history_start_utc": "2027-03-31T06:00:00Z",
+            "input_prefix_hash": "ce0ff66410794b226936cfa2c63e15a81dbe10e0479674e6bbf9e3f97f7a5d63",
+            "prior_converged": true,
+            "prior_days": 59
+          },
+          "input_hash": "a9daa52377e357125469628b1b7a7ae23ca344ae6916b8a4717e17124a896d73",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "opportunity_hash": "1dec7ca628ec53788f53ba387cf7430546ad7d1af0e9357027db3a78a3f14da9",
+          "snapshot_hash": "55e78768e2466feed0d2bda559d4514299be26141d7f1cb322c5147492e825c6",
+          "trace_hash": "e097f8c8a571878bd5184e1e0a1c3b4ab2bab2d4d0386182815ed11017eba4fd"
+        },
+        "publishability": "valid",
+        "rolling_sleep_hours_24": 7.0,
+        "rolling_sleep_hours_48": 7.0,
+        "rolling_sleep_hours_72": 7.0,
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "sleep_hours": 7.75,
+        "status": "complete",
+        "utility": 92.94898428960069
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-04T06:00:00Z",
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "id": "sleep-a",
+            "role": "main",
+            "start_utc": "2027-04-03T20:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-02T00:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T20:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 9,
+          "snapshot_id": "decouple-baseline-adapter"
+        }
+      },
+      "projection": "identity"
+    },
+    "adapter_score_retrospective": {
+      "api": "app.sleep_model.adapter.score",
+      "expected": {
+        "duty_burden": null,
+        "error": null,
+        "fragmentation": null,
+        "longest_wake_hours": 10.0,
+        "losses": {
+          "excess": 0.0,
+          "need": 0.125,
+          "physiological": 0.005882920510640456,
+          "preference": 0.0,
+          "sleep_count": 0.0,
+          "total": 0.028823898331916297
+        },
+        "model_version": "rooster-sleep-core-v2.1.0",
+        "provenance": {
+          "configuration": {
+            "atol": 1e-10,
+            "burden_weights": [
+              0.6,
+              0.25,
+              0.15
+            ],
+            "early_minutes": 0.0,
+            "inertia_hours": 0.5,
+            "latency_minutes": 15.0,
+            "light_factor": 1.0,
+            "max_step_minutes": 15.0,
+            "rank_weights": [
+              0.65,
+              0.2,
+              0.1,
+              0.05
+            ],
+            "rtol": 1e-08,
+            "sleep_count_coefficient": 2.0,
+            "sleep_count_threshold": 4,
+            "softness": 0.05,
+            "tau_s": 4.2,
+            "tau_w": 18.2,
+            "threshold": 0.6
+          },
+          "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+          "equation_source": "sources/circadian/manifest.json",
+          "initialization": {
+            "checkpoint_reused": false,
+            "history_start_utc": "2027-03-30T06:00:00Z",
+            "input_prefix_hash": "e00966e2483d6f15b6407e4223beb46d818351eced2f7386cb177e597d7c3e0f",
+            "prior_converged": true,
+            "prior_days": 59
+          },
+          "input_hash": "c8224b76db051fac1936841526e5632e09a3db4c623248340a6cda1da4a526da",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "opportunity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "snapshot_hash": "55e78768e2466feed0d2bda559d4514299be26141d7f1cb322c5147492e825c6",
+          "trace_hash": "8ea0c420700fac71452ad5f0e018eeddeb5b9d5cbef1c62dc8cb662c66825c78"
+        },
+        "publishability": "valid",
+        "rolling_sleep_hours_24": 0,
+        "rolling_sleep_hours_48": 0,
+        "rolling_sleep_hours_72": 0,
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "sleep_hours": 7.0,
+        "status": "complete",
+        "utility": 97.11761016680836
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-03T06:00:00Z",
+          "start_utc": "2027-04-02T06:00:00Z"
+        },
+        "sleep_blocks": null,
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-02T00:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T20:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 9,
+          "snapshot_id": "decouple-baseline-adapter"
+        }
+      },
+      "projection": "identity"
+    },
+    "available_windows": {
+      "api": "app.planning.engine.available_windows",
+      "expected": [
+        {
+          "end_utc": "2027-04-03T23:30:00Z",
+          "start_utc": "2027-04-03T06:00:00Z",
+          "timezone": "Asia/Tokyo"
+        },
+        {
+          "end_utc": "2027-04-05T06:00:00Z",
+          "start_utc": "2027-04-04T06:15:00Z",
+          "timezone": "Asia/Tokyo"
+        }
+      ],
+      "inputs": {
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-06T06:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "scheduling_policy": {
+            "maximum_wake_hours": 20.0,
+            "minimum_sleep_minutes": 90
+          },
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    },
+    "check_constraints": {
+      "api": "app.sleep_model.evaluation.check_constraints",
+      "expected": [
+        {
+          "id": "schedule_constraints",
+          "status": "pass"
+        },
+        {
+          "id": "aviation_legal_compliance",
+          "message": "no jurisdiction-specific legal rules are encoded",
+          "status": "not_evaluated"
+        }
+      ],
+      "inputs": {
+        "blocks": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "id": "sleep-a",
+            "role": "main",
+            "start_utc": "2027-04-03T20:00:00Z",
+            "timezone": "UTC"
+          },
+          {
+            "end_utc": "2027-04-03T09:30:00Z",
+            "id": "nap-b",
+            "role": "nap",
+            "start_utc": "2027-04-03T08:00:00Z",
+            "timezone": "UTC"
+          }
+        ],
+        "end_utc": "2027-04-04T12:00:00Z",
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast",
+          "task_markers": [
+            {
+              "id": "task-a",
+              "time_utc": "2027-04-03T14:00:00Z"
+            }
+          ]
+        },
+        "start_utc": "2027-04-03T06:00:00Z"
+      },
+      "projection": "identity"
+    },
+    "check_plan_invalid_duty_buffer": {
+      "api": "app.planning.engine.check_plan",
+      "expected": [
+        {
+          "block_id": "sleep-x",
+          "event_id": "duty-1",
+          "id": "sleep_event_overlap",
+          "status": "fail"
+        },
+        {
+          "id": "aviation_legal_compliance",
+          "message": "no jurisdiction-specific legal rules are encoded",
+          "status": "not_evaluated"
+        }
+      ],
+      "inputs": {
+        "blocks": [
+          {
+            "end_utc": "2027-04-04T08:00:00Z",
+            "id": "sleep-x",
+            "role": "main",
+            "start_utc": "2027-04-04T04:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-06T06:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    },
+    "check_plan_invalid_environment": {
+      "api": "app.planning.engine.check_plan",
+      "expected": [
+        {
+          "block_id": "sleep-e",
+          "id": "confirmed_sleep_environment",
+          "message": "sleep block is outside a confirmed home, hotel, or aircraft environment",
+          "status": "fail"
+        },
+        {
+          "id": "aviation_legal_compliance",
+          "message": "no jurisdiction-specific legal rules are encoded",
+          "status": "not_evaluated"
+        }
+      ],
+      "inputs": {
+        "blocks": [
+          {
+            "end_utc": "2027-04-04T17:00:00Z",
+            "id": "sleep-e",
+            "role": "main",
+            "start_utc": "2027-04-04T09:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-03T12:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    },
+    "check_plan_invalid_horizon": {
+      "api": "app.planning.engine.check_plan",
+      "expected": [
+        {
+          "block_id": "sleep-h",
+          "id": "block_horizon",
+          "message": "sleep block outside planning horizon",
+          "status": "fail"
+        },
+        {
+          "id": "aviation_legal_compliance",
+          "message": "no jurisdiction-specific legal rules are encoded",
+          "status": "not_evaluated"
+        }
+      ],
+      "inputs": {
+        "blocks": [
+          {
+            "end_utc": "2027-04-05T16:00:00Z",
+            "id": "sleep-h",
+            "role": "main",
+            "start_utc": "2027-04-05T08:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-06T06:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    },
+    "check_plan_invalid_max_wake": {
+      "api": "app.planning.engine.check_plan",
+      "expected": [
+        {
+          "id": "maximum_continuous_wake",
+          "limit_hours": 20.0,
+          "longest_wake_hours": 31.0,
+          "status": "fail"
+        },
+        {
+          "id": "aviation_legal_compliance",
+          "message": "no jurisdiction-specific legal rules are encoded",
+          "status": "not_evaluated"
+        }
+      ],
+      "inputs": {
+        "blocks": [
+          {
+            "end_utc": "2027-04-03T23:00:00Z",
+            "id": "sleep-w",
+            "role": "main",
+            "start_utc": "2027-04-03T17:30:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-06T06:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "scheduling_policy": {
+            "maximum_wake_hours": 20.0
+          },
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    },
+    "check_plan_invalid_minimum": {
+      "api": "app.planning.engine.check_plan",
+      "expected": [
+        {
+          "block_id": "sleep-m",
+          "id": "configured_minimum_sleep",
+          "status": "fail"
+        },
+        {
+          "id": "aviation_legal_compliance",
+          "message": "no jurisdiction-specific legal rules are encoded",
+          "status": "not_evaluated"
+        }
+      ],
+      "inputs": {
+        "blocks": [
+          {
+            "end_utc": "2027-04-03T10:00:00Z",
+            "id": "sleep-m",
+            "role": "main",
+            "start_utc": "2027-04-03T09:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-06T06:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "scheduling_policy": {
+            "minimum_sleep_minutes": 90
+          },
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    },
+    "check_plan_invalid_overlap": {
+      "api": "app.planning.engine.check_plan",
+      "expected": [
+        {
+          "block_id": "sleep-o1",
+          "id": "sleep_overlap",
+          "other_id": "sleep-o2",
+          "status": "fail"
+        },
+        {
+          "id": "aviation_legal_compliance",
+          "message": "no jurisdiction-specific legal rules are encoded",
+          "status": "not_evaluated"
+        }
+      ],
+      "inputs": {
+        "blocks": [
+          {
+            "end_utc": "2027-04-03T17:00:00Z",
+            "id": "sleep-o1",
+            "role": "main",
+            "start_utc": "2027-04-03T09:00:00Z",
+            "timezone": "Asia/Tokyo"
+          },
+          {
+            "end_utc": "2027-04-03T18:00:00Z",
+            "id": "sleep-o2",
+            "role": "main",
+            "start_utc": "2027-04-03T10:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-06T06:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    },
+    "check_plan_valid": {
+      "api": "app.planning.engine.check_plan",
+      "expected": [
+        {
+          "id": "schedule_constraints",
+          "status": "pass"
+        },
+        {
+          "id": "aviation_legal_compliance",
+          "message": "no jurisdiction-specific legal rules are encoded",
+          "status": "not_evaluated"
+        }
+      ],
+      "inputs": {
+        "blocks": [
+          {
+            "end_utc": "2027-04-03T17:00:00Z",
+            "id": "sleep-ok",
+            "role": "main",
+            "start_utc": "2027-04-03T09:00:00Z",
+            "timezone": "Asia/Tokyo"
+          },
+          {
+            "end_utc": "2027-04-04T20:00:00Z",
+            "id": "sleep-ok2",
+            "role": "main",
+            "start_utc": "2027-04-04T12:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-06T06:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "scheduling_policy": {
+            "maximum_wake_hours": 20.0,
+            "minimum_sleep_minutes": 90
+          },
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_forecast_ongoing_session": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "assumptions": [
+          "population parameters; no individual physiological calibration",
+          "unobserved history filled with habit prior",
+          "unmeasured light uses declared photopic scenario",
+          "latency and inertia are engineering assumptions; score is not fitness for duty"
+        ],
+        "constraint_report": [
+          {
+            "id": "schedule_constraints",
+            "status": "pass"
+          },
+          {
+            "id": "aviation_legal_compliance",
+            "message": "no jurisdiction-specific legal rules are encoded",
+            "status": "not_evaluated"
+          }
+        ],
+        "display_score": 95.02122157197549,
+        "evaluation_end_utc": "2027-04-04T12:00:00Z",
+        "evaluation_start_utc": "2027-04-03T06:00:00Z",
+        "final_state": {
+          "S": 0.4011490420559918,
+          "at_utc": "2027-04-04T12:00:00Z",
+          "current_episode_start_utc": null,
+          "inertia": 1.1253515383958003e-07,
+          "last_wake_utc": "2027-04-04T04:00:00Z",
+          "n": 0.5173902287384305,
+          "sleep_mode": false,
+          "x": 0.8460057662248116,
+          "xc": 0.5926083575893714
+        },
+        "initial_state": {
+          "S": 0.07311431839060682,
+          "at_utc": "2027-04-03T06:00:00Z",
+          "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+          "current_episode_start_utc": "2027-04-02T21:00:00Z",
+          "inertia": 0.0,
+          "initialization_id": "e67b2d3a5b6e47a544af3cdb4952f2fb75d9c02daeac18adeaa67c169d096e4d",
+          "input_prefix_hash": "345809c4ae1ab2fbf62b9d2342d6b294701ed2a6fdf6a77151a7d30670f85b8b",
+          "last_wake_utc": "2027-04-02T05:00:00Z",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "n": 0.00656675199489176,
+          "sleep_mode": true,
+          "x": -0.7553970867263553,
+          "xc": 0.8125310262847426
+        },
+        "initialization": {
+          "checkpoint_reused": false,
+          "history_start_utc": "2027-03-31T06:00:00Z",
+          "input_prefix_hash": "345809c4ae1ab2fbf62b9d2342d6b294701ed2a6fdf6a77151a7d30670f85b8b",
+          "prior_converged": true,
+          "prior_days": 63
+        },
+        "losses": {
+          "excess": 0.175,
+          "need": 0.2,
+          "physiological": 0.0015965912003770033,
+          "preference": 0.0,
+          "sleep_count": 0.0,
+          "total": 0.04978778428024506
+        },
+        "missed_opportunities": [],
+        "mode": "forecast",
+        "model_version": "rooster-sleep-core-v2.1.0",
+        "physiological_metrics": {
+          "above_threshold_hours": 0.0,
+          "actual_sleep_hours": 0,
+          "assumed_light_fraction": 1.0,
+          "domain": "awake",
+          "duty_burden": null,
+          "duty_hours": 0,
+          "excess_area": 0.0,
+          "fragmentation_interruptions": 0,
+          "history_observation_coverage": 0.3472222222222222,
+          "left_censored": false,
+          "longest_wake_hours": 10.25,
+          "main_count": 2,
+          "mean_burden": 0.24143032841713508,
+          "minimum_burden": 0.11075453123417156,
+          "nap_count": 0,
+          "peak_burden": 0.43812120402705534,
+          "phase_markers": [
+            {
+              "ambiguous": false,
+              "cbtmin_utc": "2027-04-04T03:01:19.467670Z",
+              "dlmo_proxy_utc": "2027-04-03T20:01:19.467670Z",
+              "method": "bounded quadratic, 1-minute bracket"
+            }
+          ],
+          "right_censored": true,
+          "rolling_actual_sleep_hours": {
+            "24": 9.0,
+            "48": 17.0,
+            "72": 25.0
+          },
+          "sleep_count_cost": {
+            "coefficient": 2.0,
+            "fraction_over_threshold": 0.0,
+            "max_rolling_episodes": 2,
+            "points": 0.0,
+            "threshold": 4
+          },
+          "sleep_hours": 11.75,
+          "sleep_piece_count": 2,
+          "sleep_target_buckets": [
+            {
+              "deficit": 0.0,
+              "excess": 0.21875,
+              "hours": 24.0,
+              "partial": false,
+              "sleep_hours": 11.75,
+              "start_utc": "2027-04-03T06:00:00+00:00",
+              "target_hours": 8.0
+            },
+            {
+              "deficit": 1.0,
+              "excess": 0.0,
+              "hours": 6.0,
+              "partial": true,
+              "sleep_hours": 0,
+              "start_utc": "2027-04-04T06:00:00+00:00",
+              "target_hours": 2.0
+            }
+          ],
+          "task_marker_coverage": null,
+          "task_markers": [],
+          "wake_task_margins": [
+            {
+              "next_task_minutes": null,
+              "wake_utc": "2027-04-03T10:00:00Z"
+            },
+            {
+              "next_task_minutes": null,
+              "wake_utc": "2027-04-04T04:00:00Z"
+            }
+          ],
+          "waso_hours": 0.0
+        },
+        "predicted_sleep": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "episode_id": "sleep-a",
+            "id": "sleep-a-predicted",
+            "opportunity_id": "sleep-a",
+            "role": "main",
+            "source": "predicted",
+            "start_utc": "2027-04-03T20:15:00Z"
+          },
+          {
+            "end_utc": "2027-04-03T10:00:00Z",
+            "episode_id": "sess-ongoing",
+            "id": "ongoing-sess-ongoing-predicted",
+            "opportunity_id": "ongoing-sess-ongoing",
+            "role": "main",
+            "source": "predicted",
+            "start_utc": "2027-04-03T06:00:00Z"
+          }
+        ],
+        "preference_metrics": {
+          "items": [],
+          "loss": 0.0,
+          "unsupported_preferences": []
+        },
+        "provenance": {
+          "configuration": {
+            "atol": 1e-10,
+            "burden_weights": [
+              0.6,
+              0.25,
+              0.15
+            ],
+            "early_minutes": 0.0,
+            "inertia_hours": 0.5,
+            "latency_minutes": 15.0,
+            "light_factor": 1.0,
+            "max_step_minutes": 15.0,
+            "rank_weights": [
+              0.65,
+              0.2,
+              0.1,
+              0.05
+            ],
+            "rtol": 1e-08,
+            "sleep_count_coefficient": 2.0,
+            "sleep_count_threshold": 4,
+            "softness": 0.05,
+            "tau_s": 4.2,
+            "tau_w": 18.2,
+            "threshold": 0.6
+          },
+          "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+          "equation_source": "sources/circadian/manifest.json",
+          "initialization": {
+            "checkpoint_reused": false,
+            "history_start_utc": "2027-03-31T06:00:00Z",
+            "input_prefix_hash": "345809c4ae1ab2fbf62b9d2342d6b294701ed2a6fdf6a77151a7d30670f85b8b",
+            "prior_converged": true,
+            "prior_days": 63
+          },
+          "input_hash": "ee9e388bfd6df8ac8ba050097aea053421b963cde94e92c76e29dd4803d9bfec",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "opportunity_hash": "e53111e93f18a82b25526cc0376db10ef00639f25f69cf9a7eae832c503081ae",
+          "snapshot_hash": "6ff3c272cc89021831966305ab1103a3dd17791655281847751e95c51d89e21e",
+          "trace_hash": "32cdd79fc0e302978d43074a9442592210db3637e3038327b2540228af80e106"
+        },
+        "publishability": "valid",
+        "resolved_preferences": [],
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "complete",
+        "trace": {
+          "digest": "32cdd79fc0e302978d43074a9442592210db3637e3038327b2540228af80e106",
+          "point_count": 1801,
+          "samples": [
+            {
+              "C": 0.8404442641771025,
+              "S": 0.07311431839060682,
+              "amplitude": 1.1094284236984384,
+              "asleep": true,
+              "burden": 0.25397965707863973,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.00656675199489176,
+              "phase_rad": -2.3197714733887804,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-03T06:00:00Z",
+              "x": -0.7553970867263553,
+              "xc": 0.8125310262847426
+            },
+            {
+              "C": 0.523626041495076,
+              "S": 0.038138740280460846,
+              "amplitude": 1.0578278218944788,
+              "asleep": true,
+              "burden": 0.1537897545420455,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.0019194128675778215,
+              "phase_rad": -1.6180660112306893,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-03T08:44:00Z",
+              "x": -0.0499845680294497,
+              "xc": 1.0566462244918715
+            },
+            {
+              "C": 0.1747955395036742,
+              "S": 0.1026281116139075,
+              "amplitude": 1.0316758530657912,
+              "asleep": false,
+              "burden": 0.11352923485268196,
+              "inertia": 0.05502322005612611,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.386251979427531,
+              "phase_rad": -0.8626736656337074,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T11:27:00Z",
+              "x": 0.6710111784066947,
+              "xc": 0.7836447308903999
+            },
+            {
+              "C": 0.005132818161062813,
+              "S": 0.2277663055417385,
+              "amplitude": 1.0882142124138352,
+              "asleep": false,
+              "burden": 0.1379778612494572,
+              "inertia": 0.00023248922765619628,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.5092676953796584,
+              "phase_rad": -0.14341023983003398,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T14:11:00Z",
+              "x": 1.0770430010686265,
+              "xc": 0.1555266727881439
+            },
+            {
+              "C": 0.0888955458898969,
+              "S": 0.33545402237953836,
+              "amplitude": 1.1630291620628226,
+              "asleep": false,
+              "burden": 0.22349644725046386,
+              "inertia": 9.823351109048143e-07,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.5187753427954319,
+              "phase_rad": 0.6055152949508189,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T16:55:00Z",
+              "x": 0.9562529375679345,
+              "xc": -0.6619797211404946
+            },
+            {
+              "C": 0.34860149240594285,
+              "S": 0.42760078984710437,
+              "amplitude": 1.1891241588961212,
+              "asleep": false,
+              "burden": 0.3437108476534494,
+              "inertia": 4.2913405655763705e-09,
+              "light_lux": 50.0,
+              "light_source": "assumed_indoor",
+              "n": 0.45274630036442604,
+              "phase_rad": 1.263170246891997,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T19:38:00Z",
+              "x": 0.3600632460018223,
+              "xc": -1.1333008092069108
+            },
+            {
+              "C": 0.6926082406816896,
+              "S": 0.26984633331566815,
+              "amplitude": 1.0809617160003084,
+              "asleep": true,
+              "burden": 0.33505986015982325,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.15815511290251855,
+              "phase_rad": 1.9662387230512637,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-03T22:22:00Z",
+              "x": -0.41640426872615915,
+              "xc": -0.9975398320092105
+            },
+            {
+              "C": 0.9432271869772303,
+              "S": 0.14132006243446094,
+              "amplitude": 1.0910589799785941,
+              "asleep": true,
+              "burden": 0.32059883420498414,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.04657557577262473,
+              "phase_rad": 2.660423387770692,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-04T01:05:00Z",
+              "x": -0.9671740050443172,
+              "xc": -0.5049595446750814
+            },
+            {
+              "C": 0.988937305487342,
+              "S": 0.07371701297702113,
+              "amplitude": 1.1003668620062612,
+              "asleep": true,
+              "burden": 0.2914645341580482,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.013613695099550684,
+              "phase_rad": -2.9308441652680597,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-04T03:49:00Z",
+              "x": -1.0760208171138066,
+              "xc": 0.2301878192677495
+            },
+            {
+              "C": 0.7662190067288246,
+              "S": 0.1920797941711988,
+              "amplitude": 1.0755377754302424,
+              "asleep": false,
+              "burden": 0.307717140000075,
+              "inertia": 0.006096745434330544,
+              "light_lux": 50.0,
+              "light_source": "assumed_indoor",
+              "n": 0.26886694185581944,
+              "phase_rad": -2.1322745076903185,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-04T06:33:00Z",
+              "x": -0.5726571965487373,
+              "xc": 0.9104093813325825
+            },
+            {
+              "C": 0.39764432593166343,
+              "S": 0.3041070095121564,
+              "amplitude": 1.0136198698757741,
+              "asleep": false,
+              "burden": 0.28187928224404263,
+              "inertia": 2.663369221958955e-05,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.49134624857559894,
+              "phase_rad": -1.3646275257123748,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-04T09:16:00Z",
+              "x": 0.20749949006038898,
+              "xc": 0.9921538198443121
+            },
+            {
+              "C": 0.09047600923751403,
+              "S": 0.4011490420559918,
+              "amplitude": 1.032913559776617,
+              "asleep": false,
+              "burden": 0.26330844442324663,
+              "inertia": 1.1253515383958003e-07,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.5173902287384305,
+              "phase_rad": -0.611046642593055,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-04T12:00:00Z",
+              "x": 0.8460057662248116,
+              "xc": 0.5926083575893714
+            }
+          ],
+          "sampling": {
+            "max_points": 12,
+            "rule": "indices round(k*(point_count-1)/11) for k in 0..11 (round-half-even), deduplicated, first and last forced"
+          }
+        },
+        "utility": 95.02122157197549
+      },
+      "inputs": {
+        "kwargs": {
+          "mode": "forecast",
+          "scenarios": false
+        },
+        "sleep_blocks": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "id": "sleep-a",
+            "role": "main",
+            "start_utc": "2027-04-03T20:00:00Z",
+            "timezone": "UTC"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 3,
+          "sessions": {
+            "sess-ongoing": {
+              "actual_end_utc": null,
+              "actual_start_utc": "2027-04-03T02:00:00Z",
+              "expected_end_utc": "2027-04-03T10:00:00Z",
+              "id": "sess-ongoing",
+              "planned_block_id": "planned-9"
+            }
+          },
+          "snapshot_id": "decouple-baseline-ongoing"
+        }
+      },
+      "projection": "full_result_with_trace_summary"
+    },
+    "evaluate_forecast_scenarios": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "assumptions": [
+          "population parameters; no individual physiological calibration",
+          "unobserved history filled with habit prior",
+          "unmeasured light uses declared photopic scenario",
+          "latency and inertia are engineering assumptions; score is not fitness for duty"
+        ],
+        "constraint_report": [
+          {
+            "id": "schedule_constraints",
+            "status": "pass"
+          },
+          {
+            "id": "aviation_legal_compliance",
+            "message": "no jurisdiction-specific legal rules are encoded",
+            "status": "not_evaluated"
+          }
+        ],
+        "display_score": 93.77194563043028,
+        "evaluation_end_utc": "2027-04-04T12:00:00Z",
+        "evaluation_start_utc": "2027-04-03T06:00:00Z",
+        "final_state": {
+          "S": 0.411182064736516,
+          "at_utc": "2027-04-04T12:00:00Z",
+          "current_episode_start_utc": null,
+          "inertia": 1.1253515383958003e-07,
+          "last_wake_utc": "2027-04-04T04:00:00Z",
+          "n": 0.517390168431555,
+          "sleep_mode": false,
+          "x": 0.8810670283175331,
+          "xc": 0.549391557142201
+        },
+        "initial_state": {
+          "S": 0.14127275947898787,
+          "at_utc": "2027-04-03T06:00:00Z",
+          "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+          "current_episode_start_utc": null,
+          "inertia": 0.13533526800663295,
+          "initialization_id": "e67b2d3a5b6e47a544af3cdb4952f2fb75d9c02daeac18adeaa67c169d096e4d",
+          "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+          "last_wake_utc": "2027-04-03T05:00:00Z",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "n": 0.16406536105490335,
+          "sleep_mode": false,
+          "x": -0.7260568256557821,
+          "xc": 0.8210819424924442
+        },
+        "initialization": {
+          "checkpoint_reused": false,
+          "history_start_utc": "2027-03-31T06:00:00Z",
+          "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+          "prior_converged": true,
+          "prior_days": 63
+        },
+        "losses": {
+          "excess": 0.0,
+          "need": 0.2,
+          "physiological": 8.972534380772866e-05,
+          "preference": 0.2222222222222222,
+          "sleep_count": 0.0,
+          "total": 0.06228054369569726
+        },
+        "missed_opportunities": [],
+        "mode": "forecast",
+        "model_version": "rooster-sleep-core-v2.1.0",
+        "physiological_metrics": {
+          "above_threshold_hours": 0.0,
+          "actual_sleep_hours": 0,
+          "assumed_light_fraction": 1.0,
+          "domain": "duty",
+          "duty_burden": 0.22120157800177373,
+          "duty_hours": 4.0,
+          "excess_area": 0.0,
+          "fragmentation_interruptions": 0,
+          "history_observation_coverage": 0.3333333333333333,
+          "left_censored": false,
+          "longest_wake_hours": 10.75,
+          "main_count": 1,
+          "mean_burden": 0.22120157800177373,
+          "minimum_burden": 0.19591190697071478,
+          "nap_count": 1,
+          "peak_burden": 0.2665952976574329,
+          "phase_markers": [
+            {
+              "ambiguous": false,
+              "cbtmin_utc": "2027-04-04T02:47:28.672297Z",
+              "dlmo_proxy_utc": "2027-04-03T19:47:28.672297Z",
+              "method": "bounded quadratic, 1-minute bracket"
+            }
+          ],
+          "right_censored": true,
+          "rolling_actual_sleep_hours": {
+            "24": 8.0,
+            "48": 16.0,
+            "72": 24.0
+          },
+          "sleep_count_cost": {
+            "coefficient": 2.0,
+            "fraction_over_threshold": 0.0,
+            "max_rolling_episodes": 3,
+            "points": 0.0,
+            "threshold": 4
+          },
+          "sleep_hours": 9.0,
+          "sleep_piece_count": 2,
+          "sleep_target_buckets": [
+            {
+              "deficit": 0.0,
+              "excess": 0.0,
+              "hours": 24.0,
+              "partial": false,
+              "sleep_hours": 9.0,
+              "start_utc": "2027-04-03T06:00:00+00:00",
+              "target_hours": 8.0
+            },
+            {
+              "deficit": 1.0,
+              "excess": 0.0,
+              "hours": 6.0,
+              "partial": true,
+              "sleep_hours": 0,
+              "start_utc": "2027-04-04T06:00:00+00:00",
+              "target_hours": 2.0
+            }
+          ],
+          "task_marker_coverage": 1.0,
+          "task_markers": [
+            {
+              "C": 0.003585083786473875,
+              "S": 0.3588943167879508,
+              "burden": 0.21624985297596214,
+              "id": "task-a",
+              "inertia": 0.00011327971048804887,
+              "time_utc": "2027-04-03T14:00:00Z"
+            }
+          ],
+          "wake_task_margins": [
+            {
+              "next_task_minutes": 270.0,
+              "wake_utc": "2027-04-03T09:30:00Z"
+            },
+            {
+              "next_task_minutes": null,
+              "wake_utc": "2027-04-04T04:00:00Z"
+            }
+          ],
+          "waso_hours": 0.0
+        },
+        "predicted_sleep": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "episode_id": "sleep-a",
+            "id": "sleep-a-predicted",
+            "opportunity_id": "sleep-a",
+            "role": "main",
+            "source": "predicted",
+            "start_utc": "2027-04-03T20:15:00Z"
+          },
+          {
+            "end_utc": "2027-04-03T09:30:00Z",
+            "episode_id": "nap-b",
+            "id": "nap-b-predicted",
+            "opportunity_id": "nap-b",
+            "role": "nap",
+            "source": "predicted",
+            "start_utc": "2027-04-03T08:15:00Z"
+          }
+        ],
+        "preference_metrics": {
+          "items": [
+            {
+              "id": "pref-bed",
+              "kind": "bedtime",
+              "loss": 0.3333333333333333,
+              "shortfall": 60.0,
+              "unit": "minutes",
+              "weight": 1
+            },
+            {
+              "id": "pref-continuous",
+              "kind": "continuous_sleep",
+              "loss": 0.0,
+              "shortfall": 0.0,
+              "unit": "hours",
+              "weight": 0.5
+            }
+          ],
+          "loss": 0.2222222222222222,
+          "unsupported_preferences": []
+        },
+        "provenance": {
+          "configuration": {
+            "atol": 1e-10,
+            "burden_weights": [
+              0.6,
+              0.25,
+              0.15
+            ],
+            "early_minutes": 0.0,
+            "inertia_hours": 0.5,
+            "latency_minutes": 15.0,
+            "light_factor": 1.0,
+            "max_step_minutes": 15.0,
+            "rank_weights": [
+              0.65,
+              0.2,
+              0.1,
+              0.05
+            ],
+            "rtol": 1e-08,
+            "sleep_count_coefficient": 2.0,
+            "sleep_count_threshold": 4,
+            "softness": 0.05,
+            "tau_s": 4.2,
+            "tau_w": 18.2,
+            "threshold": 0.6
+          },
+          "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+          "equation_source": "sources/circadian/manifest.json",
+          "initialization": {
+            "checkpoint_reused": false,
+            "history_start_utc": "2027-03-31T06:00:00Z",
+            "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+            "prior_converged": true,
+            "prior_days": 63
+          },
+          "input_hash": "f45e6f39075a3dc2fb8692c35900958da1e4bf182a1b65a84644873c2c1d5228",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "opportunity_hash": "9a6927be092a75345d7806f48fd2dbb7b9723574abd88c3c458a5446fca6c4c4",
+          "snapshot_hash": "27683893953b9f986d83551a49df3429f1a65329fbcb0163d85b8643dca57bbd",
+          "trace_hash": "4e84a5931dad936dce4d55af19c7f8b24dd96d0c8eb70c0cf747ba979f486ace"
+        },
+        "publishability": "valid",
+        "resolved_preferences": [
+          {
+            "id": "pref-bed",
+            "kind": "bedtime",
+            "scope_end_utc": "2027-04-04T12:00:00Z",
+            "scope_start_utc": "2027-04-03T06:00:00Z",
+            "target": "21:30",
+            "timezone": "UTC",
+            "tolerance": 30,
+            "weight": 1
+          },
+          {
+            "id": "pref-continuous",
+            "kind": "continuous_sleep",
+            "scope_end_utc": "2027-04-04T12:00:00Z",
+            "scope_start_utc": "2027-04-03T06:00:00Z",
+            "target": 7,
+            "weight": 0.5
+          }
+        ],
+        "scenarios": [
+          {
+            "configuration_hash": "bc477b83199c8f7c82e199a6134d25477e88cd2134ca4131c0dbb1ba11ceef9a",
+            "initial_state": {
+              "S": 0.14127275947898787,
+              "at_utc": "2027-04-03T06:00:00Z",
+              "configuration_hash": "bc477b83199c8f7c82e199a6134d25477e88cd2134ca4131c0dbb1ba11ceef9a",
+              "current_episode_start_utc": null,
+              "inertia": 0.13533526800663295,
+              "initialization_id": "1f102278cbf4065d4a0528866ac41f033ae5028cd36b5929d55cc4e0c8aa8286",
+              "input_prefix_hash": "8d6cd622a43130ae3fee39c42a38393aa0340ebaada4cbfada4b531f75d18933",
+              "last_wake_utc": "2027-04-03T05:00:00Z",
+              "model_version": "rooster-sleep-core-v2.1.0",
+              "n": 0.16406536105490335,
+              "sleep_mode": false,
+              "x": -0.7260568256557821,
+              "xc": 0.8210819424924442
+            },
+            "losses": {
+              "excess": 0.0,
+              "need": 0.2,
+              "physiological": 8.055118709093146e-05,
+              "preference": 0.2222222222222222,
+              "sleep_count": 0.0,
+              "total": 0.06227458049383133
+            },
+            "name": "latency_low",
+            "predicted_sleep": [
+              {
+                "end_utc": "2027-04-04T04:00:00Z",
+                "episode_id": "sleep-a",
+                "id": "sleep-a-predicted",
+                "opportunity_id": "sleep-a",
+                "role": "main",
+                "source": "predicted",
+                "start_utc": "2027-04-03T20:05:00Z"
+              },
+              {
+                "end_utc": "2027-04-03T09:30:00Z",
+                "episode_id": "nap-b",
+                "id": "nap-b-predicted",
+                "opportunity_id": "nap-b",
+                "role": "nap",
+                "source": "predicted",
+                "start_utc": "2027-04-03T08:05:00Z"
+              }
+            ],
+            "status": "complete",
+            "utility": 93.77254195061685
+          },
+          {
+            "configuration_hash": "8abe97fcda3ce125d1e48e520831a450c1afd0b5ab88da32faed887af838af32",
+            "initial_state": {
+              "S": 0.14127275947898787,
+              "at_utc": "2027-04-03T06:00:00Z",
+              "configuration_hash": "8abe97fcda3ce125d1e48e520831a450c1afd0b5ab88da32faed887af838af32",
+              "current_episode_start_utc": null,
+              "inertia": 0.13533526800663295,
+              "initialization_id": "732f9792eac8e66dba336169e0555ebb37cdf3d43c4a233e45170c7129a3b135",
+              "input_prefix_hash": "b4c6ed5e74431c3a116ff6c9bd12c724217c41b6ed975d22b6580cdbeef07280",
+              "last_wake_utc": "2027-04-03T05:00:00Z",
+              "model_version": "rooster-sleep-core-v2.1.0",
+              "n": 0.16406536105490335,
+              "sleep_mode": false,
+              "x": -0.7260568256557821,
+              "xc": 0.8210819424924442
+            },
+            "losses": {
+              "excess": 0.0,
+              "need": 0.25,
+              "physiological": 0.00016103827753064813,
+              "preference": 0.2222222222222222,
+              "sleep_count": 0.0,
+              "total": 0.07232689710261715
+            },
+            "name": "sleep_disrupted",
+            "predicted_sleep": [
+              {
+                "end_utc": "2027-04-04T03:30:00Z",
+                "episode_id": "sleep-a",
+                "id": "sleep-a-predicted",
+                "opportunity_id": "sleep-a",
+                "role": "main",
+                "source": "predicted",
+                "start_utc": "2027-04-03T20:30:00Z"
+              },
+              {
+                "end_utc": "2027-04-03T09:00:00Z",
+                "episode_id": "nap-b",
+                "id": "nap-b-predicted",
+                "opportunity_id": "nap-b",
+                "role": "nap",
+                "source": "predicted",
+                "start_utc": "2027-04-03T08:30:00Z"
+              }
+            ],
+            "status": "complete",
+            "utility": 92.76731028973828
+          },
+          {
+            "configuration_hash": "091d16ea348495f04ff5bfb565c850f1287d03759bc52f666d63d8897414c56c",
+            "initial_state": {
+              "S": 0.14127275947898787,
+              "at_utc": "2027-04-03T06:00:00Z",
+              "configuration_hash": "091d16ea348495f04ff5bfb565c850f1287d03759bc52f666d63d8897414c56c",
+              "current_episode_start_utc": null,
+              "inertia": 0.13533526800663295,
+              "initialization_id": "451d64d86c42e8daf6a8305ceda789d28b4123f8a04ee4eb2b8f7f2a4914c6f5",
+              "input_prefix_hash": "e8072370bbf40508f28cdd7c863d1d28c80161804cd6350122946316bb0db697",
+              "last_wake_utc": "2027-04-03T05:00:00Z",
+              "model_version": "rooster-sleep-core-v2.1.0",
+              "n": 0.12012790927540362,
+              "sleep_mode": false,
+              "x": -0.7656413907258224,
+              "xc": 0.7689678331278682
+            },
+            "losses": {
+              "excess": 0.0,
+              "need": 0.2,
+              "physiological": 8.70336953569561e-05,
+              "preference": 0.2222222222222222,
+              "sleep_count": 0.0,
+              "total": 0.062278794124204256
+            },
+            "name": "light_dim",
+            "predicted_sleep": [
+              {
+                "end_utc": "2027-04-04T04:00:00Z",
+                "episode_id": "sleep-a",
+                "id": "sleep-a-predicted",
+                "opportunity_id": "sleep-a",
+                "role": "main",
+                "source": "predicted",
+                "start_utc": "2027-04-03T20:15:00Z"
+              },
+              {
+                "end_utc": "2027-04-03T09:30:00Z",
+                "episode_id": "nap-b",
+                "id": "nap-b-predicted",
+                "opportunity_id": "nap-b",
+                "role": "nap",
+                "source": "predicted",
+                "start_utc": "2027-04-03T08:15:00Z"
+              }
+            ],
+            "status": "complete",
+            "utility": 93.77212058757958
+          },
+          {
+            "configuration_hash": "ecb28b7b7ab1e2916220e528f5280cbcb1ed5ad5f465f664669f7a71c6e861df",
+            "initial_state": {
+              "S": 0.14127275947898787,
+              "at_utc": "2027-04-03T06:00:00Z",
+              "configuration_hash": "ecb28b7b7ab1e2916220e528f5280cbcb1ed5ad5f465f664669f7a71c6e861df",
+              "current_episode_start_utc": null,
+              "inertia": 0.13533526800663295,
+              "initialization_id": "7c1441b877e355c2ea31516c42c1231a67223689799631d5daf621074b0eaef8",
+              "input_prefix_hash": "b56375dd7088d0a4ee35c91b68e7ed76219b3580ca02633c9b211aa5d2eedc34",
+              "last_wake_utc": "2027-04-03T05:00:00Z",
+              "model_version": "rooster-sleep-core-v2.1.0",
+              "n": 0.22155877554673903,
+              "sleep_mode": false,
+              "x": -0.6928719017017536,
+              "xc": 0.8589656146272214
+            },
+            "losses": {
+              "excess": 0.0,
+              "need": 0.2,
+              "physiological": 9.345712434789484e-05,
+              "preference": 0.2222222222222222,
+              "sleep_count": 0.0,
+              "total": 0.06228296935304836
+            },
+            "name": "light_bright",
+            "predicted_sleep": [
+              {
+                "end_utc": "2027-04-04T04:00:00Z",
+                "episode_id": "sleep-a",
+                "id": "sleep-a-predicted",
+                "opportunity_id": "sleep-a",
+                "role": "main",
+                "source": "predicted",
+                "start_utc": "2027-04-03T20:15:00Z"
+              },
+              {
+                "end_utc": "2027-04-03T09:30:00Z",
+                "episode_id": "nap-b",
+                "id": "nap-b-predicted",
+                "opportunity_id": "nap-b",
+                "role": "nap",
+                "source": "predicted",
+                "start_utc": "2027-04-03T08:15:00Z"
+              }
+            ],
+            "status": "complete",
+            "utility": 93.77170306469516
+          }
+        ],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "sensitivity_range": [
+          92.76731028973828,
+          93.77254195061685
+        ],
+        "status": "complete",
+        "trace": {
+          "digest": "4e84a5931dad936dce4d55af19c7f8b24dd96d0c8eb70c0cf747ba979f486ace",
+          "point_count": 1801,
+          "samples": [
+            {
+              "C": 0.8312140261691201,
+              "S": 0.14127275947898787,
+              "amplitude": 1.0960538628956682,
+              "asleep": false,
+              "burden": 0.31286745243066766,
+              "inertia": 0.13533526800663295,
+              "light_lux": 50.0,
+              "light_source": "assumed_indoor",
+              "n": 0.16406536105490335,
+              "phase_rad": -2.2948516439935065,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T06:00:00Z",
+              "x": -0.7260568256557821,
+              "xc": 0.8210819424924442
+            },
+            {
+              "C": 0.4825014190704703,
+              "S": 0.21492179299083336,
+              "amplitude": 1.0354808050880142,
+              "asleep": true,
+              "burden": 0.2495784305621176,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.3489912142861884,
+              "phase_rad": -1.5357920169003074,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-03T08:44:00Z",
+              "x": 0.03623888933761437,
+              "xc": 1.0348464816605882
+            },
+            {
+              "C": 0.14482279734420456,
+              "S": 0.26247188771038277,
+              "amplitude": 1.0266706160697248,
+              "asleep": false,
+              "burden": 0.19647588508817534,
+              "inertia": 0.018580354172630455,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.47572019823818706,
+              "phase_rad": -0.7807947172155216,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T11:27:00Z",
+              "x": 0.729299994929094,
+              "xc": 0.7226161299731771
+            },
+            {
+              "C": 0.001275103244440856,
+              "S": 0.36531992333239505,
+              "amplitude": 1.0779655398936339,
+              "asleep": false,
+              "burden": 0.21952250592666722,
+              "inertia": 7.850744079984996e-05,
+              "light_lux": 150.0,
+              "light_source": "assumed_work",
+              "n": 0.4620133463733818,
+              "phase_rad": -0.07143236174365458,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T14:11:00Z",
+              "x": 1.0752165051790064,
+              "xc": 0.07693615657684968
+            },
+            {
+              "C": 0.10998858285796748,
+              "S": 0.45382583659317455,
+              "amplitude": 1.1551678963923253,
+              "asleep": false,
+              "burden": 0.29979269742793785,
+              "inertia": 3.317169416512463e-07,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.4931489450962711,
+              "phase_rad": 0.6760940193866286,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T16:55:00Z",
+              "x": 0.9010573366179028,
+              "xc": -0.722847525403886
+            },
+            {
+              "C": 0.377015673986487,
+              "S": 0.5295590218461367,
+              "amplitude": 1.1704947292629202,
+              "asleep": false,
+              "burden": 0.41198933182167,
+              "inertia": 1.4491087126935214e-09,
+              "light_lux": 50.0,
+              "light_source": "assumed_indoor",
+              "n": 0.45036082454190307,
+              "phase_rad": 1.322277406372146,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-03T19:38:00Z",
+              "x": 0.2879050107615392,
+              "xc": -1.1345345371608018
+            },
+            {
+              "C": 0.7209668009270157,
+              "S": 0.3293901348145264,
+              "amplitude": 1.0728833197629588,
+              "asleep": true,
+              "burden": 0.37787578112046977,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.15754542890660492,
+              "phase_rad": 2.02854937573841,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-03T22:22:00Z",
+              "x": -0.4741431898719551,
+              "xc": -0.962427583417908
+            },
+            {
+              "C": 0.9555171842470565,
+              "S": 0.17250349058043535,
+              "amplitude": 1.0891451569038513,
+              "asleep": true,
+              "burden": 0.3423813904100253,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.046396028095487464,
+              "phase_rad": 2.7165820686057787,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-04T01:05:00Z",
+              "x": -0.9922486702183216,
+              "xc": -0.449087685488132
+            },
+            {
+              "C": 0.9814113312938786,
+              "S": 0.0899832750894574,
+              "amplitude": 1.0968021530286922,
+              "asleep": true,
+              "burden": 0.2993427978771441,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.01356121464618362,
+              "phase_rad": -2.868060176877398,
+              "sleep_source": "predicted",
+              "time_utc": "2027-04-04T03:49:00Z",
+              "x": -1.0560259693110703,
+              "xc": 0.2962838419978204
+            },
+            {
+              "C": 0.7410970039719943,
+              "S": 0.20561551894813412,
+              "amplitude": 1.0740905053176493,
+              "asleep": false,
+              "burden": 0.30955807417702863,
+              "inertia": 0.006096745434330544,
+              "light_lux": 50.0,
+              "light_source": "assumed_indoor",
+              "n": 0.26885813569603456,
+              "phase_rad": -2.0739537091013025,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-04T06:33:00Z",
+              "x": -0.5179200056537013,
+              "xc": 0.9409725189171005
+            },
+            {
+              "C": 0.3692516175322449,
+              "S": 0.3157658539444219,
+              "amplitude": 1.011803371340149,
+              "asleep": false,
+              "burden": 0.2817764118035473,
+              "inertia": 2.663369221958955e-05,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.4913454682886251,
+              "phase_rad": -1.3062237255206726,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-04T09:16:00Z",
+              "x": 0.26458330835629174,
+              "xc": 0.9765970178095627
+            },
+            {
+              "C": 0.0757250628633594,
+              "S": 0.411182064736516,
+              "amplitude": 1.0383208518793317,
+              "asleep": false,
+              "burden": 0.26564052143802247,
+              "inertia": 1.1253515383958003e-07,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.517390168431555,
+              "phase_rad": -0.5575577465622653,
+              "sleep_source": "predicted_awake",
+              "time_utc": "2027-04-04T12:00:00Z",
+              "x": 0.8810670283175331,
+              "xc": 0.549391557142201
+            }
+          ],
+          "sampling": {
+            "max_points": 12,
+            "rule": "indices round(k*(point_count-1)/11) for k in 0..11 (round-half-even), deduplicated, first and last forced"
+          }
+        },
+        "utility": 93.77194563043028
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-04T12:00:00Z",
+          "mode": "forecast",
+          "preferences": [
+            {
+              "id": "pref-bed",
+              "kind": "bedtime",
+              "scope_end_utc": "2027-04-04T12:00:00Z",
+              "scope_start_utc": "2027-04-03T06:00:00Z",
+              "target": "21:30",
+              "timezone": "UTC",
+              "tolerance": 30,
+              "weight": 1
+            },
+            {
+              "id": "pref-continuous",
+              "kind": "continuous_sleep",
+              "scope_end_utc": "2027-04-04T12:00:00Z",
+              "scope_start_utc": "2027-04-03T06:00:00Z",
+              "target": 7,
+              "weight": 0.5
+            }
+          ],
+          "scenarios": true,
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "id": "sleep-a",
+            "role": "main",
+            "start_utc": "2027-04-03T20:00:00Z",
+            "timezone": "UTC"
+          },
+          {
+            "end_utc": "2027-04-03T09:30:00Z",
+            "id": "nap-b",
+            "role": "nap",
+            "start_utc": "2027-04-03T08:00:00Z",
+            "timezone": "UTC"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast",
+          "task_markers": [
+            {
+              "id": "task-a",
+              "time_utc": "2027-04-03T14:00:00Z"
+            }
+          ]
+        }
+      },
+      "projection": "full_result_with_trace_summary"
+    },
+    "evaluate_invalid_empty_window": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "error": "invalid evaluation bounds or mode",
+        "publishability": "invalid",
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "trace": [],
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-03T06:00:00Z",
+          "mode": "forecast",
+          "scenarios": false,
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "id": "sleep-a",
+            "role": "main",
+            "start_utc": "2027-04-03T20:00:00Z",
+            "timezone": "UTC"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_invalid_forecast_before_now": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "error": "forecast window precedes knowledge cutoff",
+        "publishability": "invalid",
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "trace": [],
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-03T06:00:00Z",
+          "mode": "forecast",
+          "scenarios": false,
+          "start_utc": "2027-04-02T06:00:00Z"
+        },
+        "sleep_blocks": [],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_invalid_future_actual": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "error": "future actual observation: sleep-future",
+        "publishability": "invalid",
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "trace": [],
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-04T12:00:00Z",
+          "mode": "forecast",
+          "scenarios": false,
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "sleep-future",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-03T08:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_invalid_overlapping_blocks": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "error": "overlapping sleep opportunities",
+        "publishability": "invalid",
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "trace": [],
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-04T12:00:00Z",
+          "mode": "forecast",
+          "scenarios": false,
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [
+          {
+            "end_utc": "2027-04-04T04:00:00Z",
+            "id": "sleep-a",
+            "role": "main",
+            "start_utc": "2027-04-03T20:00:00Z",
+            "timezone": "UTC"
+          },
+          {
+            "end_utc": "2027-04-04T02:00:00Z",
+            "id": "sleep-c",
+            "role": "main",
+            "start_utc": "2027-04-03T22:00:00Z",
+            "timezone": "Asia/Tokyo"
+          }
+        ],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_invalid_retrospective_after_now": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "error": "retrospective end exceeds knowledge cutoff",
+        "publishability": "invalid",
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "trace": [],
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-03T18:00:00Z",
+          "mode": "retrospective",
+          "scenarios": false,
+          "start_utc": "2027-04-02T12:00:00Z"
+        },
+        "sleep_blocks": [],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_invalid_sleep_need": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "error": "invalid sleep need",
+        "publishability": "invalid",
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "trace": [],
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-04T12:00:00Z",
+          "mode": "forecast",
+          "scenarios": false,
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 25
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_invalid_unknown_config": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "error": "unknown model parameters: bogus_parameter",
+        "publishability": "invalid",
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "trace": [],
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "config": {
+            "bogus_parameter": 1
+          },
+          "end_utc": "2027-04-04T12:00:00Z",
+          "mode": "forecast",
+          "scenarios": false,
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_invalid_unknown_mode": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "error": "invalid evaluation bounds or mode",
+        "publishability": "invalid",
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "invalid_input",
+        "trace": [],
+        "utility": null
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-04T12:00:00Z",
+          "mode": "backtest",
+          "scenarios": false,
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "sleep_blocks": [],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast"
+        }
+      },
+      "projection": "identity"
+    },
+    "evaluate_many": {
+      "api": "app.sleep_model.evaluate_many",
+      "expected": [
+        {
+          "assumptions": [
+            "population parameters; no individual physiological calibration",
+            "unobserved history filled with habit prior",
+            "unmeasured light uses declared photopic scenario",
+            "latency and inertia are engineering assumptions; score is not fitness for duty"
+          ],
+          "constraint_report": [
+            {
+              "id": "schedule_constraints",
+              "status": "pass"
+            },
+            {
+              "id": "aviation_legal_compliance",
+              "message": "no jurisdiction-specific legal rules are encoded",
+              "status": "not_evaluated"
+            }
+          ],
+          "display_score": 95.4840388591113,
+          "evaluation_end_utc": "2027-04-04T12:00:00Z",
+          "evaluation_start_utc": "2027-04-03T06:00:00Z",
+          "final_state": {
+            "S": 0.41752271064380597,
+            "at_utc": "2027-04-04T12:00:00Z",
+            "current_episode_start_utc": null,
+            "inertia": 1.1253515383958003e-07,
+            "last_wake_utc": "2027-04-04T04:00:00Z",
+            "n": 0.5173901692941758,
+            "sleep_mode": false,
+            "x": 0.8889324145297796,
+            "xc": 0.539796088668321
+          },
+          "initial_state": {
+            "S": 0.14127275947898787,
+            "at_utc": "2027-04-03T06:00:00Z",
+            "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+            "current_episode_start_utc": null,
+            "inertia": 0.13533526800663295,
+            "initialization_id": "e67b2d3a5b6e47a544af3cdb4952f2fb75d9c02daeac18adeaa67c169d096e4d",
+            "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+            "last_wake_utc": "2027-04-03T05:00:00Z",
+            "model_version": "rooster-sleep-core-v2.1.0",
+            "n": 0.16406536105490335,
+            "sleep_mode": false,
+            "x": -0.7260568256557821,
+            "xc": 0.8210819424924442
+          },
+          "initialization": {
+            "checkpoint_reused": false,
+            "history_start_utc": "2027-03-31T06:00:00Z",
+            "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+            "prior_converged": true,
+            "prior_days": 63
+          },
+          "losses": {
+            "excess": 0.0,
+            "need": 0.225,
+            "physiological": 0.0002455560136724103,
+            "preference": 0.0,
+            "sleep_count": 0.0,
+            "total": 0.04515961140888707
+          },
+          "missed_opportunities": [],
+          "mode": "forecast",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "physiological_metrics": {
+            "above_threshold_hours": 0.0,
+            "actual_sleep_hours": 0,
+            "assumed_light_fraction": 1.0,
+            "domain": "duty",
+            "duty_burden": 0.2736885459997892,
+            "duty_hours": 4.0,
+            "excess_area": 0.0,
+            "fragmentation_interruptions": 0,
+            "history_observation_coverage": 0.3333333333333333,
+            "left_censored": false,
+            "longest_wake_hours": 15.25,
+            "main_count": 1,
+            "mean_burden": 0.2736885459997892,
+            "minimum_burden": 0.25259762430244787,
+            "nap_count": 0,
+            "peak_burden": 0.31468167261570074,
+            "phase_markers": [
+              {
+                "ambiguous": false,
+                "cbtmin_utc": "2027-04-04T02:44:21.268966Z",
+                "dlmo_proxy_utc": "2027-04-03T19:44:21.268966Z",
+                "method": "bounded quadratic, 1-minute bracket"
+              }
+            ],
+            "right_censored": true,
+            "rolling_actual_sleep_hours": {
+              "24": 8.0,
+              "48": 16.0,
+              "72": 24.0
+            },
+            "sleep_count_cost": {
+              "coefficient": 2.0,
+              "fraction_over_threshold": 0.0,
+              "max_rolling_episodes": 2,
+              "points": 0.0,
+              "threshold": 4
+            },
+            "sleep_hours": 7.75,
+            "sleep_piece_count": 1,
+            "sleep_target_buckets": [
+              {
+                "deficit": 0.03125,
+                "excess": 0.0,
+                "hours": 24.0,
+                "partial": false,
+                "sleep_hours": 7.75,
+                "start_utc": "2027-04-03T06:00:00+00:00",
+                "target_hours": 8.0
+              },
+              {
+                "deficit": 1.0,
+                "excess": 0.0,
+                "hours": 6.0,
+                "partial": true,
+                "sleep_hours": 0,
+                "start_utc": "2027-04-04T06:00:00+00:00",
+                "target_hours": 2.0
+              }
+            ],
+            "task_marker_coverage": 1.0,
+            "task_markers": [
+              {
+                "C": 0.0026947071687296043,
+                "S": 0.446705228279327,
+                "burden": 0.2686968160442753,
+                "id": "task-a",
+                "inertia": 1.5229978030804204e-08,
+                "time_utc": "2027-04-03T14:00:00Z"
+              }
+            ],
+            "wake_task_margins": [
+              {
+                "next_task_minutes": null,
+                "wake_utc": "2027-04-04T04:00:00Z"
+              }
+            ],
+            "waso_hours": 0.0
+          },
+          "predicted_sleep": [
+            {
+              "end_utc": "2027-04-04T04:00:00Z",
+              "episode_id": "sleep-a",
+              "id": "sleep-a-predicted",
+              "opportunity_id": "sleep-a",
+              "role": "main",
+              "source": "predicted",
+              "start_utc": "2027-04-03T20:15:00Z"
+            }
+          ],
+          "preference_metrics": {
+            "items": [],
+            "loss": 0.0,
+            "unsupported_preferences": []
+          },
+          "provenance": {
+            "configuration": {
+              "atol": 1e-10,
+              "burden_weights": [
+                0.6,
+                0.25,
+                0.15
+              ],
+              "early_minutes": 0.0,
+              "inertia_hours": 0.5,
+              "latency_minutes": 15.0,
+              "light_factor": 1.0,
+              "max_step_minutes": 15.0,
+              "rank_weights": [
+                0.65,
+                0.2,
+                0.1,
+                0.05
+              ],
+              "rtol": 1e-08,
+              "sleep_count_coefficient": 2.0,
+              "sleep_count_threshold": 4,
+              "softness": 0.05,
+              "tau_s": 4.2,
+              "tau_w": 18.2,
+              "threshold": 0.6
+            },
+            "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+            "equation_source": "sources/circadian/manifest.json",
+            "initialization": {
+              "checkpoint_reused": false,
+              "history_start_utc": "2027-03-31T06:00:00Z",
+              "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+              "prior_converged": true,
+              "prior_days": 63
+            },
+            "input_hash": "ef0b37b88936110738ad5101047c59b24c35eb97e40742c3de7a8a53cbf25a56",
+            "model_version": "rooster-sleep-core-v2.1.0",
+            "opportunity_hash": "e53111e93f18a82b25526cc0376db10ef00639f25f69cf9a7eae832c503081ae",
+            "snapshot_hash": "27683893953b9f986d83551a49df3429f1a65329fbcb0163d85b8643dca57bbd",
+            "trace_hash": "baa0b16ac184d5b0035442934b9e31077a83d33514e18329faec78d7278cf0e8"
+          },
+          "publishability": "valid",
+          "resolved_preferences": [],
+          "scenarios": [],
+          "scorer_version": "rooster-sleep-core-v2.1.0",
+          "status": "complete",
+          "trace": {
+            "digest": "baa0b16ac184d5b0035442934b9e31077a83d33514e18329faec78d7278cf0e8",
+            "point_count": 1801,
+            "samples": [
+              {
+                "C": 0.8312140261691201,
+                "S": 0.14127275947898787,
+                "amplitude": 1.0960538628956682,
+                "asleep": false,
+                "burden": 0.31286745243066766,
+                "inertia": 0.13533526800663295,
+                "light_lux": 50.0,
+                "light_source": "assumed_indoor",
+                "n": 0.16406536105490335,
+                "phase_rad": -2.2948516439935065,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T06:00:00Z",
+                "x": -0.7260568256557821,
+                "xc": 0.8210819424924442
+              },
+              {
+                "C": 0.4770891494693217,
+                "S": 0.2610219708663579,
+                "amplitude": 1.0353821751504648,
+                "asleep": false,
+                "burden": 0.27597124456164096,
+                "inertia": 0.0005718311633054512,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.46501970581600416,
+                "phase_rad": -1.524958575807789,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T08:44:00Z",
+                "x": 0.04744297251400183,
+                "xc": 1.034294645146316
+              },
+              {
+                "C": 0.1388084657074623,
+                "S": 0.36348957868793197,
+                "amplitude": 1.0284847906151715,
+                "asleep": false,
+                "burden": 0.25279623834713144,
+                "inertia": 2.498050044748107e-06,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.5152891648739815,
+                "phase_rad": -0.7635539173204384,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T11:27:00Z",
+                "x": 0.7429599990376664,
+                "xc": 0.7111901323532858
+              },
+              {
+                "C": 0.0007658676264920006,
+                "S": 0.4522507328650338,
+                "amplitude": 1.078951105579421,
+                "asleep": false,
+                "burden": 0.2715419082088923,
+                "inertia": 1.0554993418371427e-08,
+                "light_lux": 150.0,
+                "light_source": "assumed_work",
+                "n": 0.46589915796367914,
+                "phase_rad": -0.055355694346056666,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T14:11:00Z",
+                "x": 1.0772984381347588,
+                "xc": 0.059695589648348084
+              },
+              {
+                "C": 0.11498165527127241,
+                "S": 0.5286341753393,
+                "amplitude": 1.1570793477951062,
+                "asleep": false,
+                "burden": 0.3459259190280878,
+                "inertia": 4.459794001969166e-11,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.4935155013858462,
+                "phase_rad": 0.6918976700997348,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T16:55:00Z",
+                "x": 0.8909935504157349,
+                "xc": -0.7382161676714426
+              },
+              {
+                "C": 0.3834352950672215,
+                "S": 0.593994343784972,
+                "amplitude": 1.1685550668829503,
+                "asleep": false,
+                "burden": 0.45225543003781776,
+                "inertia": 1.9482653834022369e-13,
+                "light_lux": 50.0,
+                "light_source": "assumed_indoor",
+                "n": 0.45039494604335817,
+                "phase_rad": 1.3355017969926957,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T19:38:00Z",
+                "x": 0.2724245531378287,
+                "xc": -1.1363563733202144
+              },
+              {
+                "C": 0.7271658356526163,
+                "S": 0.3670204854376859,
+                "amplitude": 1.0724883253986415,
+                "asleep": true,
+                "burden": 0.4020037501757656,
+                "inertia": 0.0,
+                "light_lux": 0.0,
+                "light_source": "assumed_dark",
+                "n": 0.1575541497383808,
+                "phase_rad": 2.042418168002228,
+                "sleep_source": "predicted",
+                "time_utc": "2027-04-03T22:22:00Z",
+                "x": -0.48726541333371487,
+                "xc": -0.9554075701422436
+              },
+              {
+                "C": 0.9580896593949713,
+                "S": 0.19221071963244035,
+                "amplitude": 1.089753460679603,
+                "asleep": true,
+                "burden": 0.35484884662820704,
+                "inertia": 0.0,
+                "light_lux": 0.0,
+                "light_source": "assumed_dark",
+                "n": 0.04639859631951587,
+                "phase_rad": 2.72923706287286,
+                "sleep_source": "predicted",
+                "time_utc": "2027-04-04T01:05:00Z",
+                "x": -0.9984095832544213,
+                "xc": -0.43673894849086237
+              },
+              {
+                "C": 0.9794399886916794,
+                "S": 0.10026318888755323,
+                "amplitude": 1.0971315282919178,
+                "asleep": true,
+                "burden": 0.3050179105054518,
+                "inertia": 0.0,
+                "light_lux": 0.0,
+                "light_source": "assumed_dark",
+                "n": 0.01356196531900495,
+                "phase_rad": -2.85382551308158,
+                "sleep_source": "predicted",
+                "time_utc": "2027-04-04T03:49:00Z",
+                "x": -1.052017455035124,
+                "xc": 0.3113789727543914
+              },
+              {
+                "C": 0.7354001464324158,
+                "S": 0.21416979422907023,
+                "amplitude": 1.074605636721956,
+                "asleep": false,
+                "burden": 0.3132664249606957,
+                "inertia": 0.006096745434330544,
+                "light_lux": 50.0,
+                "light_source": "assumed_indoor",
+                "n": 0.2688582616580716,
+                "phase_rad": -2.060994000368904,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-04T06:33:00Z",
+                "x": -0.505924648482896,
+                "xc": 0.9480598739172852
+              },
+              {
+                "C": 0.36301773899020634,
+                "S": 0.32313398283111083,
+                "amplitude": 1.0120665205792,
+                "asleep": false,
+                "burden": 0.284638819500051,
+                "inertia": 2.663369221958955e-05,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.49134547944973794,
+                "phase_rad": -1.293283461426533,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-04T09:16:00Z",
+                "x": 0.2772703205625075,
+                "xc": 0.9733446519154727
+              },
+              {
+                "C": 0.07262482491452171,
+                "S": 0.41752271064380597,
+                "amplitude": 1.0399906994504142,
+                "asleep": false,
+                "burden": 0.268669849495187,
+                "inertia": 1.1253515383958003e-07,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.5173901692941758,
+                "phase_rad": -0.5457266622823436,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-04T12:00:00Z",
+                "x": 0.8889324145297796,
+                "xc": 0.539796088668321
+              }
+            ],
+            "sampling": {
+              "max_points": 12,
+              "rule": "indices round(k*(point_count-1)/11) for k in 0..11 (round-half-even), deduplicated, first and last forced"
+            }
+          },
+          "utility": 95.4840388591113
+        },
+        {
+          "assumptions": [
+            "population parameters; no individual physiological calibration",
+            "unobserved history filled with habit prior",
+            "unmeasured light uses declared photopic scenario",
+            "latency and inertia are engineering assumptions; score is not fitness for duty"
+          ],
+          "constraint_report": [
+            {
+              "id": "schedule_constraints",
+              "status": "pass"
+            },
+            {
+              "id": "aviation_legal_compliance",
+              "message": "no jurisdiction-specific legal rules are encoded",
+              "status": "not_evaluated"
+            }
+          ],
+          "display_score": 95.9941678526525,
+          "evaluation_end_utc": "2027-04-04T12:00:00Z",
+          "evaluation_start_utc": "2027-04-03T06:00:00Z",
+          "final_state": {
+            "S": 0.411182064736516,
+            "at_utc": "2027-04-04T12:00:00Z",
+            "current_episode_start_utc": null,
+            "inertia": 1.1253515383958003e-07,
+            "last_wake_utc": "2027-04-04T04:00:00Z",
+            "n": 0.517390168431555,
+            "sleep_mode": false,
+            "x": 0.8810670283175331,
+            "xc": 0.549391557142201
+          },
+          "initial_state": {
+            "S": 0.14127275947898787,
+            "at_utc": "2027-04-03T06:00:00Z",
+            "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+            "current_episode_start_utc": null,
+            "inertia": 0.13533526800663295,
+            "initialization_id": "e67b2d3a5b6e47a544af3cdb4952f2fb75d9c02daeac18adeaa67c169d096e4d",
+            "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+            "last_wake_utc": "2027-04-03T05:00:00Z",
+            "model_version": "rooster-sleep-core-v2.1.0",
+            "n": 0.16406536105490335,
+            "sleep_mode": false,
+            "x": -0.7260568256557821,
+            "xc": 0.8210819424924442
+          },
+          "initialization": {
+            "checkpoint_reused": false,
+            "history_start_utc": "2027-03-31T06:00:00Z",
+            "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+            "prior_converged": true,
+            "prior_days": 63
+          },
+          "losses": {
+            "excess": 0.0,
+            "need": 0.2,
+            "physiological": 8.972534380772866e-05,
+            "preference": 0.0,
+            "sleep_count": 0.0,
+            "total": 0.04005832147347503
+          },
+          "missed_opportunities": [],
+          "mode": "forecast",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "physiological_metrics": {
+            "above_threshold_hours": 0.0,
+            "actual_sleep_hours": 0,
+            "assumed_light_fraction": 1.0,
+            "domain": "duty",
+            "duty_burden": 0.22120157800177373,
+            "duty_hours": 4.0,
+            "excess_area": 0.0,
+            "fragmentation_interruptions": 0,
+            "history_observation_coverage": 0.3333333333333333,
+            "left_censored": false,
+            "longest_wake_hours": 10.75,
+            "main_count": 1,
+            "mean_burden": 0.22120157800177373,
+            "minimum_burden": 0.19591190697071478,
+            "nap_count": 1,
+            "peak_burden": 0.2665952976574329,
+            "phase_markers": [
+              {
+                "ambiguous": false,
+                "cbtmin_utc": "2027-04-04T02:47:28.672297Z",
+                "dlmo_proxy_utc": "2027-04-03T19:47:28.672297Z",
+                "method": "bounded quadratic, 1-minute bracket"
+              }
+            ],
+            "right_censored": true,
+            "rolling_actual_sleep_hours": {
+              "24": 8.0,
+              "48": 16.0,
+              "72": 24.0
+            },
+            "sleep_count_cost": {
+              "coefficient": 2.0,
+              "fraction_over_threshold": 0.0,
+              "max_rolling_episodes": 3,
+              "points": 0.0,
+              "threshold": 4
+            },
+            "sleep_hours": 9.0,
+            "sleep_piece_count": 2,
+            "sleep_target_buckets": [
+              {
+                "deficit": 0.0,
+                "excess": 0.0,
+                "hours": 24.0,
+                "partial": false,
+                "sleep_hours": 9.0,
+                "start_utc": "2027-04-03T06:00:00+00:00",
+                "target_hours": 8.0
+              },
+              {
+                "deficit": 1.0,
+                "excess": 0.0,
+                "hours": 6.0,
+                "partial": true,
+                "sleep_hours": 0,
+                "start_utc": "2027-04-04T06:00:00+00:00",
+                "target_hours": 2.0
+              }
+            ],
+            "task_marker_coverage": 1.0,
+            "task_markers": [
+              {
+                "C": 0.003585083786473875,
+                "S": 0.3588943167879508,
+                "burden": 0.21624985297596214,
+                "id": "task-a",
+                "inertia": 0.00011327971048804887,
+                "time_utc": "2027-04-03T14:00:00Z"
+              }
+            ],
+            "wake_task_margins": [
+              {
+                "next_task_minutes": 270.0,
+                "wake_utc": "2027-04-03T09:30:00Z"
+              },
+              {
+                "next_task_minutes": null,
+                "wake_utc": "2027-04-04T04:00:00Z"
+              }
+            ],
+            "waso_hours": 0.0
+          },
+          "predicted_sleep": [
+            {
+              "end_utc": "2027-04-04T04:00:00Z",
+              "episode_id": "sleep-a",
+              "id": "sleep-a-predicted",
+              "opportunity_id": "sleep-a",
+              "role": "main",
+              "source": "predicted",
+              "start_utc": "2027-04-03T20:15:00Z"
+            },
+            {
+              "end_utc": "2027-04-03T09:30:00Z",
+              "episode_id": "nap-b",
+              "id": "nap-b-predicted",
+              "opportunity_id": "nap-b",
+              "role": "nap",
+              "source": "predicted",
+              "start_utc": "2027-04-03T08:15:00Z"
+            }
+          ],
+          "preference_metrics": {
+            "items": [],
+            "loss": 0.0,
+            "unsupported_preferences": []
+          },
+          "provenance": {
+            "configuration": {
+              "atol": 1e-10,
+              "burden_weights": [
+                0.6,
+                0.25,
+                0.15
+              ],
+              "early_minutes": 0.0,
+              "inertia_hours": 0.5,
+              "latency_minutes": 15.0,
+              "light_factor": 1.0,
+              "max_step_minutes": 15.0,
+              "rank_weights": [
+                0.65,
+                0.2,
+                0.1,
+                0.05
+              ],
+              "rtol": 1e-08,
+              "sleep_count_coefficient": 2.0,
+              "sleep_count_threshold": 4,
+              "softness": 0.05,
+              "tau_s": 4.2,
+              "tau_w": 18.2,
+              "threshold": 0.6
+            },
+            "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+            "equation_source": "sources/circadian/manifest.json",
+            "initialization": {
+              "checkpoint_reused": false,
+              "history_start_utc": "2027-03-31T06:00:00Z",
+              "input_prefix_hash": "4d9b013db8079de0995fcddf1a5f1de5c3fe8148f11c6e4d7286e1a8d352d405",
+              "prior_converged": true,
+              "prior_days": 63
+            },
+            "input_hash": "b5854214c9ccc60415afd0c3e1eef6e9c2c0992f153b795ad187b504412d3246",
+            "model_version": "rooster-sleep-core-v2.1.0",
+            "opportunity_hash": "9a6927be092a75345d7806f48fd2dbb7b9723574abd88c3c458a5446fca6c4c4",
+            "snapshot_hash": "27683893953b9f986d83551a49df3429f1a65329fbcb0163d85b8643dca57bbd",
+            "trace_hash": "4e84a5931dad936dce4d55af19c7f8b24dd96d0c8eb70c0cf747ba979f486ace"
+          },
+          "publishability": "valid",
+          "resolved_preferences": [],
+          "scenarios": [],
+          "scorer_version": "rooster-sleep-core-v2.1.0",
+          "status": "complete",
+          "trace": {
+            "digest": "4e84a5931dad936dce4d55af19c7f8b24dd96d0c8eb70c0cf747ba979f486ace",
+            "point_count": 1801,
+            "samples": [
+              {
+                "C": 0.8312140261691201,
+                "S": 0.14127275947898787,
+                "amplitude": 1.0960538628956682,
+                "asleep": false,
+                "burden": 0.31286745243066766,
+                "inertia": 0.13533526800663295,
+                "light_lux": 50.0,
+                "light_source": "assumed_indoor",
+                "n": 0.16406536105490335,
+                "phase_rad": -2.2948516439935065,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T06:00:00Z",
+                "x": -0.7260568256557821,
+                "xc": 0.8210819424924442
+              },
+              {
+                "C": 0.4825014190704703,
+                "S": 0.21492179299083336,
+                "amplitude": 1.0354808050880142,
+                "asleep": true,
+                "burden": 0.2495784305621176,
+                "inertia": 0.0,
+                "light_lux": 0.0,
+                "light_source": "assumed_dark",
+                "n": 0.3489912142861884,
+                "phase_rad": -1.5357920169003074,
+                "sleep_source": "predicted",
+                "time_utc": "2027-04-03T08:44:00Z",
+                "x": 0.03623888933761437,
+                "xc": 1.0348464816605882
+              },
+              {
+                "C": 0.14482279734420456,
+                "S": 0.26247188771038277,
+                "amplitude": 1.0266706160697248,
+                "asleep": false,
+                "burden": 0.19647588508817534,
+                "inertia": 0.018580354172630455,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.47572019823818706,
+                "phase_rad": -0.7807947172155216,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T11:27:00Z",
+                "x": 0.729299994929094,
+                "xc": 0.7226161299731771
+              },
+              {
+                "C": 0.001275103244440856,
+                "S": 0.36531992333239505,
+                "amplitude": 1.0779655398936339,
+                "asleep": false,
+                "burden": 0.21952250592666722,
+                "inertia": 7.850744079984996e-05,
+                "light_lux": 150.0,
+                "light_source": "assumed_work",
+                "n": 0.4620133463733818,
+                "phase_rad": -0.07143236174365458,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T14:11:00Z",
+                "x": 1.0752165051790064,
+                "xc": 0.07693615657684968
+              },
+              {
+                "C": 0.10998858285796748,
+                "S": 0.45382583659317455,
+                "amplitude": 1.1551678963923253,
+                "asleep": false,
+                "burden": 0.29979269742793785,
+                "inertia": 3.317169416512463e-07,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.4931489450962711,
+                "phase_rad": 0.6760940193866286,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T16:55:00Z",
+                "x": 0.9010573366179028,
+                "xc": -0.722847525403886
+              },
+              {
+                "C": 0.377015673986487,
+                "S": 0.5295590218461367,
+                "amplitude": 1.1704947292629202,
+                "asleep": false,
+                "burden": 0.41198933182167,
+                "inertia": 1.4491087126935214e-09,
+                "light_lux": 50.0,
+                "light_source": "assumed_indoor",
+                "n": 0.45036082454190307,
+                "phase_rad": 1.322277406372146,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-03T19:38:00Z",
+                "x": 0.2879050107615392,
+                "xc": -1.1345345371608018
+              },
+              {
+                "C": 0.7209668009270157,
+                "S": 0.3293901348145264,
+                "amplitude": 1.0728833197629588,
+                "asleep": true,
+                "burden": 0.37787578112046977,
+                "inertia": 0.0,
+                "light_lux": 0.0,
+                "light_source": "assumed_dark",
+                "n": 0.15754542890660492,
+                "phase_rad": 2.02854937573841,
+                "sleep_source": "predicted",
+                "time_utc": "2027-04-03T22:22:00Z",
+                "x": -0.4741431898719551,
+                "xc": -0.962427583417908
+              },
+              {
+                "C": 0.9555171842470565,
+                "S": 0.17250349058043535,
+                "amplitude": 1.0891451569038513,
+                "asleep": true,
+                "burden": 0.3423813904100253,
+                "inertia": 0.0,
+                "light_lux": 0.0,
+                "light_source": "assumed_dark",
+                "n": 0.046396028095487464,
+                "phase_rad": 2.7165820686057787,
+                "sleep_source": "predicted",
+                "time_utc": "2027-04-04T01:05:00Z",
+                "x": -0.9922486702183216,
+                "xc": -0.449087685488132
+              },
+              {
+                "C": 0.9814113312938786,
+                "S": 0.0899832750894574,
+                "amplitude": 1.0968021530286922,
+                "asleep": true,
+                "burden": 0.2993427978771441,
+                "inertia": 0.0,
+                "light_lux": 0.0,
+                "light_source": "assumed_dark",
+                "n": 0.01356121464618362,
+                "phase_rad": -2.868060176877398,
+                "sleep_source": "predicted",
+                "time_utc": "2027-04-04T03:49:00Z",
+                "x": -1.0560259693110703,
+                "xc": 0.2962838419978204
+              },
+              {
+                "C": 0.7410970039719943,
+                "S": 0.20561551894813412,
+                "amplitude": 1.0740905053176493,
+                "asleep": false,
+                "burden": 0.30955807417702863,
+                "inertia": 0.006096745434330544,
+                "light_lux": 50.0,
+                "light_source": "assumed_indoor",
+                "n": 0.26885813569603456,
+                "phase_rad": -2.0739537091013025,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-04T06:33:00Z",
+                "x": -0.5179200056537013,
+                "xc": 0.9409725189171005
+              },
+              {
+                "C": 0.3692516175322449,
+                "S": 0.3157658539444219,
+                "amplitude": 1.011803371340149,
+                "asleep": false,
+                "burden": 0.2817764118035473,
+                "inertia": 2.663369221958955e-05,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.4913454682886251,
+                "phase_rad": -1.3062237255206726,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-04T09:16:00Z",
+                "x": 0.26458330835629174,
+                "xc": 0.9765970178095627
+              },
+              {
+                "C": 0.0757250628633594,
+                "S": 0.411182064736516,
+                "amplitude": 1.0383208518793317,
+                "asleep": false,
+                "burden": 0.26564052143802247,
+                "inertia": 1.1253515383958003e-07,
+                "light_lux": 250.0,
+                "light_source": "assumed_indoor",
+                "n": 0.517390168431555,
+                "phase_rad": -0.5575577465622653,
+                "sleep_source": "predicted_awake",
+                "time_utc": "2027-04-04T12:00:00Z",
+                "x": 0.8810670283175331,
+                "xc": 0.549391557142201
+              }
+            ],
+            "sampling": {
+              "max_points": 12,
+              "rule": "indices round(k*(point_count-1)/11) for k in 0..11 (round-half-even), deduplicated, first and last forced"
+            }
+          },
+          "utility": 95.9941678526525
+        }
+      ],
+      "inputs": {
+        "candidates": [
+          [
+            {
+              "end_utc": "2027-04-04T04:00:00Z",
+              "id": "sleep-a",
+              "role": "main",
+              "start_utc": "2027-04-03T20:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          [
+            {
+              "end_utc": "2027-04-04T04:00:00Z",
+              "id": "sleep-a",
+              "role": "main",
+              "start_utc": "2027-04-03T20:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T09:30:00Z",
+              "id": "nap-b",
+              "role": "nap",
+              "start_utc": "2027-04-03T08:00:00Z",
+              "timezone": "UTC"
+            }
+          ]
+        ],
+        "kwargs": {
+          "end_utc": "2027-04-04T12:00:00Z",
+          "mode": "forecast",
+          "scenarios": false,
+          "start_utc": "2027-04-03T06:00:00Z"
+        },
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T16:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-03T12:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 7,
+          "snapshot_id": "decouple-baseline-forecast",
+          "task_markers": [
+            {
+              "id": "task-a",
+              "time_utc": "2027-04-03T14:00:00Z"
+            }
+          ]
+        }
+      },
+      "projection": "full_result_with_trace_summary"
+    },
+    "evaluate_retrospective": {
+      "api": "app.sleep_model.evaluate",
+      "expected": {
+        "assumptions": [
+          "population parameters; no individual physiological calibration",
+          "unobserved history filled with habit prior",
+          "unmeasured light uses declared photopic scenario",
+          "latency and inertia are engineering assumptions; score is not fitness for duty"
+        ],
+        "constraint_report": [
+          {
+            "id": "aviation_legal_compliance",
+            "status": "not_evaluated"
+          }
+        ],
+        "display_score": 99.55580668912124,
+        "evaluation_end_utc": "2027-04-03T06:00:00Z",
+        "evaluation_start_utc": "2027-04-02T12:00:00Z",
+        "final_state": {
+          "S": 0.14127275947898787,
+          "at_utc": "2027-04-03T06:00:00Z",
+          "current_episode_start_utc": null,
+          "inertia": 0.13533526800663295,
+          "last_wake_utc": "2027-04-03T05:00:00Z",
+          "n": 0.16403058072288268,
+          "sleep_mode": false,
+          "x": -0.7415626877112401,
+          "xc": 0.8012769514167638
+        },
+        "initial_state": {
+          "S": 0.38218003454319804,
+          "at_utc": "2027-04-02T12:00:00Z",
+          "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+          "current_episode_start_utc": null,
+          "inertia": 8.315286255273385e-07,
+          "initialization_id": "e67b2d3a5b6e47a544af3cdb4952f2fb75d9c02daeac18adeaa67c169d096e4d",
+          "input_prefix_hash": "d359cf756519eb431b9db7127a6a26279777e4249cef267fa29134764166f228",
+          "last_wake_utc": "2027-04-02T05:00:00Z",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "n": 0.5170133142494867,
+          "sleep_mode": false,
+          "x": 0.7917478572930717,
+          "xc": 0.6570079090682787
+        },
+        "initialization": {
+          "checkpoint_reused": false,
+          "history_start_utc": "2027-03-30T12:00:00Z",
+          "input_prefix_hash": "d359cf756519eb431b9db7127a6a26279777e4249cef267fa29134764166f228",
+          "prior_converged": true,
+          "prior_days": 63
+        },
+        "losses": {
+          "excess": 0.08333333333333333,
+          "need": 0.0,
+          "physiological": 0.0004234868340322827,
+          "preference": 0.0,
+          "sleep_count": 0.0,
+          "total": 0.00444193310878765
+        },
+        "missed_opportunities": [],
+        "mode": "retrospective",
+        "model_version": "rooster-sleep-core-v2.1.0",
+        "physiological_metrics": {
+          "above_threshold_hours": 0.0,
+          "actual_sleep_hours": 8.0,
+          "assumed_light_fraction": 1.0,
+          "domain": "duty",
+          "duty_burden": 0.2915440913456044,
+          "duty_hours": 4.0,
+          "excess_area": 0.0,
+          "fragmentation_interruptions": null,
+          "history_observation_coverage": 0.2222222222222222,
+          "left_censored": false,
+          "longest_wake_hours": 16.0,
+          "main_count": 0,
+          "mean_burden": 0.2915440913456044,
+          "minimum_burden": 0.2606390821718762,
+          "nap_count": 0,
+          "peak_burden": 0.3431750376845345,
+          "phase_markers": [
+            {
+              "ambiguous": false,
+              "cbtmin_utc": "2027-04-03T03:03:06.114323Z",
+              "dlmo_proxy_utc": "2027-04-02T20:03:06.114323Z",
+              "method": "bounded quadratic, 1-minute bracket"
+            }
+          ],
+          "right_censored": true,
+          "rolling_actual_sleep_hours": {
+            "24": 8.0,
+            "48": 16.0,
+            "72": 16.0
+          },
+          "sleep_count_cost": {
+            "coefficient": 2.0,
+            "fraction_over_threshold": 0.0,
+            "max_rolling_episodes": 2,
+            "points": 0.0,
+            "threshold": 4
+          },
+          "sleep_hours": 8.0,
+          "sleep_piece_count": 1,
+          "sleep_target_buckets": [
+            {
+              "deficit": 0.0,
+              "excess": 0.08333333333333333,
+              "hours": 18.0,
+              "partial": true,
+              "sleep_hours": 8.0,
+              "start_utc": "2027-04-02T12:00:00+00:00",
+              "target_hours": 6.0
+            }
+          ],
+          "task_marker_coverage": null,
+          "task_markers": [],
+          "wake_task_margins": [
+            {
+              "next_task_minutes": null,
+              "wake_utc": "2027-04-03T05:00:00Z"
+            }
+          ],
+          "waso_hours": null
+        },
+        "predicted_sleep": [],
+        "preference_metrics": {
+          "items": [],
+          "loss": 0.0,
+          "unsupported_preferences": []
+        },
+        "provenance": {
+          "configuration": {
+            "atol": 1e-10,
+            "burden_weights": [
+              0.6,
+              0.25,
+              0.15
+            ],
+            "early_minutes": 0.0,
+            "inertia_hours": 0.5,
+            "latency_minutes": 15.0,
+            "light_factor": 1.0,
+            "max_step_minutes": 15.0,
+            "rank_weights": [
+              0.65,
+              0.2,
+              0.1,
+              0.05
+            ],
+            "rtol": 1e-08,
+            "sleep_count_coefficient": 2.0,
+            "sleep_count_threshold": 4,
+            "softness": 0.05,
+            "tau_s": 4.2,
+            "tau_w": 18.2,
+            "threshold": 0.6
+          },
+          "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+          "equation_source": "sources/circadian/manifest.json",
+          "initialization": {
+            "checkpoint_reused": false,
+            "history_start_utc": "2027-03-30T12:00:00Z",
+            "input_prefix_hash": "d359cf756519eb431b9db7127a6a26279777e4249cef267fa29134764166f228",
+            "prior_converged": true,
+            "prior_days": 63
+          },
+          "input_hash": "a20cf06d1c6e3f7434dd05ab39e5eae9a88b293a637f5a27782759502e534947",
+          "model_version": "rooster-sleep-core-v2.1.0",
+          "opportunity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "snapshot_hash": "3bedca4e393de44c26144526eaf679f71dc8c6f900515a8f57d14559c4f61b85",
+          "trace_hash": "b8d23d24254a2468ad8e866ab3d8372b6fd10f6eb132934093098b8684bb2a40"
+        },
+        "publishability": "valid",
+        "resolved_preferences": [],
+        "scenarios": [],
+        "scorer_version": "rooster-sleep-core-v2.1.0",
+        "status": "complete",
+        "trace": {
+          "digest": "b8d23d24254a2468ad8e866ab3d8372b6fd10f6eb132934093098b8684bb2a40",
+          "point_count": 1081,
+          "samples": [
+            {
+              "C": 0.11522527746297656,
+              "S": 0.38218003454319804,
+              "amplitude": 1.0288459856103058,
+              "asleep": false,
+              "burden": 0.2581144648209568,
+              "inertia": 8.315286255273385e-07,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.5170133142494867,
+              "phase_rad": -0.6926610249232982,
+              "sleep_source": "inferred_or_observed_awake",
+              "time_utc": "2027-04-02T12:00:00Z",
+              "x": 0.7917478572930717,
+              "xc": 0.6570079090682787
+            },
+            {
+              "C": 0.01824177508719993,
+              "S": 0.4352102673704825,
+              "amplitude": 1.0617291764321184,
+              "asleep": false,
+              "burden": 0.26568660895043233,
+              "inertia": 3.170895261044966e-08,
+              "light_lux": 150.0,
+              "light_source": "assumed_work",
+              "n": 0.4929957817310746,
+              "phase_rad": -0.2709523045640029,
+              "sleep_source": "inferred_or_observed_awake",
+              "time_utc": "2027-04-02T13:38:00Z",
+              "x": 1.022993526752133,
+              "xc": 0.28417087871641133
+            },
+            {
+              "C": 0.006635901788161813,
+              "S": 0.4836886796821629,
+              "amplitude": 1.0894614228353616,
+              "asleep": false,
+              "burden": 0.2918721834377134,
+              "inertia": 1.2091678443590582e-09,
+              "light_lux": 150.0,
+              "light_source": "assumed_work",
+              "n": 0.46546824435585665,
+              "phase_rad": 0.16310281858206807,
+              "sleep_source": "inferred_or_observed_awake",
+              "time_utc": "2027-04-02T15:16:00Z",
+              "x": 1.0750023048275086,
+              "xc": -0.1769074234225201
+            },
+            {
+              "C": 0.09270699669524274,
+              "S": 0.528438005572921,
+              "amplitude": 1.137708107184229,
+              "asleep": false,
+              "burden": 0.340239552524253,
+              "inertia": 4.459794001969166e-11,
+              "light_lux": 150.0,
+              "light_source": "assumed_work",
+              "n": 0.45830297254342484,
+              "phase_rad": 0.6187812190227604,
+              "sleep_source": "inferred_or_observed_awake",
+              "time_utc": "2027-04-02T16:55:00Z",
+              "x": 0.9267611037184706,
+              "xc": -0.6599193843093589
+            },
+            {
+              "C": 0.24017820177450944,
+              "S": 0.5689142668709464,
+              "amplitude": 1.1865510297822819,
+              "asleep": false,
+              "burden": 0.4013931105664503,
+              "inertia": 1.7006678100964375e-12,
+              "light_lux": 250.0,
+              "light_source": "assumed_indoor",
+              "n": 0.5051878207900151,
+              "phase_rad": 1.0243625762640998,
+              "sleep_source": "inferred_or_observed_awake",
+              "time_utc": "2027-04-02T18:33:00Z",
+              "x": 0.6165836444886802,
+              "xc": -1.013769182618238
+            },
+            {
+              "C": 0.4164423607445053,
+              "S": 0.6059162708114498,
+              "amplitude": 1.1495475239296902,
+              "asleep": false,
+              "burden": 0.46766035267300593,
+              "inertia": 6.485212095045571e-14,
+              "light_lux": 50.0,
+              "light_source": "assumed_indoor",
+              "n": 0.4095579009175336,
+              "phase_rad": 1.402893254612503,
+              "sleep_source": "inferred_or_observed_awake",
+              "time_utc": "2027-04-02T20:11:00Z",
+              "x": 0.1921069546231285,
+              "xc": -1.133381854344911
+            },
+            {
+              "C": 0.6193485008060426,
+              "S": 0.5130826380447902,
+              "amplitude": 1.0835847426736043,
+              "asleep": true,
+              "burden": 0.46268670802838474,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.25928124263304,
+              "phase_rad": 1.8118201722240368,
+              "sleep_source": "observed",
+              "time_utc": "2027-04-02T21:49:00Z",
+              "x": -0.2586484290687924,
+              "xc": -1.0522627450856878
+            },
+            {
+              "C": 0.8123194037334371,
+              "S": 0.34777232637506234,
+              "amplitude": 1.065739393525058,
+              "asleep": true,
+              "burden": 0.4117432467583967,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.12432677125233915,
+              "phase_rad": 2.24546524863962,
+              "sleep_source": "observed",
+              "time_utc": "2027-04-02T23:27:00Z",
+              "x": -0.6657021838419621,
+              "xc": -0.8322505976802907
+            },
+            {
+              "C": 0.9415641055074528,
+              "S": 0.23572341378225473,
+              "amplitude": 1.0820592526877335,
+              "asleep": true,
+              "burden": 0.37682507464621606,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.059615365512218535,
+              "phase_rad": 2.6532853288392504,
+              "sleep_source": "observed",
+              "time_utc": "2027-04-03T01:05:00Z",
+              "x": -0.9555970520382439,
+              "xc": -0.5076283093592733
+            },
+            {
+              "C": 0.9983304220088686,
+              "S": 0.1591428138460266,
+              "amplitude": 1.091057970982405,
+              "asleep": true,
+              "burden": 0.3450682938098331,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.02837230097494167,
+              "phase_rad": 3.05984895700241,
+              "sleep_source": "observed",
+              "time_utc": "2027-04-03T02:44:00Z",
+              "x": -1.0874147582316036,
+              "xc": -0.08908781973056615
+            },
+            {
+              "C": 0.9691705265796371,
+              "S": 0.10786852349557521,
+              "amplitude": 1.0935730190148496,
+              "asleep": true,
+              "burden": 0.3070137457422544,
+              "inertia": 0.0,
+              "light_lux": 0.0,
+              "light_source": "assumed_dark",
+              "n": 0.01360467320116338,
+              "phase_rad": -2.7885962963988997,
+              "sleep_source": "observed",
+              "time_utc": "2027-04-03T04:22:00Z",
+              "x": -1.026144458368961,
+              "xc": 0.37806017837895084
+            },
+            {
+              "C": 0.8396151365494089,
+              "S": 0.14127275947898787,
+              "amplitude": 1.0917691938671201,
+              "asleep": false,
+              "burden": 0.3149677300257399,
+              "inertia": 0.13533526800663295,
+              "light_lux": 50.0,
+              "light_source": "assumed_indoor",
+              "n": 0.16403058072288268,
+              "phase_rad": -2.317509670687697,
+              "sleep_source": "inferred_or_observed_awake",
+              "time_utc": "2027-04-03T06:00:00Z",
+              "x": -0.7415626877112401,
+              "xc": 0.8012769514167638
+            }
+          ],
+          "sampling": {
+            "max_points": 12,
+            "rule": "indices round(k*(point_count-1)/11) for k in 0..11 (round-half-even), deduplicated, first and last forced"
+          }
+        },
+        "utility": 99.55580668912124
+      },
+      "inputs": {
+        "kwargs": {
+          "end_utc": "2027-04-03T06:00:00Z",
+          "mode": "retrospective",
+          "scenarios": false,
+          "start_utc": "2027-04-02T12:00:00Z"
+        },
+        "sleep_blocks": [],
+        "snapshot": {
+          "events": [
+            {
+              "end_utc": "2027-04-01T05:00:00Z",
+              "id": "sleep-3",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-03-31T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T05:00:00Z",
+              "id": "sleep-2",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-01T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T05:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T21:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-05T00:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-01T00:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-02T17:00:00Z",
+              "id": "duty-a",
+              "kind": "duty",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "UTC"
+            },
+            {
+              "end_utc": "2027-04-03T11:00:00Z",
+              "id": "duty-b",
+              "kind": "duty",
+              "start_utc": "2027-04-03T08:00:00Z",
+              "timezone": "UTC"
+            }
+          ],
+          "horizon_end_utc": "2027-04-04T12:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T12:00:00Z",
+          "profile": {
+            "habit_bed_local": "23:00",
+            "habit_wake_local": "07:00",
+            "home_timezone": "UTC",
+            "sleep_need_hours": 8
+          },
+          "revision": 5,
+          "snapshot_id": "decouple-baseline-retrospective"
+        }
+      },
+      "projection": "full_result_with_trace_summary"
+    },
+    "planning_candidates_order": {
+      "api": "app.planning.engine.plan",
+      "expected": {
+        "candidates": [
+          {
+            "checks": [
+              {
+                "id": "schedule_constraints",
+                "status": "pass"
+              },
+              {
+                "id": "aviation_legal_compliance",
+                "message": "no jurisdiction-specific legal rules are encoded",
+                "status": "not_evaluated"
+              }
+            ],
+            "id": "candidate-001",
+            "metrics": {
+              "duty_burden": 0.22445014777353117,
+              "error": null,
+              "fragmentation": 0,
+              "longest_wake_hours": 17.75,
+              "losses": {
+                "excess": 0.0,
+                "need": 0.03125,
+                "physiological": 7.196768806399277e-05,
+                "preference": 0.4895833333333333,
+                "sleep_count": 0.0,
+                "total": 0.05525511233057493
+              },
+              "model_version": "rooster-sleep-core-v2.1.0",
+              "provenance": {
+                "configuration": {
+                  "atol": 1e-10,
+                  "burden_weights": [
+                    0.6,
+                    0.25,
+                    0.15
+                  ],
+                  "early_minutes": 0.0,
+                  "inertia_hours": 0.5,
+                  "latency_minutes": 15.0,
+                  "light_factor": 1.0,
+                  "max_step_minutes": 15.0,
+                  "rank_weights": [
+                    0.65,
+                    0.2,
+                    0.1,
+                    0.05
+                  ],
+                  "rtol": 1e-08,
+                  "sleep_count_coefficient": 2.0,
+                  "sleep_count_threshold": 4,
+                  "softness": 0.05,
+                  "tau_s": 4.2,
+                  "tau_w": 18.2,
+                  "threshold": 0.6
+                },
+                "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+                "equation_source": "sources/circadian/manifest.json",
+                "initialization": {
+                  "checkpoint_reused": false,
+                  "history_start_utc": "2027-03-31T06:00:00Z",
+                  "input_prefix_hash": "212aa33ef8fbd1371c779be7e8132ca9ffffce937b5c56af1b6f65579c9d47e5",
+                  "prior_converged": true,
+                  "prior_days": 59
+                },
+                "input_hash": "24ead4e468dfb0c9fdc5e5ce7a2ea32f4c66d36c3bb6083d36cd4bb80a7c23a2",
+                "model_version": "rooster-sleep-core-v2.1.0",
+                "opportunity_hash": "2437342b8e904d0a8e71806138574eab64bcecf8407a41c9157de3cdf7ab179b",
+                "snapshot_hash": "e164043407f0ac28c082c831448f888f52c70082f75f1075cd0e52c9ae914996",
+                "trace_hash": "2e3fe36fc30d29c68eb6b911aec7c2494babf30f385a2c04d6aedebfad3dbcbb"
+              },
+              "publishability": "valid",
+              "rolling_sleep_hours_24": 8.0,
+              "rolling_sleep_hours_48": 8.0,
+              "rolling_sleep_hours_72": 8.0,
+              "scorer_version": "rooster-sleep-core-v2.1.0",
+              "sleep_hours": 15.5,
+              "status": "complete",
+              "utility": 94.47448876694251
+            },
+            "sleep_blocks": [
+              {
+                "end_utc": "2027-04-03T22:30:00Z",
+                "id": "sleep-1",
+                "role": "main",
+                "start_utc": "2027-04-03T14:30:00Z",
+                "timezone": "Asia/Tokyo"
+              },
+              {
+                "end_utc": "2027-04-04T22:30:00Z",
+                "id": "sleep-2",
+                "role": "main",
+                "start_utc": "2027-04-04T14:30:00Z",
+                "timezone": "Asia/Tokyo"
+              }
+            ]
+          },
+          {
+            "checks": [
+              {
+                "id": "schedule_constraints",
+                "status": "pass"
+              },
+              {
+                "id": "aviation_legal_compliance",
+                "message": "no jurisdiction-specific legal rules are encoded",
+                "status": "not_evaluated"
+              }
+            ],
+            "id": "candidate-002",
+            "metrics": {
+              "duty_burden": 0.2500885270976348,
+              "error": null,
+              "fragmentation": 0,
+              "longest_wake_hours": 16.25,
+              "losses": {
+                "excess": 0.0,
+                "need": 0.03125,
+                "physiological": 0.00012069822161068739,
+                "preference": 0.5,
+                "sleep_count": 0.0,
+                "total": 0.05632845384404695
+              },
+              "model_version": "rooster-sleep-core-v2.1.0",
+              "provenance": {
+                "configuration": {
+                  "atol": 1e-10,
+                  "burden_weights": [
+                    0.6,
+                    0.25,
+                    0.15
+                  ],
+                  "early_minutes": 0.0,
+                  "inertia_hours": 0.5,
+                  "latency_minutes": 15.0,
+                  "light_factor": 1.0,
+                  "max_step_minutes": 15.0,
+                  "rank_weights": [
+                    0.65,
+                    0.2,
+                    0.1,
+                    0.05
+                  ],
+                  "rtol": 1e-08,
+                  "sleep_count_coefficient": 2.0,
+                  "sleep_count_threshold": 4,
+                  "softness": 0.05,
+                  "tau_s": 4.2,
+                  "tau_w": 18.2,
+                  "threshold": 0.6
+                },
+                "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+                "equation_source": "sources/circadian/manifest.json",
+                "initialization": {
+                  "checkpoint_reused": false,
+                  "history_start_utc": "2027-03-31T06:00:00Z",
+                  "input_prefix_hash": "212aa33ef8fbd1371c779be7e8132ca9ffffce937b5c56af1b6f65579c9d47e5",
+                  "prior_converged": true,
+                  "prior_days": 59
+                },
+                "input_hash": "12732f4f59a6ab20e6240f205031a2d73799d3814acc57b2b37f1d60be17f37d",
+                "model_version": "rooster-sleep-core-v2.1.0",
+                "opportunity_hash": "c98c521c45a3fad52bc1264ca9008b838c880c01044e9538fe8bcb0e83bff1aa",
+                "snapshot_hash": "e164043407f0ac28c082c831448f888f52c70082f75f1075cd0e52c9ae914996",
+                "trace_hash": "6f80adaf89372a20fd9b1c68209e213c592451fb4e70bc2a2e95c90cd44bd827"
+              },
+              "publishability": "valid",
+              "rolling_sleep_hours_24": 8.0,
+              "rolling_sleep_hours_48": 8.0,
+              "rolling_sleep_hours_72": 8.0,
+              "scorer_version": "rooster-sleep-core-v2.1.0",
+              "sleep_hours": 15.5,
+              "status": "complete",
+              "utility": 94.36715461559531
+            },
+            "sleep_blocks": [
+              {
+                "end_utc": "2027-04-03T21:00:00Z",
+                "id": "sleep-1",
+                "role": "main",
+                "start_utc": "2027-04-03T13:00:00Z",
+                "timezone": "Asia/Tokyo"
+              },
+              {
+                "end_utc": "2027-04-04T21:00:00Z",
+                "id": "sleep-2",
+                "role": "main",
+                "start_utc": "2027-04-04T13:00:00Z",
+                "timezone": "Asia/Tokyo"
+              }
+            ]
+          },
+          {
+            "checks": [
+              {
+                "id": "schedule_constraints",
+                "status": "pass"
+              },
+              {
+                "id": "aviation_legal_compliance",
+                "message": "no jurisdiction-specific legal rules are encoded",
+                "status": "not_evaluated"
+              }
+            ],
+            "id": "candidate-003",
+            "metrics": {
+              "duty_burden": 0.2142901396789938,
+              "error": null,
+              "fragmentation": 0,
+              "longest_wake_hours": 19.25,
+              "losses": {
+                "excess": 0.0,
+                "need": 0.0625,
+                "physiological": 6.110987373131568e-05,
+                "preference": 0.6458333333333333,
+                "sleep_count": 0.0,
+                "total": 0.07712305475125868
+              },
+              "model_version": "rooster-sleep-core-v2.1.0",
+              "provenance": {
+                "configuration": {
+                  "atol": 1e-10,
+                  "burden_weights": [
+                    0.6,
+                    0.25,
+                    0.15
+                  ],
+                  "early_minutes": 0.0,
+                  "inertia_hours": 0.5,
+                  "latency_minutes": 15.0,
+                  "light_factor": 1.0,
+                  "max_step_minutes": 15.0,
+                  "rank_weights": [
+                    0.65,
+                    0.2,
+                    0.1,
+                    0.05
+                  ],
+                  "rtol": 1e-08,
+                  "sleep_count_coefficient": 2.0,
+                  "sleep_count_threshold": 4,
+                  "softness": 0.05,
+                  "tau_s": 4.2,
+                  "tau_w": 18.2,
+                  "threshold": 0.6
+                },
+                "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+                "equation_source": "sources/circadian/manifest.json",
+                "initialization": {
+                  "checkpoint_reused": false,
+                  "history_start_utc": "2027-03-31T06:00:00Z",
+                  "input_prefix_hash": "212aa33ef8fbd1371c779be7e8132ca9ffffce937b5c56af1b6f65579c9d47e5",
+                  "prior_converged": true,
+                  "prior_days": 59
+                },
+                "input_hash": "ca4ffe1056e15e642fa4c4181c390b28016a9b3043d48fce83ac68658ff16ad7",
+                "model_version": "rooster-sleep-core-v2.1.0",
+                "opportunity_hash": "af56e9c2f4eefedca9bb34cb8f82e67badaace8bbc5e2d4a18f2343b3a8417a7",
+                "snapshot_hash": "e164043407f0ac28c082c831448f888f52c70082f75f1075cd0e52c9ae914996",
+                "trace_hash": "16b8f80ee2bdcb2d405ced9d2a6d13c59504c67592f61fc7e2546d23edcff75f"
+              },
+              "publishability": "valid",
+              "rolling_sleep_hours_24": 8.0,
+              "rolling_sleep_hours_48": 8.0,
+              "rolling_sleep_hours_72": 8.0,
+              "scorer_version": "rooster-sleep-core-v2.1.0",
+              "sleep_hours": 15.0,
+              "status": "complete",
+              "utility": 92.28769452487413
+            },
+            "sleep_blocks": [
+              {
+                "end_utc": "2027-04-03T23:30:00Z",
+                "id": "sleep-1",
+                "role": "main",
+                "start_utc": "2027-04-03T16:00:00Z",
+                "timezone": "Asia/Tokyo"
+              },
+              {
+                "end_utc": "2027-04-05T00:00:00Z",
+                "id": "sleep-2",
+                "role": "main",
+                "start_utc": "2027-04-04T16:00:00Z",
+                "timezone": "Asia/Tokyo"
+              }
+            ]
+          }
+        ],
+        "checks": [
+          {
+            "id": "schedule_constraints",
+            "status": "pass"
+          },
+          {
+            "id": "aviation_legal_compliance",
+            "message": "no jurisdiction-specific legal rules are encoded",
+            "status": "not_evaluated"
+          }
+        ],
+        "model_version": "rooster-sleep-core-v2.1.0",
+        "policy_version": "schedule-constraints-v2",
+        "revision": 12,
+        "search": {
+          "approximate": true,
+          "beam_width": 64,
+          "evaluated_candidates": 19,
+          "expanded": 10463,
+          "feasible_candidates": 3,
+          "grid_minutes": 30,
+          "ranking": "sleep model utility including rolling sleep-count cost; external heuristics excluded",
+          "ranking_version": "search-ranking-v2",
+          "returned_candidates": 3,
+          "status": "complete",
+          "surrogate": "model S/C/I burden + existing fixed-bucket need/excess; reference C approximation; full model reranks finalists",
+          "version": "sleep-beam-v2"
+        },
+        "search_version": "sleep-beam-v2",
+        "selected": {
+          "checks": [
+            {
+              "id": "schedule_constraints",
+              "status": "pass"
+            },
+            {
+              "id": "aviation_legal_compliance",
+              "message": "no jurisdiction-specific legal rules are encoded",
+              "status": "not_evaluated"
+            }
+          ],
+          "id": "candidate-001",
+          "metrics": {
+            "duty_burden": 0.22445014777353117,
+            "error": null,
+            "fragmentation": 0,
+            "longest_wake_hours": 17.75,
+            "losses": {
+              "excess": 0.0,
+              "need": 0.03125,
+              "physiological": 7.196768806399277e-05,
+              "preference": 0.4895833333333333,
+              "sleep_count": 0.0,
+              "total": 0.05525511233057493
+            },
+            "model_version": "rooster-sleep-core-v2.1.0",
+            "provenance": {
+              "configuration": {
+                "atol": 1e-10,
+                "burden_weights": [
+                  0.6,
+                  0.25,
+                  0.15
+                ],
+                "early_minutes": 0.0,
+                "inertia_hours": 0.5,
+                "latency_minutes": 15.0,
+                "light_factor": 1.0,
+                "max_step_minutes": 15.0,
+                "rank_weights": [
+                  0.65,
+                  0.2,
+                  0.1,
+                  0.05
+                ],
+                "rtol": 1e-08,
+                "sleep_count_coefficient": 2.0,
+                "sleep_count_threshold": 4,
+                "softness": 0.05,
+                "tau_s": 4.2,
+                "tau_w": 18.2,
+                "threshold": 0.6
+              },
+              "configuration_hash": "d2a27c69b8dc621fc0d12884bbfc66bcfdfdfbbaa8466433f3606721bda03bff",
+              "equation_source": "sources/circadian/manifest.json",
+              "initialization": {
+                "checkpoint_reused": false,
+                "history_start_utc": "2027-03-31T06:00:00Z",
+                "input_prefix_hash": "212aa33ef8fbd1371c779be7e8132ca9ffffce937b5c56af1b6f65579c9d47e5",
+                "prior_converged": true,
+                "prior_days": 59
+              },
+              "input_hash": "24ead4e468dfb0c9fdc5e5ce7a2ea32f4c66d36c3bb6083d36cd4bb80a7c23a2",
+              "model_version": "rooster-sleep-core-v2.1.0",
+              "opportunity_hash": "2437342b8e904d0a8e71806138574eab64bcecf8407a41c9157de3cdf7ab179b",
+              "snapshot_hash": "e164043407f0ac28c082c831448f888f52c70082f75f1075cd0e52c9ae914996",
+              "trace_hash": "2e3fe36fc30d29c68eb6b911aec7c2494babf30f385a2c04d6aedebfad3dbcbb"
+            },
+            "publishability": "valid",
+            "rolling_sleep_hours_24": 8.0,
+            "rolling_sleep_hours_48": 8.0,
+            "rolling_sleep_hours_72": 8.0,
+            "scorer_version": "rooster-sleep-core-v2.1.0",
+            "sleep_hours": 15.5,
+            "status": "complete",
+            "utility": 94.47448876694251
+          },
+          "sleep_blocks": [
+            {
+              "end_utc": "2027-04-03T22:30:00Z",
+              "id": "sleep-1",
+              "role": "main",
+              "start_utc": "2027-04-03T14:30:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T22:30:00Z",
+              "id": "sleep-2",
+              "role": "main",
+              "start_utc": "2027-04-04T14:30:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ]
+        },
+        "status": "ready"
+      },
+      "inputs": {
+        "requests": {
+          "requests": [
+            {
+              "date": "2027-04-03",
+              "start": "23:00",
+              "timezone": "Asia/Tokyo",
+              "type": "start_by"
+            },
+            {
+              "date": "2027-04-04",
+              "end": "06:00",
+              "start": "22:00",
+              "timezone": "Asia/Tokyo",
+              "type": "free_window"
+            }
+          ]
+        },
+        "snapshot": {
+          "events": [
+            {
+              "availability": "available",
+              "confirmed": true,
+              "end_utc": "2027-04-06T06:00:00Z",
+              "id": "env-home",
+              "kind": "environment",
+              "location": "home",
+              "start_utc": "2027-04-03T06:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-02T21:00:00Z",
+              "id": "sleep-1",
+              "kind": "sleep_actual",
+              "source": "synthetic_observation",
+              "start_utc": "2027-04-02T13:00:00Z",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "end_utc": "2027-04-04T05:00:00Z",
+              "id": "duty-1",
+              "kind": "duty",
+              "start_utc": "2027-04-04T01:00:00Z",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "horizon_end_utc": "2027-04-05T06:00:00Z",
+          "initial_state": {},
+          "now_utc": "2027-04-03T06:00:00Z",
+          "profile": {
+            "home_timezone": "Asia/Tokyo",
+            "preferred_sleep_start_hour": 22,
+            "sleep_need_hours": 8
+          },
+          "revision": 12,
+          "scheduling_policy": {
+            "maximum_wake_hours": 20.0,
+            "minimum_sleep_minutes": 90
+          },
+          "snapshot_id": "decouple-baseline-planning"
+        }
+      },
+      "projection": "identity"
+    }
+  },
+  "origin": {
+    "base_ref": "codex/rooster-multigroup-integration",
+    "conda_env": "205agent",
+    "digest_scheme": {
+      "algorithm": "sha256",
+      "serialization": "json.dumps(sort_keys=True, ensure_ascii=False, separators=(',', ':'), allow_nan=False)"
+    },
+    "generation_utc": "2026-10-20T15:32:39+00:00",
+    "generator_command": "python -m tests.test_decoupling_baseline --rebuild-fixture",
+    "model_version": "rooster-sleep-core-v2.1.0",
+    "numpy_version": "1.26.4",
+    "policy_version": "schedule-constraints-v2",
+    "python_version": "3.11.15",
+    "scipy_version": "1.16.2",
+    "search_version": "sleep-beam-v2",
+    "source_commit": "fbe9053e81551603f24e672209d82c2acd23fe84",
+    "zoneinfo_probes": {
+      "Asia/Tokyo": true,
+      "UTC": true
+    }
+  },
+  "schema_version": 1,
+  "tolerances": {
+    "atol": 1e-12,
+    "rtol": 1e-09
+  },
+  "trace_sampling": {
+    "max_points": 12,
+    "rule": "indices round(k*(point_count-1)/11) for k in 0..11 (round-half-even), deduplicated, first and last forced"
+  }
+}

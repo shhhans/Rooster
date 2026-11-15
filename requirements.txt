@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+python-multipart
+httpx>=0.24
+pypdfium2==5.14.0
+numpy==1.26.4
+scipy==1.16.2

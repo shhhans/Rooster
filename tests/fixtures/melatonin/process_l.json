@@ -1,0 +1,823 @@
+{
+  "algebraic_cases": [
+    {
+      "expected_B": 0.0,
+      "expected_alpha": 0.0,
+      "light_lux": 0.0,
+      "n": 0.519,
+      "rtol": 1e-09,
+      "x": -0.219,
+      "xc": -1.22
+    },
+    {
+      "expected_B": 0.008495020725476072,
+      "expected_alpha": 0.0002949480384195683,
+      "light_lux": 10.0,
+      "n": 0.519,
+      "rtol": 1e-09,
+      "x": -0.219,
+      "xc": -1.22
+    },
+    {
+      "expected_B": 0.14774987844562198,
+      "expected_alpha": 0.005129891760425771,
+      "light_lux": 100.0,
+      "n": 0.519,
+      "rtol": 1e-09,
+      "x": -0.219,
+      "xc": -1.22
+    },
+    {
+      "expected_B": 0.38386544441991455,
+      "expected_alpha": 0.01332784974957958,
+      "light_lux": 300.0,
+      "n": 0.519,
+      "rtol": 1e-09,
+      "x": -0.219,
+      "xc": -1.22
+    },
+    {
+      "expected_B": 0.8495020725476072,
+      "expected_alpha": 0.029494803841956827,
+      "light_lux": 1000.0,
+      "n": 0.519,
+      "rtol": 1e-09,
+      "x": -0.219,
+      "xc": -1.22
+    },
+    {
+      "expected_B": 2.8501735327000004,
+      "expected_alpha": 0.09895833333333334,
+      "light_lux": 9500.0,
+      "n": 0.519,
+      "rtol": 1e-09,
+      "x": -0.219,
+      "xc": -1.22
+    },
+    {
+      "expected_B": 0.0,
+      "expected_alpha": 0.0,
+      "light_lux": 0.0,
+      "n": 0.5,
+      "rtol": 1e-09,
+      "x": 0.0,
+      "xc": 0.0
+    },
+    {
+      "expected_B": 0.005456538710762014,
+      "expected_alpha": 0.0002949480384195683,
+      "light_lux": 10.0,
+      "n": 0.5,
+      "rtol": 1e-09,
+      "x": 0.0,
+      "xc": 0.0
+    },
+    {
+      "expected_B": 0.09490299756787676,
+      "expected_alpha": 0.005129891760425771,
+      "light_lux": 100.0,
+      "n": 0.5,
+      "rtol": 1e-09,
+      "x": 0.0,
+      "xc": 0.0
+    },
+    {
+      "expected_B": 0.24656522036722223,
+      "expected_alpha": 0.01332784974957958,
+      "light_lux": 300.0,
+      "n": 0.5,
+      "rtol": 1e-09,
+      "x": 0.0,
+      "xc": 0.0
+    },
+    {
+      "expected_B": 0.5456538710762013,
+      "expected_alpha": 0.029494803841956827,
+      "light_lux": 1000.0,
+      "n": 0.5,
+      "rtol": 1e-09,
+      "x": 0.0,
+      "xc": 0.0
+    },
+    {
+      "expected_B": 1.8307291666666667,
+      "expected_alpha": 0.09895833333333334,
+      "light_lux": 9500.0,
+      "n": 0.5,
+      "rtol": 1e-09,
+      "x": 0.0,
+      "xc": 0.0
+    },
+    {
+      "expected_B": 0.0,
+      "expected_alpha": 0.0,
+      "light_lux": 0.0,
+      "n": 0.2,
+      "rtol": 1e-09,
+      "x": 0.4,
+      "xc": 0.6
+    },
+    {
+      "expected_B": 0.005573526900720752,
+      "expected_alpha": 0.0002949480384195683,
+      "light_lux": 10.0,
+      "n": 0.2,
+      "rtol": 1e-09,
+      "x": 0.4,
+      "xc": 0.6
+    },
+    {
+      "expected_B": 0.09693771783573203,
+      "expected_alpha": 0.005129891760425771,
+      "light_lux": 100.0,
+      "n": 0.2,
+      "rtol": 1e-09,
+      "x": 0.4,
+      "xc": 0.6
+    },
+    {
+      "expected_B": 0.25185157869189545,
+      "expected_alpha": 0.01332784974957958,
+      "light_lux": 300.0,
+      "n": 0.2,
+      "rtol": 1e-09,
+      "x": 0.4,
+      "xc": 0.6
+    },
+    {
+      "expected_B": 0.5573526900720751,
+      "expected_alpha": 0.029494803841956827,
+      "light_lux": 1000.0,
+      "n": 0.2,
+      "rtol": 1e-09,
+      "x": 0.4,
+      "xc": 0.6
+    },
+    {
+      "expected_B": 1.8699800000000002,
+      "expected_alpha": 0.09895833333333334,
+      "light_lux": 9500.0,
+      "n": 0.2,
+      "rtol": 1e-09,
+      "x": 0.4,
+      "xc": 0.6
+    }
+  ],
+  "constant_light_cases": [
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.4249343032832624,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.23985017970752484,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.04293719087148306,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.04043182206212666,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.007947138256285999,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.02358396624395546,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.040220155645187806,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.0404318216722933,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.8113906161502675,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.44028187272482133,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.04545529095596865,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.0002949480384195683,
+      "expected_n": 0.04043182242341731,
+      "expected_n_eq": 0.04043182170266261,
+      "light_lux": 10.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.48968997597960373,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.44532675979933845,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.4229287136640114,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.42291323465574826,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.12900420803940615,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.3242630575522398,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.422845105840813,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.4229132346557479,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.8239671520474939,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.5575264530187112,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.42300619991248634,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.005129891760425771,
+      "expected_n": 0.4229132346557486,
+      "expected_n_eq": 0.4229132346557482,
+      "light_lux": 100.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.5813865313305082,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.6437269175159754,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.6556447775363988,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.655644837686545,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.29934103549412927,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.5984606588468074,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.6556445490760605,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.655644837686545,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.8427812972212563,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.6856788836428922,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.6556449892693907,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.01332784974957958,
+      "expected_n": 0.655644837686545,
+      "expected_n_eq": 0.655644837686545,
+      "light_lux": 300.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.711430654507906,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.804567380965869,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.8081918721811775,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.8081918721822984,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.5377775307390853,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.798062665162027,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.808191872179166,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.8081918721822984,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.8723692913726513,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.8105958362676956,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.8081918721830418,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.029494803841956827,
+      "expected_n": 0.8081918721822984,
+      "expected_n_eq": 0.8081918721822984,
+      "light_lux": 1000.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9166593152894043,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339350485396101,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339362957137239,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339362957137239,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.895049364719044,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339334885811977,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339362957137239,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339362957137239,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 0.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9366870344114528,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 0.5
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339364942814142,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 2.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339362957137239,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 12.0
+    },
+    {
+      "expected_alpha": 0.09895833333333334,
+      "expected_n": 0.9339362957137239,
+      "expected_n_eq": 0.9339362957137239,
+      "light_lux": 9500.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    }
+  ],
+  "dark_cases": [
+    {
+      "expected_n": 0.4976534161171195,
+      "light_lux": 0.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 0.1
+    },
+    {
+      "expected_n": 0.3410072994840145,
+      "light_lux": 0.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 1.0
+    },
+    {
+      "expected_n": 0.041758535903007335,
+      "light_lux": 0.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 6.0
+    },
+    {
+      "expected_n": 2.1750987572759996e-05,
+      "light_lux": 0.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 24.0
+    },
+    {
+      "expected_n": 9.115712146249704e-10,
+      "light_lux": 0.0,
+      "n0": 0.519,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_n": 0.9588697805724845,
+      "light_lux": 0.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 0.1
+    },
+    {
+      "expected_n": 0.6570468198150567,
+      "light_lux": 0.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 1.0
+    },
+    {
+      "expected_n": 0.08045960674953244,
+      "light_lux": 0.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 6.0
+    },
+    {
+      "expected_n": 4.19094172885549e-05,
+      "light_lux": 0.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 24.0
+    },
+    {
+      "expected_n": 1.7563992574662243e-09,
+      "light_lux": 0.0,
+      "n0": 1.0,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    },
+    {
+      "expected_n": 0.09588697805724845,
+      "light_lux": 0.0,
+      "n0": 0.1,
+      "rtol": 1e-09,
+      "t_hours": 0.1
+    },
+    {
+      "expected_n": 0.06570468198150568,
+      "light_lux": 0.0,
+      "n0": 0.1,
+      "rtol": 1e-09,
+      "t_hours": 1.0
+    },
+    {
+      "expected_n": 0.008045960674953244,
+      "light_lux": 0.0,
+      "n0": 0.1,
+      "rtol": 1e-09,
+      "t_hours": 6.0
+    },
+    {
+      "expected_n": 4.19094172885549e-06,
+      "light_lux": 0.0,
+      "n0": 0.1,
+      "rtol": 1e-09,
+      "t_hours": 24.0
+    },
+    {
+      "expected_n": 1.7563992574662243e-10,
+      "light_lux": 0.0,
+      "n0": 0.1,
+      "rtol": 1e-09,
+      "t_hours": 48.0
+    }
+  ],
+  "description": "Process L closed forms: dark decay, algebraic alpha/B at fixed state, and the constant-light n_eq trajectory.",
+  "notes": [
+    "Dark: alpha = 0 and B = 0, so dn/dt = -60*beta*n.",
+    "Constant light: n_eq = alpha/(alpha+beta); the n equation is independent of the oscillator, so it is exactly solvable.",
+    "alpha/beta conventions are model conventions (per-minute rate), not physical dimensional quantities."
+  ],
+  "provenance": "contract-derived analytic constants (not frozen implementation behavior).",
+  "schema_version": 1
+}

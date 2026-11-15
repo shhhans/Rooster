@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.timeline_kens/
+*.db
+*.db-shm
+*.db-wal
+/frontend/.playground/agent/
+
+# Local experiment archives and coordination scratch (preserve on disk)
+/results/
+/.pi/
+/.7

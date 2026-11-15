@@ -1,0 +1,73 @@
+{
+  "description": "Independent Breslow13 reference parameters transcribed from the reviewed contract; per-second rates are converted to per-hour.",
+  "initial_state": [
+    -0.219,
+    -1.22,
+    0.519,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "initial_state_phase_rad": -2.9639761250984815,
+  "notes": [
+    "a_h = 0.0010422*3600 = 3.75192 pM/h (pinned source); the printed paper table gives 1.0442e-3 before conversion.",
+    "betaIP/betaCP/betaAP are per-second source rates multiplied by 3600.",
+    "beta is a per-minute Process L rate; dn/dt carries the source factor 60 (60*beta = 0.42 per hour).",
+    "K = 0.55 is inherited from Jewett99/Hilaire07 and is not a Breslow13 parameter.",
+    "kappa = 12/pi h, tauc = 24.1 h, f = 0.99729, delta = 600, r = 15.36.",
+    "phi_on - phi_off is ~1.761 rad but not exactly the literal 1.761.",
+    "exp(-600*1.761) underflows to 0.0 in float64, so the activation normalization is exactly 1.0."
+  ],
+  "paper_table2_a": 0.0010442,
+  "parameters": {
+    "G": 37.0,
+    "H1_threshold": 0.001,
+    "Hsat": 861.0,
+    "I0": 9500.0,
+    "I1": 100.0,
+    "K": 0.55,
+    "Mmax": 0.019513,
+    "alpha_0": 0.1,
+    "b": 0.4,
+    "beta": 0.007,
+    "delta": 600.0,
+    "eta": 0.04,
+    "f": 0.99729,
+    "gamma": 0.13,
+    "kappa": 3.819718634205488,
+    "m": 7.0,
+    "p": 0.5,
+    "r": 15.36,
+    "sigma": 50.0,
+    "tauc": 24.1,
+    "xi": 0.54
+  },
+  "per_hour_rates": {
+    "a": 3.75192,
+    "betaAP": 0.5832,
+    "betaCP": 1.206,
+    "betaIP": 2.8188
+  },
+  "per_second_rates": {
+    "a": 0.0010422,
+    "betaAP": 0.000162,
+    "betaCP": 0.000335,
+    "betaIP": 0.000783
+  },
+  "phase": {
+    "phi_off": -1.931185307179586,
+    "phi_on": -0.1701853071795858,
+    "span_radians": 1.7610000000000001,
+    "wrap": "[-pi, pi) half-open; the source evaluates the branch on the wrapped atan2(x, xc) output"
+  },
+  "pinned_a": 0.0010422,
+  "provenance": "contract-derived analytic constants (not frozen implementation behavior); a disagreement with any implementation is adjudicated, never edited into this file.",
+  "schema_version": 1,
+  "source": {
+    "pinned_source_eol_guarantee": "app/sleep_model/sources/** text eol=lf (added by dfecd5c)",
+    "pinned_source_path": "app/sleep_model/sources/circadian/models.py.txt",
+    "pinned_source_sha256": "d2635b34eebe9a8e4c59383f10413a452544a4405df6fcc8e3190aa4e7977435",
+    "primary_paper": "PMC3733227",
+    "upstream_commit": "db6eb08b6c0b0586cdac7795bf10bbbbfd323c1a"
+  }
+}
