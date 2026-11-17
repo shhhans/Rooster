@@ -19,7 +19,7 @@ def review(snapshot, blocks, window):
     issues = []
     # Keep the whole context for constraint checks, then select local evidence.
     for check in check_plan(dict(snapshot, events=events), future):
-        if check['status'] != 'fail':
+        if check['status'] != 'fail' or check['id'] == 'block_horizon':
             continue
         ids = [check[k] for k in ('block_id', 'event_id', 'other_id') if check.get(k)]
         spans = [interval(facts[i]) for i in ids if i in facts]

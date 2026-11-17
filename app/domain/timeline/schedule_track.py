@@ -151,6 +151,7 @@ class ScheduleTrack:
             timezone=timezone,
             source=source,
             status=status,
+            realization='actual' if status == 'occurred' else 'planned',
             title=title,
             payload=payload,
             supersedes=None,
@@ -186,7 +187,7 @@ class ScheduleTrack:
         payload = _require_object("payload", payload)
 
         target = self.store.get_by_id(event_id)
-        if target is None:
+        if target is None or target.track != self.name or not self.store.is_visible_event(target):
             raise EventNotFoundError(f"event {event_id} does not exist")
 
         # Per Lead ruling: content-based idempotency is evaluated BEFORE
@@ -233,6 +234,8 @@ class ScheduleTrack:
             # from the client input.
             source=target.source,
             status=status,
+            confirmation=target.confirmation,
+            realization='actual' if status == 'occurred' else 'planned',
             title=title,
             payload=payload,
             supersedes=event_id,
@@ -258,7 +261,7 @@ class ScheduleTrack:
             raise InvalidInputError("reason must be a string when provided")
 
         target = self.store.get_by_id(event_id)
-        if target is None:
+        if target is None or target.track != self.name or not self.store.is_visible_event(target):
             raise EventNotFoundError(f"event {event_id} does not exist")
 
         if target.retracted:
@@ -306,7 +309,7 @@ class ScheduleTrack:
             raise InvalidInputError("resolve_head must be a boolean")
 
         current = self.store.get_by_id(event_id)
-        if current is None:
+        if current is None or current.track != self.name or not self.store.is_visible_event(current):
             raise EventNotFoundError(f"event {event_id} does not exist")
 
         if not resolve_head:

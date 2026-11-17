@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from app.domain.timeline.errors import (
@@ -26,6 +26,7 @@ from app.domain.timeline.errors import (
 )
 from app.domain.timeline.models import ScheduleEvent
 from app.services.timeline_service import TimelineService
+from app.services.reactive_trigger import queue_input_review
 
 
 router = APIRouter(prefix="/timeline/schedule", tags=["timeline-schedule"])
@@ -99,18 +100,18 @@ def _map_error(e: Exception) -> HTTPException:
 
 
 @router.post("/events", response_model=Dict[str, Any])
-def ingest_event(req: IngestRequest, svc: TimelineService = Depends(_get_service)):
+def ingest_event(req: IngestRequest, background_tasks: BackgroundTasks, svc: TimelineService = Depends(_get_service)):
     try:
-        e = svc.ingest_schedule_event(
-            user_id=req.user_id,
-            dedupe_key=req.dedupe_key,
-            occurred_at=req.occurred_at,
-            timezone=req.timezone,
-            source=req.source,
-            status=req.status,
-            title=req.title,
-            payload=req.payload,
-        )
+        source = {'manual': 'user', 'roster': 'system'}.get(req.source, req.source)
+        if source not in {'system', 'user', 'agent', 'baseline'}:
+            raise InvalidInputError('source must be system, user, agent or baseline')
+        with svc.store.transaction():
+            revision = svc.store.get_input_revision(req.user_id)
+            e = svc.ingest_schedule_event(user_id=req.user_id, dedupe_key=req.dedupe_key,
+                occurred_at=req.occurred_at, timezone=req.timezone, source=source,
+                status=req.status, title=req.title, payload=req.payload)
+            if revision != svc.store.get_input_revision(e.user_id):
+                queue_input_review(svc.store, background_tasks, [e], 'personal_event_added')
     except (
         InvalidInputError,
         UnknownTimezoneError,
@@ -124,17 +125,16 @@ def ingest_event(req: IngestRequest, svc: TimelineService = Depends(_get_service
 
 @router.post("/events/{event_id}/correct", response_model=Dict[str, Any])
 def correct_event(
-    event_id: str, req: CorrectRequest, svc: TimelineService = Depends(_get_service)
+    event_id: str, req: CorrectRequest, background_tasks: BackgroundTasks, svc: TimelineService = Depends(_get_service)
 ):
     try:
-        e = svc.correct_schedule_event(
-            event_id=event_id,
-            occurred_at=req.occurred_at,
-            timezone=req.timezone,
-            status=req.status,
-            title=req.title,
-            payload=req.payload,
-        )
+        with svc.store.transaction():
+            old = svc.store.get_by_id(event_id)
+            revision = svc.store.get_input_revision(old.user_id) if old else None
+            e = svc.correct_schedule_event(event_id=event_id, occurred_at=req.occurred_at,
+                timezone=req.timezone, status=req.status, title=req.title, payload=req.payload)
+            if revision != svc.store.get_input_revision(e.user_id):
+                queue_input_review(svc.store, background_tasks, [old, e], 'personal_event_added')
     except (
         InvalidInputError,
         UnknownTimezoneError,
@@ -148,10 +148,15 @@ def correct_event(
 
 @router.post("/events/{event_id}/retract", response_model=Dict[str, Any])
 def retract_event(
-    event_id: str, req: RetractRequest, svc: TimelineService = Depends(_get_service)
+    event_id: str, req: RetractRequest, background_tasks: BackgroundTasks, svc: TimelineService = Depends(_get_service)
 ):
     try:
-        e = svc.retract_schedule_event(event_id=event_id, reason=req.reason)
+        with svc.store.transaction():
+            old = svc.store.get_by_id(event_id)
+            revision = svc.store.get_input_revision(old.user_id) if old else None
+            e = svc.retract_schedule_event(event_id=event_id, reason=req.reason)
+            if revision != svc.store.get_input_revision(e.user_id):
+                queue_input_review(svc.store, background_tasks, [old], 'personal_event_added')
     except (
         InvalidInputError,
         EventNotFoundError,

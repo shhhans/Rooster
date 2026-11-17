@@ -21,27 +21,52 @@ def _schema(name, description, properties, required):
 _tracks = {'type': 'array', 'items': {'type': 'string', 'enum': list(TRACKS)}, 'minItems': 1}
 _zone = {'type': 'string', 'description': 'IANA 显示时区。'}
 _fields = {'type': 'object', 'properties': {'kind': {'type': 'string', 'enum': ['sleep_plan']}, 'start': {'type': 'string', 'description': 'ISO 日期时间，无偏移时按事项时区解释。'}, 'end': {'type': 'string', 'description': 'ISO 日期时间，无偏移时按事项时区解释。'}, 'timezone': _zone, 'title': {'type': 'string'}, 'role': {'type': 'string', 'enum': ['main', 'nap']}, 'crew_rest_id': {'type': ['string', 'null'], 'description': '机组休息许可事项 ID，清除时传 null。'}, 'parent_event_ids': {'type': 'array', 'items': {'type': 'string'}, 'description': '所替代或拆分的历史睡眠事项 ID。'}}, 'additionalProperties': False}
-TOOLS = [_schema('observe_profile', '读取用户睡眠档案。', {}, []), _schema('observe_track', '读取选定时间窗口中所选轨道的事项；返回完整边界、连续睡眠及重叠。时间同时按UTC和指定时区显示；未来没有已知占用的时间默认可自由支配。', {'tracks': _tracks, 'start': {'type': 'string'}, 'end': {'type': 'string'}, 'timezone': _zone}, ['tracks', 'start', 'end', 'timezone']), _schema('observe_event', '读取事项及其前后指定小时数的轨道事项、相邻间隔和重叠。', {'event_id': {'type': 'string'}, 'before_hours': {'type': 'number', 'minimum': 0}, 'after_hours': {'type': 'number', 'minimum': 0}, 'tracks': _tracks, 'timezone': _zone}, ['event_id', 'before_hours', 'after_hours', 'tracks', 'timezone']), _schema('edit_schedule', '批量创建、修改或删除睡眠建议，失败时整批不生效；返回修改和局部关系。不能修改用户已确认的安排或事实。单次编辑涉及事项（包括修改前后）的时间跨度不得超过七天。', {'operations': {'type': 'array', 'minItems': 1, 'items': {'type': 'object', 'properties': {'op': {'type': 'string', 'enum': ['create', 'update', 'delete']}, 'event_id': {'type': 'string'}, 'fields': _fields}, 'required': ['op'], 'additionalProperties': False}}, 'display_timezone': _zone, 'context_hours': {'type': 'number', 'minimum': 0.1}}, ['operations', 'display_timezone'])]
+TOOLS = [_schema('observe_profile', '读取用户睡眠档案。', {}, []), _schema('observe_track', '读取选定时间窗口中所选轨道的事项；返回完整边界、连续睡眠及重叠。时间同时按UTC和指定时区显示；未来没有已知占用的时间默认可自由支配。', {'tracks': _tracks, 'start': {'type': 'string'}, 'end': {'type': 'string'}, 'timezone': _zone}, ['tracks', 'start', 'end', 'timezone']), _schema('observe_event', '读取事项及其前后指定小时数的轨道事项、相邻间隔和重叠。', {'event_id': {'type': 'string'}, 'before_hours': {'type': 'number', 'minimum': 0}, 'after_hours': {'type': 'number', 'minimum': 0}, 'tracks': _tracks, 'timezone': _zone}, ['event_id', 'before_hours', 'after_hours', 'tracks', 'timezone']), _schema('edit_schedule', '批量创建、修改或删除睡眠建议，失败时整批不生效；返回修改和局部关系。不能修改用户已确认的安排或事实。', {'operations': {'type': 'array', 'minItems': 1, 'items': {'type': 'object', 'properties': {'op': {'type': 'string', 'enum': ['create', 'update', 'delete']}, 'event_id': {'type': 'string'}, 'fields': _fields}, 'required': ['op'], 'additionalProperties': False}}, 'display_timezone': _zone, 'context_hours': {'type': 'number', 'minimum': 0.1}}, ['operations', 'display_timezone'])]
 
-def request(messages, tools=TOOLS):
+def request(messages, tools=TOOLS, *, on_stream=None, reasoning_effort='high'):
     for max_tokens in (65536, 131072):
-        message, finish = _request_once(messages, tools, max_tokens)
+        message, finish = _request_once(messages, tools, max_tokens, on_stream=on_stream, reasoning_effort=reasoning_effort)
         if finish in ('stop', 'tool_calls'):
             return message
         if finish != 'length':
             raise ValueError('model response incomplete: ' + str(finish))
     raise ValueError('model response incomplete: length (65536 and 131072 token limits reached)')
 
-def _request_once(messages, tools, max_tokens):
+def _request_once(messages, tools, max_tokens, *, on_stream=None, reasoning_effort='high'):
     key = os.environ.get('ARK_AGENT_API_KEY')
     if not key:
         raise ValueError('ARK_AGENT_API_KEY is required for pure_llm planning')
     payload = {'model': MODEL, 'messages': messages, 'tools': tools, 'temperature': 1.0, 'top_p': 0.95, 'max_tokens': max_tokens, 'stream': True, 'thinking': {'type': 'enabled'}, 'reasoning_effort': 'high'}
+    if reasoning_effort == 'off':
+        payload['thinking'] = {'type': 'disabled'}
+        payload.pop('reasoning_effort')
+    elif reasoning_effort in ('low', 'high', 'max'):
+        payload['reasoning_effort'] = reasoning_effort
+    else:
+        raise ValueError('unsupported reasoning effort')
     req = urllib.request.Request(URL, data=json.dumps(payload, ensure_ascii=False).encode('utf-8'), headers={'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'}, method='POST')
-    with urllib.request.urlopen(req, timeout=240) as response:
+    stream_id = on_stream('start', {'max_tokens': max_tokens}) if on_stream else None
+    finish = None
+    try:
+      with urllib.request.urlopen(req, timeout=240) as response:
         message = {'role': 'assistant', 'content': '', 'reasoning_content': ''}
         calls, finish, usage = ({}, None, None)
-        for line in response:
+        buffer = b''
+        def lines():
+            nonlocal buffer
+            while True:
+                data = response.read1(65536)
+                if not data:
+                    if buffer:
+                        yield buffer
+                    return
+                if on_stream:
+                    on_stream('data', {'request_id': stream_id, 'data': data})
+                buffer += data
+                while b'\n' in buffer:
+                    line, buffer = buffer.split(b'\n', 1)
+                    yield line
+        for line in lines():
             if not line.startswith(b'data:'):
                 continue
             data = line[5:].strip()
@@ -61,14 +86,20 @@ def _request_once(messages, tools, max_tokens):
                     entry['id'] += call.get('id') or ''
                     for key in ('name', 'arguments'):
                         entry['function'][key] += (call.get('function') or {}).get(key) or ''
+    except BaseException as exc:
+        if on_stream:
+            on_stream('end', {'request_id': stream_id, 'finish_reason': finish, 'error': f'{type(exc).__name__}: {exc}'})
+        raise
+    if on_stream:
+        on_stream('end', {'request_id': stream_id, 'finish_reason': finish, 'error': None if finish in ('stop', 'tool_calls', 'length') else 'model response incomplete'})
     if calls:
         message['tool_calls'] = [calls[i] for i in sorted(calls)]
     return (message, finish)
 
 def begin_run(snapshot, *, request, budget=None, run_id=None, client=None, decision_mode=None):
     blocks = deepcopy((snapshot.get('active_plan') or {}).get('sleep_blocks') or [])
-    prompt = PROMPT + '\n面对较长的规划范围，先了解全局班表与既有安排，再结合行程按较小的时间段逐步规划和编辑，关注前后行程和睡眠的关系，必要时回头调整，直至完成任务。单次编辑最多覆盖七天。'
-    prompt += '\n当前时刻：' + snapshot['now_utc'] + '；规划范围结束：' + snapshot['horizon_end_utc'] + '。'
+    prompt = PROMPT + '\n面对较长的规划范围，先了解全局班表与既有安排，再结合行程按较小的时间段逐步规划和编辑，关注前后行程和睡眠的关系，必要时回头调整，直至完成任务。'
+    prompt += '\n当前时刻：' + snapshot['now_utc'] + '。'
     user = '请根据我的班表和已有安排制定可执行的睡眠计划。请通过工具观察和编辑，完成后检查并说明结果。'
     if request.get('kind') == 'feedback':
         user = '请根据用户反馈调整睡眠计划：' + json.dumps(request, ensure_ascii=False)
@@ -88,11 +119,11 @@ def begin_run(snapshot, *, request, budget=None, run_id=None, client=None, decis
             state['answer'] = '受影响窗口未检出需要修复的 Issue。'
     return state
 
-def step(draft, snapshot=None, *, mode='step', limit=None, client=None):
-    result = _step(draft, snapshot, mode=mode, limit=limit, client=client)
+def step(draft, snapshot=None, *, mode='step', limit=None, client=None, on_tool=None):
+    result = _step(draft, snapshot, mode=mode, limit=limit, client=client, on_tool=on_tool)
     return result
 
-def _step(draft, snapshot=None, *, mode='step', limit=None, client=None):
+def _step(draft, snapshot=None, *, mode='step', limit=None, client=None, on_tool=None):
     state = deepcopy(draft)
     if 'repair_window' in state and snapshot and any((snapshot.get(key) != state['snapshot'].get(key) for key in ('revision', 'active_plan'))):
         raise ValueError('reactive repair snapshot changed; restart on the current timeline')
@@ -114,7 +145,9 @@ def _step(draft, snapshot=None, *, mode='step', limit=None, client=None):
     calls = message.get('tool_calls') or []
     state['messages'].append(message)
     diffs = []
-    for call in calls:
+    for index, call in enumerate(calls):
+        if on_tool:
+            on_tool(state, index, call, None)
         name = call['function']['name']
         try:
             args = json.loads(call['function']['arguments'])
@@ -122,6 +155,8 @@ def _step(draft, snapshot=None, *, mode='step', limit=None, client=None):
             diffs.extend(changes)
         except (KeyError, TypeError, ValueError) as exc:
             result = {'error': type(exc).__name__ + ': ' + str(exc)}
+        if on_tool:
+            on_tool(state, index, call, result)
         state['messages'].append({'role': 'tool', 'tool_call_id': call['id'], 'name': name, 'content': json.dumps(result, ensure_ascii=False)})
     if not calls:
         state['answer'] = message.get('content')
@@ -144,31 +179,7 @@ def _execute(state, name, args):
                 fields['parent_event_ids'] = [by_id[p].get('origin_event_id') or p if p in by_id else p for p in fields['parent_event_ids']]
     observed = dict(snapshot, events=[event for event in snapshot['events'] if event.get('kind') != 'sleep_plan'])
     if name == 'observe_profile':
-        result = {'profile': snapshot['profile']}
-        if not (snapshot.get('active_plan') or {}).get('sleep_blocks'):
-            profile = snapshot['profile']
-            zone = ZoneInfo(profile['home_timezone'])
-            first, last = map(dt, state.get('repair_window', [snapshot['now_utc'], snapshot['horizon_end_utc']]))
-            day = (first.astimezone(zone) - timedelta(days=1)).date()
-            final_day = last.astimezone(zone).date()
-            minutes = round(profile['preferred_sleep_start_hour'] * 60)
-            clock = f'{minutes // 60:02d}:{minutes % 60:02d}:00'
-            references, notes = ([], [])
-            while day <= final_day:
-                try:
-                    start = local_instant(day, clock, zone.key)
-                except ValueError:
-                    notes.append(f'{day}: local bedtime is ambiguous or nonexistent')
-                    day += timedelta(days=1)
-                    continue
-                end = start + timedelta(hours=profile['sleep_need_hours'])
-                if start < last and end > first:
-                    references.append({'start_utc': stamp(start), 'end_utc': stamp(end), 'timezone': zone.key, 'source': 'home_routine_reference'})
-                day += timedelta(days=1)
-            result['routine_reference'] = references
-            if notes:
-                result['routine_reference_notes'] = notes
-        return (result, [])
+        return ({'profile': snapshot['profile']}, [])
     if name == 'observe_track':
         result = observe_track(observed, blocks, **args)
         if snapshot.get('snapshot_notes'):
@@ -195,24 +206,26 @@ def _execute(state, name, args):
     result = edit_schedule(observed, blocks, **args)
     updated = result.pop('blocks')
     intervals = [item for change in result['changes'] for item in (change.get('before'), change.get('after')) if item]
-    if intervals and max((dt(b['end_utc']) for b in intervals)) - min((dt(b['start_utc']) for b in intervals)) > timedelta(days=7):
-        raise ValueError('单次编辑涉及事项的时间跨度超过七天；请拆分为多次编辑，包含修改前后的时间。')
     for b in updated:
         if b['id'] not in existing or b != existing[b['id']]:
-            if dt(b['start_utc']) < dt(snapshot['now_utc']) or dt(b['end_utc']) > dt(snapshot['horizon_end_utc']):
-                raise ValueError('睡眠建议必须位于未来规划范围内')
+            if dt(b['start_utc']) < dt(snapshot['now_utc']):
+                raise ValueError('睡眠建议必须位于未来')
             if b.get('role') not in ('main', 'nap'):
                 raise ValueError('睡眠建议 role 必须为 main 或 nap')
     if 'repair_window' in state:
         start, end = map(dt, state['repair_window'])
-        if any((dt(b['start_utc']) < start or dt(b['end_utc']) > end for b in intervals)):
-            raise ValueError('reactive edits must stay within the affected window')
-        baseline = state['issue_review']['effective']
-        candidate = review(snapshot, updated, state['repair_window'])
+        if intervals:
+            start = max(dt(snapshot['now_utc']), min(start, *(dt(b['start_utc']) for b in intervals)))
+            end = max(end, *(dt(b['end_utc']) for b in intervals))
+        window = [stamp(start), stamp(end)]
+        review_snapshot = dict(snapshot, horizon_end_utc=stamp(max(end, dt(snapshot['horizon_end_utc']))))
+        baseline = review(review_snapshot, state['snapshot']['active_plan']['sleep_blocks'], window)
+        candidate = review(review_snapshot, updated, window)
         report = compare(baseline, candidate)
         if any((issue['type'] != 'sleep_deficit' for issue in report['added'])):
             return ({**result, 'retained': False, 'issue_review': report}, [])
         state['issue_review'] = report
+        state['repair_window'] = window
         result.update(retained=True, issue_review=report)
     state['plan']['sleep_blocks'] = updated
     diffs = []

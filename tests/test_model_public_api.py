@@ -566,7 +566,7 @@ def test_concatenate_traces_requires_adjacent_chunks():
 # ---------------------------------------------------------------------------
 
 def test_search_helpers_preserve_default_constants_and_formulas():
-    assert physiological_configuration()['latency_minutes'] == 15.0  # 0.25 h onset latency
+    assert physiological_configuration()['latency_minutes'] == 0.0
     assert physiological_configuration()['inertia_hours'] == .5
     assert physiological_configuration()['burden_weights'] == [.60, .25, .15]
     assert physiological_configuration()['threshold'] == .60

@@ -17,7 +17,7 @@ def test_rolling_deficit_uses_partial_overlaps_and_exact_crossings():
     duties = [record('duty', '2026-11-15T09:00:00Z', '2026-11-15T11:00:00Z')]
     issues = check_sleep_deficit(
         actual, planned, cutoff_utc=cutoff, start_utc='2026-11-14T12:00:00Z',
-        end_utc='2026-11-15T21:00:00Z', duties=duties,
+        end_utc='2026-11-15T21:00:00Z', duties=duties, config={'latency_minutes': 15.0},
     )['issues']
     assert len(issues) == 1
     issue = issues[0]
@@ -33,7 +33,7 @@ def test_exact_target_separates_deficits():
     planned = [record('plan', cutoff, '2026-11-15T08:15:00Z')]
     issues = check_sleep_deficit(
         [], planned, cutoff_utc=cutoff, start_utc=cutoff,
-        end_utc='2026-11-16T01:15:00Z',
+        end_utc='2026-11-16T01:15:00Z', config={'latency_minutes': 15.0},
     )['issues']
     assert len(issues) == 2
     assert issues[0]['end_utc'] == '2026-11-15T08:15:00Z'
@@ -49,3 +49,11 @@ def test_missing_sleep_produces_one_issue_without_imputation():
     assert [(i['start_utc'], i['end_utc'], i['max_deficit_hours']) for i in issues] == [
         (start, end, 8),
     ]
+
+
+def test_eight_hour_daily_sleep_has_no_default_latency_deficit():
+    planned = [record('first', '2027-01-02T15:00:00Z', '2027-01-02T23:00:00Z'),
+               record('second', '2027-01-03T15:00:00Z', '2027-01-03T23:00:00Z')]
+    result = check_sleep_deficit([], planned, cutoff_utc='2027-01-01T00:00:00Z',
+                                 start_utc='2027-01-02T23:00:00Z', end_utc='2027-01-03T23:00:00Z')
+    assert result['issues'] == []

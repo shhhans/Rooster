@@ -11,7 +11,7 @@ DEFAULTS = {
     'burden_weights': [.60, .25, .15],
     'rank_weights': [.65, .20, .10, .05],
     'threshold': .60, 'softness': .05,
-    'light_factor': 1., 'latency_minutes': 15., 'early_minutes': 0.,
+    'light_factor': 1., 'latency_minutes': 0., 'early_minutes': 0.,
     'sleep_count_threshold': 4, 'sleep_count_coefficient': 2.,
 }
 SCENARIOS = {

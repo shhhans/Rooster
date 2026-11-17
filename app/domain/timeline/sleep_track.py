@@ -149,6 +149,8 @@ class SleepTrack:
 
         start_utc, end_utc = _resolve_pair(sleep_start, sleep_end, timezone)
         now = _utcnow()
+        if end_utc > now:
+            raise InvalidInputError('actual sleep cannot end in the future')
         event = ScheduleEvent(
             event_id=new_event_id(),
             track=self.name,
@@ -159,6 +161,7 @@ class SleepTrack:
             timezone=timezone,
             source=source,
             status=STATUS,
+            realization='actual',
             title=TITLE,
             payload={"sleep_start": sleep_start, "sleep_end": sleep_end},
             supersedes=None,
@@ -185,8 +188,14 @@ class SleepTrack:
         timezone = _require_str("timezone", timezone)
 
         target = self.store.get_by_id(event_id)
-        if target is None:
+        if target is None or target.track != self.name or not self.store.is_visible_event(target):
             raise EventNotFoundError(f"event {event_id} does not exist")
+
+        if target.retired_in_txn:
+            raise EventRetractedError(f"event {event_id} is retired")
+
+        if target.realization != 'actual':
+            raise InvalidInputError('planned sleep cannot be corrected as an actual observation')
 
         start_utc, end_utc = _resolve_pair(sleep_start, sleep_end, timezone)
         payload = {"sleep_start": sleep_start, "sleep_end": sleep_end}
@@ -217,6 +226,8 @@ class SleepTrack:
             )
 
         now = _utcnow()
+        if end_utc > now:
+            raise InvalidInputError('actual sleep cannot end in the future')
         new_id = new_event_id()
         new_dedupe_key = "auto:" + new_id
         new_event = ScheduleEvent(
@@ -231,6 +242,8 @@ class SleepTrack:
             # do not carry a source field).
             source=target.source,
             status=STATUS,
+            confirmation=target.confirmation,
+            realization=target.realization,
             title=TITLE,
             payload=payload,
             supersedes=event_id,
@@ -255,8 +268,11 @@ class SleepTrack:
             raise InvalidInputError("reason must be a string when provided")
 
         target = self.store.get_by_id(event_id)
-        if target is None:
+        if target is None or target.track != self.name or not self.store.is_visible_event(target):
             raise EventNotFoundError(f"event {event_id} does not exist")
+
+        if target.retired_in_txn:
+            raise InvalidInputError(f"event {event_id} is retired")
 
         if target.retracted:
             # Idempotent: do not update retracted_at or retracted_reason.
@@ -302,7 +318,7 @@ class SleepTrack:
             raise InvalidInputError("resolve_head must be a boolean")
 
         current = self.store.get_by_id(event_id)
-        if current is None:
+        if current is None or current.track != self.name or not self.store.is_visible_event(current):
             raise EventNotFoundError(f"event {event_id} does not exist")
 
         if not resolve_head:

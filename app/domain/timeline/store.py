@@ -11,6 +11,7 @@ import json
 import sqlite3
 import threading
 import uuid
+from pathlib import Path
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from typing import Any, Dict, Iterator, List, Optional
@@ -42,6 +43,17 @@ CREATE TABLE IF NOT EXISTS events (
     UNIQUE(track, user_id, dedupe_key)
 );
 
+CREATE TABLE IF NOT EXISTS roster_confirmations (
+    confirmation_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    file_sha256 TEXT NOT NULL,
+    coverage_month TEXT NOT NULL,
+    proposal_json TEXT NOT NULL,
+    result_json TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE(user_id, file_sha256, coverage_month)
+);
+
 CREATE INDEX IF NOT EXISTS idx_events_user_window
     ON events (track, user_id, occurred_at_utc);
 CREATE INDEX IF NOT EXISTS idx_events_supersedes
@@ -56,6 +68,77 @@ CREATE TABLE IF NOT EXISTS event_lineage (
     PRIMARY KEY (child_id, parent_id)
 );
 CREATE INDEX IF NOT EXISTS idx_event_lineage_parent ON event_lineage (parent_id);
+
+CREATE TABLE IF NOT EXISTS proposal_batches (
+    txn_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('pending', 'accepted', 'rejected')),
+    input_revision INTEGER NOT NULL,
+    created_at TEXT NOT NULL,
+    decided_at TEXT
+);
+CREATE TABLE IF NOT EXISTS proposal_retirements (
+    txn_id TEXT NOT NULL REFERENCES proposal_batches(txn_id),
+    event_id TEXT NOT NULL REFERENCES events(event_id),
+    PRIMARY KEY (txn_id, event_id)
+);
+CREATE TABLE IF NOT EXISTS sleep_profiles (
+    user_id TEXT PRIMARY KEY,
+    profile_json TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS reactive_issues (
+    issue_key TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    status TEXT NOT NULL,
+    start_utc TEXT NOT NULL,
+    end_utc TEXT NOT NULL,
+    issue_json TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY (user_id, issue_key)
+);
+CREATE TABLE IF NOT EXISTS reactive_jobs (
+    job_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    status TEXT NOT NULL,
+    start_utc TEXT NOT NULL,
+    end_utc TEXT NOT NULL,
+    input_revision INTEGER NOT NULL,
+    txn_id TEXT,
+    state_json TEXT,
+    error TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS reactive_model_requests (
+    request_id TEXT PRIMARY KEY,
+    job_id TEXT NOT NULL REFERENCES reactive_jobs(job_id),
+    step_index INTEGER NOT NULL,
+    max_tokens INTEGER NOT NULL,
+    started_at TEXT NOT NULL,
+    finished_at TEXT,
+    finish_reason TEXT,
+    error TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_reactive_model_requests_job ON reactive_model_requests(job_id, started_at);
+CREATE TABLE IF NOT EXISTS reactive_model_chunks (
+    request_id TEXT NOT NULL REFERENCES reactive_model_requests(request_id),
+    seq INTEGER NOT NULL,
+    received_at TEXT NOT NULL,
+    data BLOB NOT NULL,
+    PRIMARY KEY(request_id, seq)
+);
+
+CREATE TABLE IF NOT EXISTS reactive_tool_activity (
+    job_id TEXT NOT NULL REFERENCES reactive_jobs(job_id),
+    step_index INTEGER NOT NULL,
+    tool_index INTEGER NOT NULL,
+    started_at TEXT NOT NULL,
+    finished_at TEXT,
+    details TEXT NOT NULL,
+    summary TEXT,
+    PRIMARY KEY(job_id, step_index, tool_index)
+);
 
 -- Event-log revision bookkeeping (INCREMENTAL-API-01).
 -- Every inserted event gets a per-event revision: 1 for a fresh ingest,
@@ -127,6 +210,10 @@ def _row_to_event(row: sqlite3.Row) -> ScheduleEvent:
         retracted_reason=row["retracted_reason"],
         created_at=_parse_dt(row["created_at"]),
         updated_at=_parse_dt(row["updated_at"]),
+        confirmation=row["confirmation"],
+        realization=row["realization"],
+        created_in_txn=row["created_in_txn"],
+        retired_in_txn=row["retired_in_txn"],
     )
 
 
@@ -151,7 +238,24 @@ class EventStore:
         self._conn.row_factory = sqlite3.Row
         self._conn.execute("PRAGMA foreign_keys = ON")
         with self._lock:
+            existing = self._conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='events'").fetchone()
+            columns = {r['name'] for r in self._conn.execute('PRAGMA table_info(events)')} if existing else set()
+            if existing and 'confirmation' not in columns and db_path != ':memory:':
+                db_file = Path(db_path).resolve()
+                backup_dir = db_file.parent / 'backups'
+                backup_dir.mkdir(parents=True, exist_ok=True)
+                backup_path = backup_dir / (db_file.stem + '-before-event-dimensions-' + uuid.uuid4().hex + '.db')
+                with sqlite3.connect(str(backup_path)) as backup:
+                    self._conn.backup(backup)
             self._conn.executescript(SCHEMA_SQL)
+            columns = {r['name'] for r in self._conn.execute('PRAGMA table_info(events)')}
+            for name, definition in (('confirmation', "TEXT NOT NULL DEFAULT 'accepted'"),
+                                     ('realization', "TEXT NOT NULL DEFAULT 'planned'"),
+                                     ('created_in_txn', 'TEXT'), ('retired_in_txn', 'TEXT')):
+                if name not in columns:
+                    self._conn.execute(f'ALTER TABLE events ADD COLUMN {name} {definition}')
+            self._conn.execute("UPDATE events SET source='system' WHERE source='roster'")
+            self._conn.execute("UPDATE events SET realization='actual' WHERE status='occurred'")
             self._conn.execute(
                 'INSERT OR IGNORE INTO event_lineage(child_id, parent_id, created_at) '
                 'SELECT child.event_id, parent.event_id, child.created_at FROM events child '
@@ -260,7 +364,7 @@ class EventStore:
 
     # ---------- writes ----------
 
-    def insert(self, event: ScheduleEvent) -> None:
+    def insert(self, event: ScheduleEvent, *, bump_revision: bool = True) -> None:
         with self.transaction():
             # Per-event revision: fresh ingest = 1, correction = parent + 1.
             if event.supersedes:
@@ -279,8 +383,8 @@ class EventStore:
                     source, status, title, payload,
                     supersedes, superseded_by,
                     retracted, retracted_at, retracted_reason,
-                    created_at, updated_at
-                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                    created_at, updated_at, confirmation, realization, created_in_txn, retired_in_txn
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """,
                 (
                     event.event_id,
@@ -301,6 +405,10 @@ class EventStore:
                     event.retracted_reason,
                     _iso_z(event.created_at) if event.created_at else None,
                     _iso_z(event.updated_at) if event.updated_at else None,
+                    event.confirmation,
+                    event.realization,
+                    event.created_in_txn,
+                    event.retired_in_txn,
                 ),
             )
             self._conn.execute(
@@ -315,7 +423,8 @@ class EventStore:
                 prior = self.get_by_id(event.supersedes)
                 if prior:
                     affected = min(affected, _iso_z(prior.occurred_at_utc))
-            self._bump_input_revision(event.user_id, event.local_time, affected_at_utc=affected)
+            if bump_revision:
+                self._bump_input_revision(event.user_id, event.local_time, affected_at_utc=affected)
 
     def add_lineage(self, user_id: str, child_id: str, parent_ids: List[str]) -> None:
         """Link a newly created event to existing events owned by the same user."""
@@ -383,6 +492,14 @@ class EventStore:
 
     # ---------- reads ----------
 
+    def is_visible_event(self, event: ScheduleEvent) -> bool:
+        """Candidate records are only exposed by the proposal interface."""
+        if not event.created_in_txn:
+            return True
+        with self._lock:
+            row = self._conn.execute('SELECT status FROM proposal_batches WHERE txn_id=?', (event.created_in_txn,)).fetchone()
+            return bool(row and row['status'] == 'accepted')
+
     def get_by_id(self, event_id: str) -> Optional[ScheduleEvent]:
         with self._lock:
             row = self._conn.execute(
@@ -444,6 +561,7 @@ class EventStore:
                 rows = self._conn.execute(
                     "SELECT * FROM events "
                     "WHERE track = ? AND user_id = ? "
+                    "AND (created_in_txn IS NULL OR created_in_txn IN (SELECT txn_id FROM proposal_batches WHERE status = 'accepted')) "
                     "AND occurred_at_utc >= ? AND occurred_at_utc < ? "
                     "ORDER BY occurred_at_utc ASC, created_at ASC, event_id ASC",
                     (
@@ -461,6 +579,8 @@ class EventStore:
                     "WHERE track = ? AND user_id = ? "
                     "AND occurred_at_utc >= ? AND occurred_at_utc < ? "
                     "AND retracted = 0 AND superseded_by IS NULL "
+                    "AND (created_in_txn IS NULL OR created_in_txn IN (SELECT txn_id FROM proposal_batches WHERE status = 'accepted')) "
+                    "AND (retired_in_txn IS NULL OR retired_in_txn NOT IN (SELECT txn_id FROM proposal_batches WHERE status = 'accepted')) "
                     "ORDER BY occurred_at_utc ASC, created_at ASC, event_id ASC",
                     (
                         track,

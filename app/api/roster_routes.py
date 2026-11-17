@@ -9,20 +9,107 @@ from __future__ import annotations
 import hashlib
 import json
 import uuid
+import calendar
+from datetime import date, datetime, time, timedelta, timezone
 from typing import Any
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, UploadFile, Request
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
 from zoneinfo import ZoneInfo
 from app.roster_parser import ROSTER_CONTRACT_VERSION, ROSTER_PARSER_VERSION
 from app.roster_parser.errors import InvalidTimezoneContextError, RosterError
 from app.roster_parser.normalize import build_user_text, normalize_preview, parse_model_json, SYSTEM_PROMPT
 from app.roster_parser.provider import MiniMaxClient, ProviderConfig
 from app.roster_parser.rendering import CONTENT_TYPE_JPEG, CONTENT_TYPE_PDF, CONTENT_TYPE_PNG, RosterLimits, enforce_upload_limit, render_pdf_pages, sniff_content_type
+from app.domain.timeline.baseline import generate_baseline
+from app.services.reactive_timeline import queue_review, run_queued_review
 router = APIRouter()
 
 def _default_provider_factory() -> MiniMaxClient:
     return MiniMaxClient(ProviderConfig.from_env())
 _provider_factory = _default_provider_factory
+
+class RosterConfirmation(BaseModel):
+    user_id: str = Field(min_length=1)
+    file_sha256: str = Field(pattern=r'^[a-fA-F0-9]{64}$')
+    coverage_month: str = Field(pattern=r'^\d{4}-(0[1-9]|1[0-2])$')
+    proposal: dict[str, Any]
+    profile: dict[str, Any] | None = None
+
+def _generate_month_baseline(store, body):
+    year, month = map(int, body.coverage_month.split('-'))
+    try:
+        return generate_baseline(store, body.user_id, date(year, month, 1),
+                                 date(year, month, calendar.monthrange(year, month)[1]), body.profile)
+    except (ValueError, TypeError, KeyError):
+        return {'status': 'profile_required', 'created': 0}
+
+@router.post('/api/v1/roster/confirm')
+def confirm_roster(body: RosterConfirmation, request: Request, background_tasks: BackgroundTasks):
+    """Persist the complete confirmed preview and its complete timeline events."""
+    service = request.app.state.timeline_service
+    proposal = body.proposal
+    items = proposal.get('proposed_events')
+    if not body.user_id.strip() or not isinstance(items, list) or not all(isinstance(x, dict) for x in items):
+        raise HTTPException(status_code=400, detail={'error_code': 'invalid_proposal', 'message': 'Invalid user or proposed events'})
+    encoded = json.dumps(proposal, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
+    file_hash = body.file_sha256.lower()
+    with service.store.transaction() as conn:
+        existing = conn.execute('SELECT proposal_json, result_json FROM roster_confirmations WHERE user_id=? AND file_sha256=? AND coverage_month=?', (body.user_id, file_hash, body.coverage_month)).fetchone()
+        if existing:
+            if existing['proposal_json'] != encoded:
+                raise HTTPException(status_code=409, detail={'error_code': 'confirmation_conflict', 'message': 'This file and month were already confirmed with different results'})
+            result = json.loads(existing['result_json'])
+            if body.profile:
+                result['baseline'] = _generate_month_baseline(service.store, body)
+                if result['baseline']['created'] or result['baseline'].get('profile_changed'):
+                    _queue_month_review(background_tasks, service.store, body)
+            return result
+        confirmation_id = str(uuid.uuid4())
+        imported, pending = [], []
+        for index, item in enumerate(items):
+            kind = item.get('event_type')
+            data, times = item.get('schedule_payload'), item.get('timeline')
+            if kind not in ('flight', 'duty') or not isinstance(data, dict) or not isinstance(times, dict):
+                pending.append({'seq': index, 'reason': 'invalid_event', 'fields': []})
+                continue
+            missing = data.get('pending', [])
+            if not isinstance(missing, list):
+                raise HTTPException(status_code=400, detail={'error_code': 'invalid_proposal', 'message': 'Invalid pending fields'})
+            required = ('departure', 'arrival', 'origin_tz', 'destination_tz') if kind == 'flight' else ('duty_start', 'duty_end')
+            missing = sorted(set(missing) | {field for field in required if not data.get(field)})
+            local_key, zone_key = ('departure_local', 'departure_timezone') if kind == 'flight' else ('duty_start_local', 'duty_timezone')
+            if missing or not times.get(local_key) or not times.get(zone_key):
+                pending.append({'seq': index, 'reason': 'incomplete_event', 'fields': missing or [local_key, zone_key]})
+                continue
+            event = service.ingest_schedule_event(user_id=body.user_id, dedupe_key=f'roster:{confirmation_id}:{index}', occurred_at=times[local_key], timezone=times[zone_key], source='system', status='planned', title=kind, payload={**data, 'roster_confirmation_id': confirmation_id, 'roster_item': item})
+            imported.append({'event_id': event.event_id, 'title': event.title, 'occurred_at_utc': event.to_dict()['occurred_at_utc']})
+        result = {'import_id': confirmation_id, 'coverage_month': body.coverage_month, 'imported': imported, 'pending_items': pending, 'duplicates': [], 'unresolved_items': proposal.get('unresolved_items', []), 'blank_days': []}
+        result['baseline'] = _generate_month_baseline(service.store, body)
+        if result['baseline']['status'] == 'generated':
+            _queue_month_review(background_tasks, service.store, body)
+        from datetime import datetime, timezone
+        conn.execute('INSERT INTO roster_confirmations VALUES (?, ?, ?, ?, ?, ?, ?)', (confirmation_id, body.user_id, file_hash, body.coverage_month, encoded, json.dumps(result, ensure_ascii=False), datetime.now(timezone.utc).isoformat()))
+        return result
+
+def _queue_month_review(tasks, store, body):
+    year, month = map(int, body.coverage_month.split('-'))
+    first = date(year, month, 1)
+    last = date(year, month, calendar.monthrange(year, month)[1]) + timedelta(days=1)
+    zone = ZoneInfo(body.profile['home_timezone'])
+    job_id = queue_review(store, body.user_id,
+                          datetime.combine(first, time(), zone).astimezone(timezone.utc),
+                          datetime.combine(last, time(), zone).astimezone(timezone.utc))
+    tasks.add_task(run_queued_review, store, job_id)
+
+@router.get('/api/v1/roster/confirmations')
+def list_confirmations(request: Request, user_id: str):
+    if not user_id.strip():
+        raise HTTPException(status_code=400, detail={'error_code': 'invalid_user', 'message': 'User ID is required'})
+    store = request.app.state.timeline_service.store
+    with store.lock:
+        rows = store.connection.execute('SELECT confirmation_id, file_sha256, coverage_month, proposal_json, result_json, created_at FROM roster_confirmations WHERE user_id=? ORDER BY created_at DESC', (user_id,)).fetchall()
+        return [{'confirmation_id': row['confirmation_id'], 'file_sha256': row['file_sha256'], 'coverage_month': row['coverage_month'], 'proposal': json.loads(row['proposal_json']), 'result': json.loads(row['result_json']), 'created_at': row['created_at']} for row in rows]
 
 @router.post('/api/v1/roster/preview')
 def preview_roster(file: UploadFile=File(...), home_timezone: str | None=Form(None), airport_timezone_map: str | None=Form(None), roster_year: int | None=Form(None), roster_month: int | None=Form(None)) -> dict[str, Any]:

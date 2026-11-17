@@ -24,7 +24,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -36,7 +36,9 @@ from app.domain.timeline.errors import (
     UnknownTimezoneError,
 )
 from app.domain.timeline.models import ScheduleEvent
+from app.domain.timeline.sleep_track import _resolve_sleep_local
 from app.services.timeline_service import TimelineService
+from app.services.reactive_trigger import queue_input_review
 
 
 router = APIRouter(prefix="/timeline/sleep", tags=["timeline-sleep"])
@@ -132,16 +134,15 @@ def _error_response(e: Exception) -> JSONResponse:
 
 
 @router.post("/events", response_model=Dict[str, Any])
-def ingest_event(req: SleepIngestRequest, svc: TimelineService = Depends(_get_service)):
+def ingest_event(req: SleepIngestRequest, background_tasks: BackgroundTasks, svc: TimelineService = Depends(_get_service)):
     try:
-        e = svc.ingest_sleep_event(
-            user_id=req.user_id,
-            dedupe_key=req.dedupe_key,
-            sleep_start=req.sleep_start,
-            sleep_end=req.sleep_end,
-            timezone=req.timezone,
-            source=req.source,
-        )
+        with svc.store.transaction():
+            revision = svc.store.get_input_revision(req.user_id) if isinstance(req.user_id, str) else None
+            e = svc.ingest_sleep_event(
+                user_id=req.user_id, dedupe_key=req.dedupe_key, sleep_start=req.sleep_start,
+                sleep_end=req.sleep_end, timezone=req.timezone, source='user')
+            if revision != svc.store.get_input_revision(e.user_id):
+                queue_input_review(svc.store, background_tasks, [e], 'actual_sleep_updated')
     except (
         InvalidInputError,
         UnknownTimezoneError,
@@ -155,15 +156,16 @@ def ingest_event(req: SleepIngestRequest, svc: TimelineService = Depends(_get_se
 
 @router.post("/events/{event_id}/correct", response_model=Dict[str, Any])
 def correct_event(
-    event_id: str, req: SleepCorrectRequest, svc: TimelineService = Depends(_get_service)
+    event_id: str, req: SleepCorrectRequest, background_tasks: BackgroundTasks, svc: TimelineService = Depends(_get_service)
 ):
     try:
-        e = svc.correct_sleep_event(
-            event_id=event_id,
-            sleep_start=req.sleep_start,
-            sleep_end=req.sleep_end,
-            timezone=req.timezone,
-        )
+        with svc.store.transaction():
+            old = svc.store.get_by_id(event_id)
+            revision = svc.store.get_input_revision(old.user_id) if old else None
+            e = svc.correct_sleep_event(event_id=event_id, sleep_start=req.sleep_start,
+                                        sleep_end=req.sleep_end, timezone=req.timezone)
+            if revision != svc.store.get_input_revision(e.user_id):
+                queue_input_review(svc.store, background_tasks, [old, e], 'actual_sleep_updated')
     except (
         InvalidInputError,
         UnknownTimezoneError,
@@ -177,10 +179,15 @@ def correct_event(
 
 @router.post("/events/{event_id}/retract", response_model=Dict[str, Any])
 def retract_event(
-    event_id: str, req: SleepRetractRequest, svc: TimelineService = Depends(_get_service)
+    event_id: str, req: SleepRetractRequest, background_tasks: BackgroundTasks, svc: TimelineService = Depends(_get_service)
 ):
     try:
-        e = svc.retract_sleep_event(event_id=event_id, reason=req.reason)
+        with svc.store.transaction():
+            old = svc.store.get_by_id(event_id)
+            revision = svc.store.get_input_revision(old.user_id) if old else None
+            e = svc.retract_sleep_event(event_id=event_id, reason=req.reason)
+            if revision != svc.store.get_input_revision(e.user_id):
+                queue_input_review(svc.store, background_tasks, [old], 'actual_sleep_updated')
     except (InvalidInputError, EventNotFoundError) as exc:
         return _error_response(exc)
     return _event_dict(e)
@@ -192,6 +199,7 @@ def list_events(
     window_start: Optional[str] = Query(None),
     window_end: Optional[str] = Query(None),
     include_history: bool = Query(False),
+    include_end_utc: bool = Query(False),
     svc: TimelineService = Depends(_get_service),
 ):
     try:
@@ -203,7 +211,11 @@ def list_events(
         )
     except InvalidInputError as exc:
         return _error_response(exc)
-    return [_event_dict(e) for e in events]
+    result = [_event_dict(e) for e in events]
+    if include_end_utc:
+        for item, event in zip(result, events):
+            item['sleep_end_utc'] = _resolve_sleep_local('sleep_end', event.payload['sleep_end'], event.timezone).isoformat().replace('+00:00', 'Z')
+    return result
 
 
 @router.get("/events/{event_id}", response_model=Dict[str, Any])

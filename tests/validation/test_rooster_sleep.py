@@ -906,7 +906,9 @@ def test_http_ingest_200_unified_event(http_env):
     assert body["occurred_at_utc"] == "2025-04-13T02:00:00Z"
     assert body["local_time"] == "2025-04-12T22:00:00"
     assert body["timezone"] == "America/New_York"
-    assert body["source"] == "manual"
+    assert body["source"] == "user"
+    assert body["confirmation"] == "accepted"
+    assert body["realization"] == "actual"
     assert body["payload"] == {"sleep_start": "2025-04-12T22:00:00",
                                "sleep_end": "2025-04-13T06:00:00"}
     uuid.UUID(body["event_id"])

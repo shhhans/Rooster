@@ -47,7 +47,7 @@ def test_a63_sensitivity_recomputes_history_and_preserves_observations():
     assert scenarios['latency_low']['initial_state']['S']==result['initial_state']['S']
     assert scenarios['sleep_disrupted']['initial_state']['x']==result['initial_state']['x']
     assert scenarios['light_dim']['initial_state']['x']!=scenarios['light_bright']['initial_state']['x']
-    assert dt(scenarios['sleep_disrupted']['predicted_sleep'][0]['start_utc'])-dt(result['predicted_sleep'][0]['start_utc'])==timedelta(minutes=15)
+    assert dt(scenarios['sleep_disrupted']['predicted_sleep'][0]['start_utc'])-dt(result['predicted_sleep'][0]['start_utc'])==timedelta(minutes=30)
     assert result['sensitivity_range'][0]<=result['utility']<=result['sensitivity_range'][1]
 
 
@@ -78,7 +78,7 @@ def test_a46_rescore_different_weights_reuses_same_physiological_trajectory_offl
 def test_a38_short_block_and_missed_ten_minute_opportunity_are_distinguished():
     snap=synthetic_snapshot(duty=False)
     short=opportunity(NOW+timedelta(hours=1),NOW+timedelta(hours=1,minutes=10))
-    result=evaluate(snap,[short],scenarios=False,end_utc=iso(NOW+timedelta(hours=2)))
+    result=evaluate(snap,[short],scenarios=False,end_utc=iso(NOW+timedelta(hours=2)), config={'latency_minutes': 15.0})
     assert result['publishability']=='valid'
     assert result['predicted_sleep']==[]
     assert result['missed_opportunities']==[short['id']]

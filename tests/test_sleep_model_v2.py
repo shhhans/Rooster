@@ -100,14 +100,14 @@ def test_evaluation_returns_trace_predictions_and_provenance():
     assert result["provenance"]
 
 
-# A25, A38, A58: an opportunity is a soft forecast with the declared 15-minute latency.
-def test_sleep_opportunity_is_not_counted_as_immediate_or_observed_sleep():
+# A25, A38, A58: a sleep opportunity is forecast, not observed sleep.
+def test_sleep_opportunity_is_forecast_not_observed_sleep():
     snap = synthetic_snapshot(duty=False)
     block = opportunity(NOW + timedelta(hours=8), NOW + timedelta(hours=16))
     result = evaluate(snap, [block], start_utc=iso(NOW), end_utc=iso(NOW + timedelta(days=1)))
     predicted = result["predicted_sleep"]
     assert len(predicted) == 1
-    assert predicted[0]["start_utc"] == iso(NOW + timedelta(hours=8, minutes=15))
+    assert predicted[0]["start_utc"] == block["start_utc"]
     assert predicted[0]["end_utc"] == block["end_utc"]
     assert predicted[0].get("source") != "observed"
 

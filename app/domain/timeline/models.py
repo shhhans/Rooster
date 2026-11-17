@@ -38,6 +38,10 @@ class ScheduleEvent:
     retracted_reason: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    confirmation: str = "accepted"
+    realization: str = "planned"
+    created_in_txn: Optional[str] = None
+    retired_in_txn: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Return a JSON-serializable dict matching the contract output shape."""
