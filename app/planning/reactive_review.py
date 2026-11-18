@@ -34,7 +34,8 @@ def review(snapshot, blocks, window):
             continue
         issues.append({'type': 'hard_overlap' if check['id'].endswith('overlap') else 'hard_constraint',
                        'rule': check['id'], 'event_ids': ids, 'start_utc': stamp(left),
-                       'end_utc': stamp(right), 'evidence': check})
+                       'end_utc': stamp(right), 'evidence': check,
+                       'event_bounds': [{'event_id': i, 'start_utc': facts[i]['start_utc'], 'end_utc': facts[i]['end_utc']} for i in ids if i in facts]})
     result = {'issues': issues, 'feasible': not issues,
               'start_utc': stamp(start), 'end_utc': stamp(end), 'physiological_loss': None}
     if any(i['rule'] == 'sleep_overlap' for i in issues):
@@ -75,7 +76,8 @@ def review(snapshot, blocks, window):
             **thresholds,
         })
         duties = [e for e in model['normalized']['snapshot']['events'] if e['kind'] == 'duty']
-        issues.extend(check_sleep_deficit(model['actual_sleep'], future, duties=duties,
+        flights = [e for e in events if e['kind'] == 'flight']
+        issues.extend(check_sleep_deficit(model['actual_sleep'], future, duties=duties, flights=flights,
                                          cutoff_utc=snapshot['now_utc'], start_utc=stamp(start),
                                          end_utc=stamp(end),
                                          config=model['provenance']['configuration'])['issues'])

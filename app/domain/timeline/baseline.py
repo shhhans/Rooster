@@ -30,7 +30,12 @@ def generate_baseline(store: EventStore, user_id: str, first_day: date, last_day
             store._bump_input_revision(user_id, first_day.isoformat())
         store.connection.execute('INSERT INTO sleep_profiles VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET profile_json=excluded.profile_json, updated_at=excluded.updated_at',
                                  (user_id, json.dumps(profile), datetime.now(timezone.utc).isoformat()))
-        day = first_day
+        progress = store.connection.execute('SELECT generated_through FROM baseline_generation_state WHERE user_id=?', (user_id,)).fetchone()
+        if progress:
+            day = date.fromisoformat(progress['generated_through']) + timedelta(days=1)
+        else:
+            latest = store.connection.execute("SELECT MAX(substr(dedupe_key, 10, 10)) AS last_day FROM events WHERE user_id=? AND track='sleep' AND source='baseline' AND dedupe_key GLOB 'baseline:????-??-??'", (user_id,)).fetchone()['last_day']
+            day = date.fromisoformat(latest) + timedelta(days=1) if latest else first_day
         while day <= last_day:
             # The key persists even if the event is later retired by a proposal.
             key = 'baseline:' + day.isoformat()
@@ -54,4 +59,7 @@ def generate_baseline(store: EventStore, user_id: str, first_day: date, last_day
                 store.insert(event)
                 count += 1
             day += timedelta(days=1)
+        if day > last_day and (not progress or last_day > date.fromisoformat(progress['generated_through'])):
+            generated_through = max(last_day, date.fromisoformat(latest)) if not progress and latest else last_day
+            store.connection.execute('INSERT INTO baseline_generation_state VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET generated_through=excluded.generated_through', (user_id, generated_through.isoformat()))
     return {'status': 'generated', 'created': count, 'profile_changed': profile_changed, 'skipped_dates': skipped}

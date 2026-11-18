@@ -163,7 +163,7 @@ def check_plan(snapshot: dict, blocks: list[dict]) -> list[dict]:
             if _overlap((start, end), (a, b)):
                 checks.append({"id": "sleep_overlap", "status": "fail", "block_id": block.get("id"), "other_id": other.get("id")})
         for event in _events(snap):
-            blocked_kind = event.get("kind") in {"duty", "flight", "sleep_actual", "wake_actual", "commute", "preparation"}
+            blocked_kind = event.get("kind") in {"duty", "flight", "sleep_actual", "wake_actual", "sleep", "exercise", "meal", "commute", "preparation"}
             blocked_kind = blocked_kind or (event.get("kind") == "commitment" and event.get("locked", True))
             blocked_kind = blocked_kind or (event.get("kind") == "environment" and event.get("availability") in {False, "unavailable", "blocked"})
             if blocked_kind:

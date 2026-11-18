@@ -87,6 +87,10 @@ CREATE TABLE IF NOT EXISTS sleep_profiles (
     profile_json TEXT NOT NULL,
     updated_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS baseline_generation_state (
+    user_id TEXT PRIMARY KEY,
+    generated_through TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS reactive_issues (
     issue_key TEXT NOT NULL,
     user_id TEXT NOT NULL,

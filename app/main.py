@@ -2,6 +2,8 @@
 from contextlib import asynccontextmanager
 import os
 import uuid
+import asyncio
+import logging
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,9 +21,23 @@ def create_app(timeline_db_path: str | None = None) -> FastAPI:
         app.state.timeline_service = TimelineService(db_path=timeline_db_path)
         with app.state.timeline_service.store.transaction() as conn:
             conn.execute("UPDATE reactive_jobs SET status='failed', error='服务重启，任务已中断；可重新检查' WHERE status IN ('reviewing', 'queued', 'running')")
+        async def realize_loop():
+            from app.services.sleep_realization import realize_and_refresh
+            while True:
+                try:
+                    await asyncio.to_thread(realize_and_refresh, app.state.timeline_service.store)
+                except Exception:
+                    logging.getLogger(__name__).exception('Failed to realize completed sleep')
+                await asyncio.sleep(60)
+        task = asyncio.create_task(realize_loop())
         try:
             yield
         finally:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
             app.state.timeline_service.close()
     app = FastAPI(title="Rooster Backend", version="0.1.0", lifespan=lifespan)
     @app.exception_handler(RequestValidationError)

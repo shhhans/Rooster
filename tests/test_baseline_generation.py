@@ -9,6 +9,26 @@ import sqlite3
 PROFILE = {'home_timezone': 'Asia/Shanghai', 'preferred_sleep_start_hour': 23, 'sleep_need_hours': 8}
 
 
+def test_generation_progress_survives_deletion_and_fills_forward_gap():
+    store = EventStore(':memory:')
+    generate_baseline(store, 'Eva', date(2026, 1, 1), date(2026, 1, 3), PROFILE)
+    store.connection.execute("DELETE FROM events WHERE user_id='Eva' AND dedupe_key='baseline:2026-01-02'")
+    result = generate_baseline(store, 'Eva', date(2026, 1, 6), date(2026, 1, 7), PROFILE)
+    assert result['created'] == 4
+    assert store.get_by_dedupe_key('Eva', 'sleep', 'baseline:2026-01-02') is None
+    assert store.get_by_dedupe_key('Eva', 'sleep', 'baseline:2026-01-04') is not None
+    assert store.connection.execute('SELECT generated_through FROM baseline_generation_state WHERE user_id=?', ('Eva',)).fetchone()[0] == '2026-01-07'
+
+
+def test_existing_events_initialize_generation_progress():
+    store = EventStore(':memory:')
+    generate_baseline(store, 'Eva', date(2026, 1, 1), date(2026, 1, 3), PROFILE)
+    store.connection.execute('DELETE FROM baseline_generation_state')
+    store.connection.execute("DELETE FROM events WHERE dedupe_key='baseline:2026-01-02'")
+    assert generate_baseline(store, 'Eva', date(2026, 1, 1), date(2026, 1, 3), PROFILE)['created'] == 0
+    assert store.connection.execute('SELECT generated_through FROM baseline_generation_state').fetchone()[0] == '2026-01-03'
+
+
 def test_baseline_idempotent_and_does_not_resurrect_retired_event():
     store = EventStore(':memory:')
     day = date(2026, 1, 1)

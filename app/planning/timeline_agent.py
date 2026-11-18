@@ -1,5 +1,6 @@
 """Native-tool sleep planning against the shared incremental timeline."""
 from copy import deepcopy
+from pathlib import Path
 from datetime import datetime, timedelta
 import json
 import os
@@ -7,7 +8,6 @@ import urllib.error
 import urllib.request
 from zoneinfo import ZoneInfo
 from app.contracts.time import dt, local_instant, stamp
-from app.planning.incremental_agent import PROMPT
 from app.planning.observation import TRACKS, observe_event, observe_track
 from app.planning.reactive_review import compare, review
 from app.planning.schedule_edit import edit_schedule
@@ -16,12 +16,21 @@ MODEL = 'deepseek-v4.1-flash'
 URL = 'https://ark.cn-beijing.volces.com/api/plan/v3/chat/completions'
 REPAIR_PADDING = timedelta(hours=48)
 
+
+def _issue_summary(issue):
+    result = {key: issue[key] for key in ('type', 'rule', 'event_ids', 'start_utc', 'end_utc', 'event_bounds', 'samples', 'max_deficit_hours') if key in issue}
+    if issue['type'] == 'sleep_onset_pressure_low':
+        result['suggestions'] = ['加大睡眠间隔', '减小前段睡眠时长']
+    elif issue['type'] == 'sleep_maintenance_pressure_low':
+        result['suggestions'] = ['减小本段睡眠时长', '加大睡眠间隔']
+    return result
+
 def _schema(name, description, properties, required):
     return {'type': 'function', 'function': {'name': name, 'description': description, 'parameters': {'type': 'object', 'properties': properties, 'required': required, 'additionalProperties': False}}}
 _tracks = {'type': 'array', 'items': {'type': 'string', 'enum': list(TRACKS)}, 'minItems': 1}
 _zone = {'type': 'string', 'description': 'IANA 显示时区。'}
 _fields = {'type': 'object', 'properties': {'kind': {'type': 'string', 'enum': ['sleep_plan']}, 'start': {'type': 'string', 'description': 'ISO 日期时间，无偏移时按事项时区解释。'}, 'end': {'type': 'string', 'description': 'ISO 日期时间，无偏移时按事项时区解释。'}, 'timezone': _zone, 'title': {'type': 'string'}, 'role': {'type': 'string', 'enum': ['main', 'nap']}, 'crew_rest_id': {'type': ['string', 'null'], 'description': '机组休息许可事项 ID，清除时传 null。'}, 'parent_event_ids': {'type': 'array', 'items': {'type': 'string'}, 'description': '所替代或拆分的历史睡眠事项 ID。'}}, 'additionalProperties': False}
-TOOLS = [_schema('observe_profile', '读取用户睡眠档案。', {}, []), _schema('observe_track', '读取选定时间窗口中所选轨道的事项；返回完整边界、连续睡眠及重叠。时间同时按UTC和指定时区显示；未来没有已知占用的时间默认可自由支配。', {'tracks': _tracks, 'start': {'type': 'string'}, 'end': {'type': 'string'}, 'timezone': _zone}, ['tracks', 'start', 'end', 'timezone']), _schema('observe_event', '读取事项及其前后指定小时数的轨道事项、相邻间隔和重叠。', {'event_id': {'type': 'string'}, 'before_hours': {'type': 'number', 'minimum': 0}, 'after_hours': {'type': 'number', 'minimum': 0}, 'tracks': _tracks, 'timezone': _zone}, ['event_id', 'before_hours', 'after_hours', 'tracks', 'timezone']), _schema('edit_schedule', '批量创建、修改或删除睡眠建议，失败时整批不生效；返回修改和局部关系。不能修改用户已确认的安排或事实。', {'operations': {'type': 'array', 'minItems': 1, 'items': {'type': 'object', 'properties': {'op': {'type': 'string', 'enum': ['create', 'update', 'delete']}, 'event_id': {'type': 'string'}, 'fields': _fields}, 'required': ['op'], 'additionalProperties': False}}, 'display_timezone': _zone, 'context_hours': {'type': 'number', 'minimum': 0.1}}, ['operations', 'display_timezone'])]
+TOOLS = [_schema('observe_profile', '读取用户睡眠档案。', {}, []), _schema('observe_track', '读取选定时间窗口中所选轨道的事项；返回完整边界、连续睡眠及重叠。时间同时按UTC和指定时区显示；未来没有已知占用的时间默认可自由支配。', {'tracks': _tracks, 'start': {'type': 'string'}, 'end': {'type': 'string'}, 'timezone': _zone}, ['tracks', 'start', 'end', 'timezone']), _schema('observe_event', '读取事项及其前后指定小时数的轨道事项、相邻间隔和重叠。', {'event_id': {'type': 'string'}, 'before_hours': {'type': 'number', 'minimum': 0}, 'after_hours': {'type': 'number', 'minimum': 0}, 'tracks': _tracks, 'timezone': _zone}, ['event_id', 'before_hours', 'after_hours', 'tracks', 'timezone']), _schema('edit_schedule', '一次创建、修改或删除一个睡眠建议；拆分或合并须在一批中删除原事件并创建带 parent_event_ids 的新事件。返回编辑是否保留及 Issue 变化。只能修改未来的 agent 或 baseline 睡眠。', {'operations': {'type': 'array', 'minItems': 1, 'items': {'type': 'object', 'properties': {'op': {'type': 'string', 'enum': ['create', 'update', 'delete']}, 'event_id': {'type': 'string'}, 'fields': _fields}, 'required': ['op'], 'additionalProperties': False}}, 'display_timezone': _zone}, ['operations', 'display_timezone'])]
 
 def request(messages, tools=TOOLS, *, on_stream=None, reasoning_effort='high'):
     for max_tokens in (65536, 131072):
@@ -98,7 +107,7 @@ def _request_once(messages, tools, max_tokens, *, on_stream=None, reasoning_effo
 
 def begin_run(snapshot, *, request, budget=None, run_id=None, client=None, decision_mode=None):
     blocks = deepcopy((snapshot.get('active_plan') or {}).get('sleep_blocks') or [])
-    prompt = PROMPT + '\n面对较长的规划范围，先了解全局班表与既有安排，再结合行程按较小的时间段逐步规划和编辑，关注前后行程和睡眠的关系，必要时回头调整，直至完成任务。'
+    prompt = (Path(__file__).resolve().parent / 'prompts' / 'reactive_system.md').read_text(encoding='utf-8').rstrip()
     prompt += '\n当前时刻：' + snapshot['now_utc'] + '。'
     user = '请根据我的班表和已有安排制定可执行的睡眠计划。请通过工具观察和编辑，完成后检查并说明结果。'
     if request.get('kind') == 'feedback':
@@ -114,7 +123,7 @@ def begin_run(snapshot, *, request, budget=None, run_id=None, client=None, decis
         state['repair_window'] = [start.isoformat(), end.isoformat()]
         baseline = review(snapshot, blocks, state['repair_window'])
         state['issue_review'] = compare(baseline, baseline)
-        state['messages'][1]['content'] = '按下列变更和 Issue 检查局部排程。仅在有可行改善时编辑，每批编辑会返回复检。允许保留生理赤字；未找到修复不能断言无解。尊重用户忽略的问题，证据变化时可以重新检查。' + json.dumps({'trigger': request, 'effective': baseline, 'feedback': snapshot.get('user_feedback', []), 'rejection_history': snapshot.get('rejection_history', []), 'previous_issue_states': snapshot.get('previous_issue_states', [])}, ensure_ascii=False)
+        state['messages'][1]['content'] = '按下列变更和 Issue 检查局部排程。仅在有可行改善时编辑，每批编辑会返回复检。允许保留生理赤字；未找到修复不能断言无解。尊重用户忽略的问题，证据变化时可以重新检查。' + json.dumps({'trigger': request, 'issues': [_issue_summary(issue) for issue in baseline['issues']], 'feedback': snapshot.get('user_feedback', []), 'rejection_history': snapshot.get('rejection_history', []), 'previous_issue_states': snapshot.get('previous_issue_states', [])}, ensure_ascii=False)
         if request.get('trigger') != 'proposal_rejected' and (not baseline['issues']) and (not baseline.get('model_unavailable')):
             state['answer'] = '受影响窗口未检出需要修复的 Issue。'
     return state
@@ -154,7 +163,7 @@ def _step(draft, snapshot=None, *, mode='step', limit=None, client=None, on_tool
             result, changes = _execute(state, name, args)
             diffs.extend(changes)
         except (KeyError, TypeError, ValueError) as exc:
-            result = {'error': type(exc).__name__ + ': ' + str(exc)}
+            result = {'retained': False, 'error': {'code': type(exc).__name__, 'message': str(exc)}} if name == 'edit_schedule' else {'error': type(exc).__name__ + ': ' + str(exc)}
         if on_tool:
             on_tool(state, index, call, result)
         state['messages'].append({'role': 'tool', 'tool_call_id': call['id'], 'name': name, 'content': json.dumps(result, ensure_ascii=False)})
@@ -189,9 +198,19 @@ def _execute(state, name, args):
         return (observe_event(observed, blocks, **args), [])
     if name != 'edit_schedule':
         raise ValueError('unknown tool')
+    operations = args.get('operations', [])
+    if len(operations) > 1:
+        removed = {op.get('event_id') for op in operations if op.get('op') == 'delete'}
+        created = [op for op in operations if op.get('op') == 'create']
+        parents = {parent for op in created for parent in (op.get('fields') or {}).get('parent_event_ids', [])}
+        if (len(removed) + len(created) != len(operations) or not removed or not created
+                or parents != removed or not (len(removed) == 1 or len(created) == 1)):
+            raise ValueError('一次只能编辑一个事件；拆分或合并须以删除和创建组成一批，并标明所有父事件')
     existing = {b['id']: b for b in blocks}
     for op in args.get('operations', []):
         before = existing.get(op.get('event_id'))
+        if before and before.get('source') not in ('agent', 'baseline', 'planning_suggestion'):
+            raise ValueError('权限不足：只能编辑 agent 或 baseline 来源的睡眠事件')
         if before and (before.get('accepted') and 'repair_window' not in state or dt(before['start_utc']) < dt(snapshot['now_utc'])):
             raise ValueError('已确认或已开始的安排不可由工具修改')
         if (op.get('fields') or {}).get('kind', 'sleep_plan') != 'sleep_plan':
@@ -205,6 +224,7 @@ def _execute(state, name, args):
                     raise ValueError('时间偏移与事项时区不一致，请使用当地时间或正确偏移')
     result = edit_schedule(observed, blocks, **args)
     updated = result.pop('blocks')
+    changes = result['changes']
     intervals = [item for change in result['changes'] for item in (change.get('before'), change.get('after')) if item]
     for b in updated:
         if b['id'] not in existing or b != existing[b['id']]:
@@ -219,20 +239,25 @@ def _execute(state, name, args):
             end = max(end, *(dt(b['end_utc']) for b in intervals))
         window = [stamp(start), stamp(end)]
         review_snapshot = dict(snapshot, horizon_end_utc=stamp(max(end, dt(snapshot['horizon_end_utc']))))
-        baseline = review(review_snapshot, state['snapshot']['active_plan']['sleep_blocks'], window)
+        baseline = review(review_snapshot, blocks, window)
         candidate = review(review_snapshot, updated, window)
         report = compare(baseline, candidate)
-        if any((issue['type'] != 'sleep_deficit' for issue in report['added'])):
-            return ({**result, 'retained': False, 'issue_review': report}, [])
-        state['issue_review'] = report
+        feedback = {'resolved': [_issue_summary(issue) for issue in report['resolved_in_candidate']],
+                    'added': [_issue_summary(issue) for issue in report['added']],
+                    'remaining': [_issue_summary(issue) for issue in report['remaining']]}
+        effective = review(review_snapshot, state['snapshot']['active_plan']['sleep_blocks'], window)
+        state['issue_review'] = compare(effective, candidate)
         state['repair_window'] = window
-        result.update(retained=True, issue_review=report)
-    state['plan']['sleep_blocks'] = updated
+        created = [change['id'] for change in result['changes'] if change['op'] == 'create']
+        result = {'retained': True, **feedback, **({'created_event_ids': created} if created else {})}
+        if candidate.get('model_unavailable'):
+            result['model_unavailable'] = candidate['model_unavailable']
     diffs = []
-    for change in result['changes']:
+    for change in changes:
         event_id = change['id']
         after = next((b for b in updated if b['id'] == event_id), None)
         diffs.append({'event_id': event_id, 'op': {'create': 'add', 'update': 'move', 'delete': 'remove'}[change['op']], 'from_revision': None, 'to_revision': None, 'before': existing.get(event_id), 'after': after, 'target': 'sleep_block', 'affects_committed': False, 'reason': 'agent_schedule_edit'})
+    state['plan']['sleep_blocks'] = updated
     return (result, diffs)
 
 def _result(state, status, diffs):

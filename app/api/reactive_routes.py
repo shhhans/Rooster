@@ -18,7 +18,8 @@ router = APIRouter(prefix='/api/v1/reactive')
 def issues(request: Request, user_id: str):
     store = request.app.state.timeline_service.store
     with store.lock:
-        rows = store.connection.execute("SELECT issue_key, issue_json FROM reactive_issues WHERE user_id=? AND status='active' ORDER BY start_utc", (user_id,)).fetchall()
+        now = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        rows = store.connection.execute("SELECT issue_key, issue_json FROM reactive_issues WHERE user_id=? AND status='active' AND end_utc>? ORDER BY start_utc", (user_id, now)).fetchall()
         return {'issues': [{'issue_id': row['issue_key'], **json.loads(row['issue_json'])} for row in rows]}
 
 
@@ -41,14 +42,26 @@ def jobs(request: Request, user_id: str):
                     _parse(event['occurred_at_utc']) <= datetime.now(timezone.utc) for event in diff['before'] + diff['after'])
             result.append({'job_id': row['job_id'], 'status': row['status'], 'start_utc': row['start_utc'],
                            'end_utc': row['end_utc'], 'txn_id': row['txn_id'], 'error': row['error'],
-                           'stale': stale, 'tool_calls': calls[-3:]})
+                           'stale': stale, 'tool_calls': calls[-3:],
+                           'summary': state.get('answer') if row['status'] not in ('queued', 'running', 'reviewing') else None})
         return {'jobs': result}
 
 
 @router.get('/proposals/{txn_id}')
 def proposal(txn_id: str, request: Request, user_id: str):
     try:
-        return proposal_diff(request.app.state.timeline_service.store, user_id, txn_id)
+        store = request.app.state.timeline_service.store
+        with store.lock:
+            result = proposal_diff(store, user_id, txn_id)
+            row = store.connection.execute('SELECT state_json FROM reactive_jobs WHERE user_id=? AND txn_id=? ORDER BY rowid DESC LIMIT 1', (user_id, txn_id)).fetchone()
+            state = json.loads(row['state_json']) if row and row['state_json'] else {}
+            review = state.get('issue_review')
+            if review:
+                result['impact'] = {key: review.get(key, []) for key in ('resolved_in_candidate', 'added', 'remaining')}
+                result['impact']['effective_model_unavailable'] = review.get('effective', {}).get('model_unavailable')
+                result['impact']['candidate_model_unavailable'] = review.get('candidate', {}).get('model_unavailable')
+            result['summary'] = state.get('answer')
+            return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail='proposal not found') from exc
 

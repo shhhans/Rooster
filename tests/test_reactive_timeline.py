@@ -8,6 +8,46 @@ from fastapi.testclient import TestClient
 from app.main import create_app
 
 
+def test_sleep_overlap_returns_issue_without_retaining_edit():
+    from copy import deepcopy
+    from app.planning.timeline_agent import _execute
+    from app.services.reactive_timeline import snapshot
+    service = TimelineService(':memory:')
+    day = (datetime.now(timezone.utc) + timedelta(days=5)).date()
+    profile = {'home_timezone': 'UTC', 'preferred_sleep_start_hour': 23, 'sleep_need_hours': 8}
+    generate_baseline(service.store, 'Eva', day, day + timedelta(days=1), profile)
+    start = datetime.combine(day, datetime.min.time(), timezone.utc)
+    snap = snapshot(service.store, 'Eva', start, start + timedelta(days=3), historical_review=False)
+    blocks = deepcopy(snap['active_plan']['sleep_blocks'])
+    first, second = sorted(blocks, key=lambda block: block['start_utc'])
+    state = {'snapshot': snap, 'plan': {'sleep_blocks': blocks}, 'repair_window': [start.isoformat(), (start + timedelta(days=3)).isoformat()]}
+    result, changes = _execute(state, 'edit_schedule', {'operations': [{'op': 'update', 'event_id': second['id'], 'fields': {'start': first['start_utc'], 'end': first['end_utc']}}], 'display_timezone': 'UTC'})
+    assert result['retained'] is True and changes
+    issue = next(issue for issue in result['added'] if issue.get('rule') == 'sleep_overlap')
+    assert {event['event_id'] for event in issue['event_bounds']} == {first['id'], second['id']}
+    assert all(event['start_utc'] and event['end_utc'] for event in issue['event_bounds'])
+    assert state['plan']['sleep_blocks'] != blocks
+
+
+def test_user_sleep_cannot_be_edited_or_staged():
+    from app.domain.timeline.proposals import ProposalConflict, create_proposal
+    from app.planning.timeline_agent import _execute
+    import pytest
+    service = TimelineService(':memory:')
+    day = (datetime.now(timezone.utc) + timedelta(days=5)).date()
+    generate_baseline(service.store, 'Eva', day, day, {'home_timezone': 'UTC', 'preferred_sleep_start_hour': 23, 'sleep_need_hours': 8})
+    event = service.store.get_by_dedupe_key('Eva', 'sleep', 'baseline:' + day.isoformat())
+    service.store.connection.execute("UPDATE events SET source='user' WHERE event_id=?", (event.event_id,))
+    start = datetime.combine(day, datetime.min.time(), timezone.utc)
+    from app.services.reactive_timeline import snapshot
+    snap = snapshot(service.store, 'Eva', start, start + timedelta(days=2), historical_review=False)
+    state = {'snapshot': snap, 'plan': snap['active_plan'], 'repair_window': [start.isoformat(), (start + timedelta(days=2)).isoformat()]}
+    with pytest.raises(ValueError, match='权限不足'):
+        _execute(state, 'edit_schedule', {'operations': [{'op': 'delete', 'event_id': event.event_id}], 'display_timezone': 'UTC'})
+    with pytest.raises(ProposalConflict, match='权限不足'):
+        create_proposal(service.store, 'Eva', [event.event_id], [])
+
+
 def test_manual_review_and_stale_proposals(tmp_path, monkeypatch):
     from app.domain.timeline.proposals import create_proposal
     day = (datetime.now(timezone.utc) + timedelta(days=10)).date()
@@ -76,7 +116,7 @@ def test_agent_edits_are_staged_and_approved_only_after_review():
     def client(messages, tools):
         if any(m.get('role') == 'tool' for m in messages):
             return {'role': 'assistant', 'content': '已调整'}
-        args = {'operations': [{'op': 'delete', 'event_id': original.event_id}], 'display_timezone': 'UTC', 'context_hours': 24}
+        args = {'operations': [{'op': 'delete', 'event_id': original.event_id}], 'display_timezone': 'UTC'}
         return {'role': 'assistant', 'content': '', 'tool_calls': [{'id': '1', 'type': 'function', 'function': {'name': 'edit_schedule', 'arguments': json.dumps(args)}}]}
     run_job(service.store, job, client=client)
     row = service.store.connection.execute('SELECT status, txn_id, error FROM reactive_jobs WHERE job_id=?', (job,)).fetchone()
@@ -205,7 +245,7 @@ def test_roster_to_agent_to_review_end_to_end(tmp_path, monkeypatch):
             if any(m.get('role') == 'tool' for m in messages):
                 return {'role': 'assistant', 'content': '完成'}
             event = app.state.timeline_service.store.get_by_dedupe_key('Eva', 'sleep', 'baseline:' + day.isoformat())
-            args = {'operations': [{'op': 'delete', 'event_id': event.event_id}], 'display_timezone': 'UTC', 'context_hours': 24}
+            args = {'operations': [{'op': 'delete', 'event_id': event.event_id}], 'display_timezone': 'UTC'}
             return {'role': 'assistant', 'content': '', 'tool_calls': [{'id': 'call-1', 'type': 'function', 'function': {'name': 'edit_schedule', 'arguments': json.dumps(args)}}]}
         monkeypatch.setattr(timeline_agent, 'request', agent)
         response = client.post('/api/v1/roster/confirm', json={'user_id': 'Eva', 'file_sha256': 'd' * 64,

@@ -73,7 +73,11 @@ def snapshot(store, user_id, start, end, *, historical_review=True):
 
 
 def refresh_issues(store, user_id, start, end):
-    snap = snapshot(store, user_id, start, end)
+    now_utc = datetime.now(timezone.utc)
+    snap = snapshot(store, user_id, start, end, historical_review=False)
+    if end <= now_utc:
+        return snap, {'issues': [], 'feasible': True}
+    start = max(start, now_utc)
     report = review(snap, snap['active_plan']['sleep_blocks'], [_iso_z(start), _iso_z(end)])
     now = _iso_z(datetime.now(timezone.utc))
     with store.transaction() as conn:

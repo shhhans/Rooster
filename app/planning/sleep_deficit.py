@@ -12,7 +12,7 @@ TARGET = timedelta(hours=TARGET_HOURS)
 
 
 def check_sleep_deficit(actual_sleep, opportunities, *, cutoff_utc,
-                        start_utc, end_utc, duties=(), config=None):
+                        start_utc, end_utc, duties=(), flights=(), config=None):
     """Return issues for a UTC evaluation range using resolved records.
 
     Actual sleep records are visible as of cutoff. For an ongoing observation,
@@ -34,7 +34,19 @@ def check_sleep_deficit(actual_sleep, opportunities, *, cutoff_utc,
         if right > cutoff:
             predicted.append(dict(record, start_utc=stamp(max(left, cutoff))))
 
-    sleep = merge(interval(record) for record in actual + predicted)
+    inflight = []
+    for flight in flights:
+        left, right = interval(flight)
+        hours = (right - left) / timedelta(hours=1)
+        if hours < 8 or any(overlap(interval(record), (left, right)) for record in actual):
+            continue
+        duration = timedelta(hours=1 + (hours - 8) * (0.5 if hours <= 12 else 0.25)) if hours <= 12 else timedelta(hours=3 + (hours - 12) * 0.25)
+        middle = left + (right - left) / 2
+        a, b = middle - duration / 2, middle + duration / 2
+        if b > cutoff:
+            inflight.append({'flight_id': flight['id'], 'start_utc': stamp(max(a, cutoff)), 'end_utc': stamp(b)})
+
+    sleep = merge(interval(record) for record in actual + predicted + inflight)
     bounds = {start, end}
     for left, right in sleep:
         bounds.update(point for point in (left, right, left + LOOKBACK, right + LOOKBACK)
@@ -69,6 +81,14 @@ def check_sleep_deficit(actual_sleep, opportunities, *, cutoff_utc,
     issues = []
     for left, right, low_at, minimum in spans:
         evidence = (low_at - LOOKBACK, low_at)
+        samples = []
+        at = left
+        while at < right:
+            total = sum((min(b, at) - max(a, at - LOOKBACK)
+                         for a, b in sleep if a < at and b > at - LOOKBACK), timedelta())
+            samples.append({'at_utc': stamp(at), 'window_start_utc': stamp(at - LOOKBACK),
+                            'deficit_hours': max(0, (TARGET - total) / timedelta(hours=1))})
+            at += timedelta(hours=2)
         issues.append({
             'type': 'sleep_deficit',
             'start_utc': stamp(left),
@@ -76,6 +96,7 @@ def check_sleep_deficit(actual_sleep, opportunities, *, cutoff_utc,
             'lookback_hours': 24,
             'threshold_hours': TARGET_HOURS,
             'max_deficit_hours': (TARGET - minimum) / timedelta(hours=1),
+            'samples': samples,
             'evidence': {
                 'start_utc': stamp(evidence[0]),
                 'end_utc': stamp(evidence[1]),
@@ -83,6 +104,7 @@ def check_sleep_deficit(actual_sleep, opportunities, *, cutoff_utc,
                 'actual_sleep_ids': [r['id'] for r in actual if overlap(interval(r), evidence)],
                 'sleep_opportunity_ids': [r['opportunity_id'] for r in predicted
                                           if overlap(interval(r), evidence)],
+                'inflight_sleep_estimates': [r for r in inflight if overlap(interval(r), evidence)],
                 'forecast': low_at > cutoff,
                 'missing_sleep_policy': 'no_imputation',
             },

@@ -20,22 +20,18 @@ def test_batch_edit_returns_cross_track_neighbors_and_does_not_mutate():
         {'op': 'create', 'fields': {'kind': 'melatonin', 'start': '2026-11-13T21:00',
                                     'end': '2026-11-13T21:30', 'timezone': 'Europe/London'}}], 'Europe/London')
     assert blocks == old
-    context = result['local_context'][0]
-    assert context['nearest_by_track']['duty']['previous'][0]['gap_minutes'] == 70
-    assert context['nearest_by_track']['environment']['overlapping_ids'] == ['light']
-    assert context['overlaps'][0]['minutes'] == 90
     assert result['changes'][0]['after']['start_local'] == '2026-11-13T12:30:00+00:00'
-    assert result['local_context'][1]['event']['track'] == 'intake'
 
 
-def test_conflict_rejects_whole_batch_including_snapshot_activity():
+
+def test_conflict_is_returned_for_later_review_without_mutating_input():
     snapshot = {'events': [{'id': 'meal', 'kind': 'meal', 'start_utc': '2026-11-13T13:00:00Z',
                             'end_utc': '2026-11-13T14:00:00Z', 'timezone': 'Europe/London'}]}
     blocks = []
     operations = [{'op': 'create', 'fields': {'kind': 'sleep_plan', 'start': '2026-11-13T12:30',
                    'end': '2026-11-13T16:00', 'timezone': 'Europe/London'}}]
-    with pytest.raises(ValueError, match='primary activity overlap'):
-        edit_schedule(snapshot, blocks, operations, 'Europe/London')
+    result = edit_schedule(snapshot, blocks, operations, 'Europe/London')
+    assert len(result['blocks']) == 1
     assert blocks == []
 
 

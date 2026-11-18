@@ -22,6 +22,8 @@ def create_proposal(store: EventStore, user_id: str, retired_ids: list[str], add
         targets = {}
         for event_id in set(retired_ids):
             event = store.get_by_id(event_id)
+            if event and event.source not in ('agent', 'baseline'):
+                raise ProposalConflict('权限不足：只能编辑 agent 或 baseline 来源的睡眠事件')
             if (not event or event.user_id != user_id or event.retracted or event.superseded_by
                     or event.retired_in_txn or event.realization == 'actual'
                     or event.track != 'sleep'):
@@ -78,7 +80,7 @@ def decide_proposal(store: EventStore, user_id: str, txn_id: str, accept: bool) 
         if accept:
             for old in diff['before']:
                 event = store.get_by_id(old['event_id'])
-                if not event or event.retracted or event.superseded_by or event.retired_in_txn or event.realization == 'actual':
+                if not event or event.retracted or event.superseded_by or event.retired_in_txn or event.realization == 'actual' or event.source not in ('agent', 'baseline'):
                     raise ProposalConflict('retirement target changed')
                 conn.execute('UPDATE events SET retired_in_txn=?, updated_at=? WHERE event_id=?', (txn_id, now, event.event_id))
             conn.execute("UPDATE events SET confirmation='accepted', updated_at=? WHERE created_in_txn=?", (now, txn_id))
