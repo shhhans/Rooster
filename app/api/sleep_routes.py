@@ -143,6 +143,8 @@ def ingest_event(req: SleepIngestRequest, background_tasks: BackgroundTasks, svc
                 user_id=req.user_id, dedupe_key=req.dedupe_key, sleep_start=req.sleep_start,
                 sleep_end=req.sleep_end, timezone=req.timezone, source='user')
             if revision != svc.store.get_input_revision(e.user_id):
+                from app.services.commute import trim_commutes_for_actual_sleep
+                trim_commutes_for_actual_sleep(svc.store, e.user_id)
                 queue_input_review(svc.store, background_tasks, [e], 'actual_sleep_updated')
     except (
         InvalidInputError,
@@ -166,6 +168,8 @@ def correct_event(
             e = svc.correct_sleep_event(event_id=event_id, sleep_start=req.sleep_start,
                                         sleep_end=req.sleep_end, timezone=req.timezone)
             if revision != svc.store.get_input_revision(e.user_id):
+                from app.services.commute import trim_commutes_for_actual_sleep
+                trim_commutes_for_actual_sleep(svc.store, e.user_id)
                 queue_input_review(svc.store, background_tasks, [old, e], 'actual_sleep_updated')
     except (
         InvalidInputError,
@@ -188,6 +192,8 @@ def retract_event(
             revision = svc.store.get_input_revision(old.user_id) if old else None
             e = svc.retract_sleep_event(event_id=event_id, reason=req.reason)
             if revision != svc.store.get_input_revision(e.user_id):
+                from app.services.commute import trim_commutes_for_actual_sleep
+                trim_commutes_for_actual_sleep(svc.store, e.user_id)
                 queue_input_review(svc.store, background_tasks, [old], 'actual_sleep_updated')
     except (InvalidInputError, EventNotFoundError) as exc:
         return _error_response(exc)

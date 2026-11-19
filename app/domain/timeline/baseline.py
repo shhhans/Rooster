@@ -25,6 +25,11 @@ def generate_baseline(store: EventStore, user_id: str, first_day: date, last_day
     count, skipped = 0, []
     with store.transaction():
         old_profile = store.connection.execute('SELECT profile_json FROM sleep_profiles WHERE user_id=?', (user_id,)).fetchone()
+        if old_profile:
+            previous = json.loads(old_profile['profile_json'])
+            profile = {**previous, **profile}
+            if profile.get('homeport'):
+                profile['home_timezone'] = previous.get('home_timezone', profile['home_timezone'])
         profile_changed = bool(old_profile and json.loads(old_profile['profile_json']) != profile)
         if profile_changed:
             store._bump_input_revision(user_id, first_day.isoformat())

@@ -169,10 +169,9 @@ def check_plan(snapshot: dict, blocks: list[dict]) -> list[dict]:
             if blocked_kind:
                 a, b = _interval(event)
                 if event.get("kind") == "duty":
-                    buffer_overlap = _overlap((start, end), (a - timedelta(minutes=90), a)) or _overlap((start, end), (b, b + timedelta(minutes=75)))
                     actual_overlap = _overlap((start, end), (a, b))
-                    if buffer_overlap or (actual_overlap and not _aircraft_rest_exception(snap, block, event,
-                                                                                           (max(start, a), min(end, b)))):
+                    if actual_overlap and not _aircraft_rest_exception(snap, block, event,
+                                                                                           (max(start, a), min(end, b))):
                         checks.append({"id": "sleep_event_overlap", "status": "fail", "block_id": block.get("id"), "event_id": event.get("id")})
                 elif _overlap((start, end), (a, b)) and not (event.get("kind") == "flight" and
                         _aircraft_rest_exception(snap, block, event, (max(start, a), min(end, b)))):

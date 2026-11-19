@@ -29,6 +29,18 @@ from app.domain.timeline.store import EventStore, _iso_z, _utcnow, new_event_id
 
 TRACK_NAME = "schedule"
 
+def _duty_instant(payload, name):
+    value = payload.get(name)
+    if value is None:
+        return None
+    try:
+        result = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        if result.tzinfo is None:
+            raise ValueError('timezone required')
+        return result.astimezone(timezone.utc)
+    except (ValueError, AttributeError, TypeError) as exc:
+        raise InvalidInputError(f'{name} must be an ISO timestamp with timezone') from exc
+
 
 def _require_str(name: str, value: Any, *, allow_empty: bool = False) -> str:
     if not isinstance(value, str):
@@ -154,6 +166,8 @@ class ScheduleTrack:
             realization='actual' if status == 'occurred' else 'planned',
             title=title,
             payload=payload,
+            duty_start_utc=_duty_instant(payload, 'duty_start_utc') if title == 'flight' else None,
+            duty_end_utc=_duty_instant(payload, 'duty_end_utc') if title == 'flight' else None,
             supersedes=None,
             superseded_by=None,
             retracted=False,
@@ -201,6 +215,8 @@ class ScheduleTrack:
             status=status,
             title=title,
             payload=payload,
+            duty_start_utc=_duty_instant(payload, 'duty_start_utc') if title == 'flight' else None,
+            duty_end_utc=_duty_instant(payload, 'duty_end_utc') if title == 'flight' else None,
         )
         if existing_correction is not None:
             return existing_correction

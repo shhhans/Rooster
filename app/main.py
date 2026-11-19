@@ -12,6 +12,7 @@ from app.api import sleep_router, timeline_router
 from app.api.roster_routes import router as roster_router
 from app.api.baseline_routes import router as baseline_router
 from app.api.reactive_routes import router as reactive_router
+from app.api.commute_routes import router as commute_router
 from app.services.timeline_service import TimelineService
 
 
@@ -59,6 +60,7 @@ def create_app(timeline_db_path: str | None = None) -> FastAPI:
     app.include_router(roster_router)
     app.include_router(baseline_router)
     app.include_router(reactive_router)
+    app.include_router(commute_router)
     @app.get("/healthz")
     def healthz():
         return {"status": "ok"}

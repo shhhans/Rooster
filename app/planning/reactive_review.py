@@ -23,9 +23,6 @@ def review(snapshot, blocks, window):
             continue
         ids = [check[k] for k in ('block_id', 'event_id', 'other_id') if check.get(k)]
         spans = [interval(facts[i]) for i in ids if i in facts]
-        if check['id'] == 'sleep_event_overlap' and facts[check['event_id']]['kind'] == 'duty':
-            a, b = spans[-1]
-            spans[-1] = a - timedelta(minutes=90), b + timedelta(minutes=75)
         left = max(a for a, _ in spans) if spans else start
         right = min(b for _, b in spans) if spans else end
         if check['id'] == 'crew_rest_authorization' and check.get('block_id') in facts:

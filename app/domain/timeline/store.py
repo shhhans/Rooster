@@ -54,6 +54,12 @@ CREATE TABLE IF NOT EXISTS roster_confirmations (
     UNIQUE(user_id, file_sha256, coverage_month)
 );
 
+CREATE TABLE IF NOT EXISTS reactive_detection_status (
+    user_id TEXT PRIMARY KEY,
+    error TEXT,
+    updated_at TEXT NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_events_user_window
     ON events (track, user_id, occurred_at_utc);
 CREATE INDEX IF NOT EXISTS idx_events_supersedes
@@ -218,6 +224,8 @@ def _row_to_event(row: sqlite3.Row) -> ScheduleEvent:
         realization=row["realization"],
         created_in_txn=row["created_in_txn"],
         retired_in_txn=row["retired_in_txn"],
+        duty_start_utc=_parse_dt(row['duty_start_utc']),
+        duty_end_utc=_parse_dt(row['duty_end_utc']),
     )
 
 
@@ -244,7 +252,7 @@ class EventStore:
         with self._lock:
             existing = self._conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='events'").fetchone()
             columns = {r['name'] for r in self._conn.execute('PRAGMA table_info(events)')} if existing else set()
-            if existing and 'confirmation' not in columns and db_path != ':memory:':
+            if existing and ('confirmation' not in columns or 'duty_start_utc' not in columns or 'duty_end_utc' not in columns) and db_path != ':memory:':
                 db_file = Path(db_path).resolve()
                 backup_dir = db_file.parent / 'backups'
                 backup_dir.mkdir(parents=True, exist_ok=True)
@@ -255,7 +263,8 @@ class EventStore:
             columns = {r['name'] for r in self._conn.execute('PRAGMA table_info(events)')}
             for name, definition in (('confirmation', "TEXT NOT NULL DEFAULT 'accepted'"),
                                      ('realization', "TEXT NOT NULL DEFAULT 'planned'"),
-                                     ('created_in_txn', 'TEXT'), ('retired_in_txn', 'TEXT')):
+                                     ('created_in_txn', 'TEXT'), ('retired_in_txn', 'TEXT'),
+                                     ('duty_start_utc', 'TEXT'), ('duty_end_utc', 'TEXT')):
                 if name not in columns:
                     self._conn.execute(f'ALTER TABLE events ADD COLUMN {name} {definition}')
             self._conn.execute("UPDATE events SET source='system' WHERE source='roster'")
@@ -415,6 +424,10 @@ class EventStore:
                     event.retired_in_txn,
                 ),
             )
+            if event.track == 'schedule' and event.title == 'flight':
+                self._conn.execute('UPDATE events SET duty_start_utc=?, duty_end_utc=? WHERE event_id=?',
+                    (_iso_z(event.duty_start_utc) if event.duty_start_utc else None,
+                     _iso_z(event.duty_end_utc) if event.duty_end_utc else None, event.event_id))
             self._conn.execute(
                 "INSERT INTO event_revisions(event_id, revision, updated_at) "
                 "VALUES (?, ?, ?)",

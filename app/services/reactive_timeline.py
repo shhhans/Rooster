@@ -73,6 +73,18 @@ def snapshot(store, user_id, start, end, *, historical_review=True):
 
 
 def refresh_issues(store, user_id, start, end):
+    try:
+        result = _refresh_issues(store, user_id, start, end)
+    except Exception as exc:
+        with store.transaction() as conn:
+            conn.execute('INSERT INTO reactive_detection_status VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET error=excluded.error, updated_at=excluded.updated_at', (user_id, f'{type(exc).__name__}: {exc}', _iso_z(datetime.now(timezone.utc))))
+        raise
+    error = result[1].get('model_unavailable')
+    with store.transaction() as conn:
+        conn.execute('INSERT INTO reactive_detection_status VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET error=excluded.error, updated_at=excluded.updated_at', (user_id, error, _iso_z(datetime.now(timezone.utc))))
+    return result
+
+def _refresh_issues(store, user_id, start, end):
     now_utc = datetime.now(timezone.utc)
     snap = snapshot(store, user_id, start, end, historical_review=False)
     if end <= now_utc:

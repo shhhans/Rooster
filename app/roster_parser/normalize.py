@@ -98,6 +98,9 @@ Schema:
      "origin": "<IATA>", "destination": "<IATA>",
      "date": "<YYYY-MM-DD>",
      "dep": "<HH:MM as printed>", "arr": "<HH:MM as printed>",
+     "duty_start": "<printed duty/report start time, or null if absent or unclear>",
+     "duty_end": "<printed duty end/release time, or null if absent or unclear>",
+     "duty_group": "<same roster-supported group identifier for flights in one continuous duty, or null if unclear>",
      "arr_day_offset": <int days to add to the roster ROW date for the arrival, e.g. 1 when the arrival prints '+1', else 0>,
      "markers": ["<every marker printed on the row, verbatim, e.g. 'L', '+1', 'G'>"],
      "continuation": <true only if this row continues the previous row and you could not merge it>,
@@ -126,8 +129,7 @@ are acceptable; keep the L / +1 markers attached AND list them in markers).
 2. Rows continuing a previous sector (e.g. arrival time printed on the \
 following line) must be merged into that event; only if merging is not \
 possible output the row with continuation=true and continues_index.
-3. NEVER invent times. Markers such as 'G' and days with no printed times \
-are reported as type "marker" events; blank days go to "blank_dates". Never \
+3. NEVER invent times. 'G' denotes a rest day and must be reported as a type "marker", not a scheduled event; blank days go to "blank_dates". Never \
 present them as flights or duties with start/end times, and never infer \
 rest or sleep.
 4. If the roster header shows the year/month, use it for dates; when a date \
@@ -139,7 +141,9 @@ attached. Any other marker (e.g. 'L') is kept in markers exactly as \
 printed and not interpreted.
 6. Report unreadable, ambiguous or contradictory cells in "unresolved" \
 instead of guessing.
-7. Use page numbers counted from the first attached image (1-based)."""
+7. Use page numbers counted from the first attached image (1-based).
+8. For flights extract printed duty start/report and duty end/release only when their meaning is supported by the roster headings or layout. Keep the printed values verbatim, including any date or time-zone markers. Do not confuse these with departure or arrival; use null and report ambiguity in unresolved when uncertain. Never infer missing duty times.
+9. Identify flights that form one continuous duty when supported by the roster. On a same-day return or other continuous sequence without a hotel rest, the duty start is normally printed only on the first flight and the duty end only on the last flight. Give all flights in that duty the same duty_group identifier, unique within this output (for example duty-1). Keep the unprinted duty_start or duty_end as null on each individual row; do not copy times between rows. Do not assume a hotel rest or group flights where the roster is ambiguous; use null and report the ambiguity in unresolved."""
 
 
 def build_user_text(page_count: int, roster_year: int | None, roster_month: int | None) -> str:
@@ -238,6 +242,8 @@ def normalize_preview(
                     roster_month=roster_month,
                 )
             elif event_type == "marker":
+                if str(entry.get('code', '')).strip().upper() == 'G':
+                    continue
                 unresolved_items.append(
                     _unresolved(
                         "marker_without_times",
@@ -330,6 +336,12 @@ def _normalize_flight(
     flight_number = flight_number.strip()
 
     schedule_payload: dict = {"flight_id": flight_number}
+    if isinstance(entry.get('duty_group'), str) and entry['duty_group'].strip():
+        schedule_payload['duty_group'] = entry['duty_group'].strip()
+    for field in ("duty_start", "duty_end"):
+        value = entry.get(field)
+        if isinstance(value, str) and value.strip():
+            schedule_payload[field + "_printed"] = value
     timeline: dict = {
         "departure_local": None,
         "departure_timezone": None,
@@ -474,6 +486,31 @@ def _normalize_flight(
                 }
             )
 
+    for field, reference, zone, direction in (('duty_start', departure, origin_tz, -1), ('duty_end', arrival, destination_tz, 1)):
+        raw = entry.get(field)
+        if not raw:
+            continue
+        parsed = parse_printed_clock(raw)
+        if not parsed or not reference or not zone:
+            out_unresolved.append(_unresolved('flight_duty_time_unresolved', f'{field} cannot be resolved from {raw!r}', entry))
+            continue
+        anchor = datetime.fromisoformat(reference)
+        day = flight_day + timedelta(days=parsed[1]) if parsed[1] and flight_day else anchor.date()
+        iso, warning = _local_to_aware_iso(day, parsed[0], zone)
+        if iso and not parsed[1]:
+            instant = datetime.fromisoformat(iso)
+            if (direction == -1 and instant > anchor) or (direction == 1 and instant < anchor):
+                day += timedelta(days=direction)
+                iso, warning = _local_to_aware_iso(day, parsed[0], zone)
+                out_warnings.append({'code': 'flight_duty_date_inferred', 'message': f'{field} date inferred as {day.isoformat()}; confirm against roster', 'provenance': _provenance_of(entry)})
+        if not iso or warning:
+            out_unresolved.append(_unresolved('flight_duty_time_unresolved', f'{field} has ambiguous or invalid local time {raw!r}', entry))
+            continue
+        instant = datetime.fromisoformat(iso)
+        if (direction == -1 and instant > anchor) or (direction == 1 and instant < anchor):
+            out_unresolved.append(_unresolved('flight_duty_time_unresolved', f'{field} is inconsistent with flight time', entry))
+            continue
+        schedule_payload[field + '_utc'] = instant.astimezone(timezone.utc).isoformat().replace('+00:00', 'Z')
     for name, value in (
         ("departure", departure),
         ("arrival", arrival),

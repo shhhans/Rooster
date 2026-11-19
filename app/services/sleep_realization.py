@@ -35,6 +35,9 @@ def realize_completed_sleep(store, now=None):
             conn.execute("UPDATE events SET realization='actual', status='occurred', updated_at=? WHERE event_id=?", (_iso_z(now), event.event_id))
             store._bump_input_revision(event.user_id, event.local_time, affected_at_utc=event.occurred_at_utc)
             changed.add(event.user_id)
+        from app.services.commute import trim_commutes_for_actual_sleep
+        for user_id in changed:
+            trim_commutes_for_actual_sleep(store, user_id, now)
     return changed
 
 

@@ -42,6 +42,8 @@ class ScheduleEvent:
     realization: str = "planned"
     created_in_txn: Optional[str] = None
     retired_in_txn: Optional[str] = None
+    duty_start_utc: Optional[datetime] = None
+    duty_end_utc: Optional[datetime] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Return a JSON-serializable dict matching the contract output shape."""
@@ -50,6 +52,8 @@ class ScheduleEvent:
         d["occurred_at_utc"] = _utc_iso(self.occurred_at_utc)
         d["created_at"] = _utc_iso(self.created_at)
         d["updated_at"] = _utc_iso(self.updated_at)
+        d["duty_start_utc"] = _utc_iso(self.duty_start_utc)
+        d["duty_end_utc"] = _utc_iso(self.duty_end_utc)
         if self.retracted_at is not None:
             d["retracted_at"] = _utc_iso(self.retracted_at)
         else:

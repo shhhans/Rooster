@@ -86,6 +86,9 @@ def confirm_roster(body: RosterConfirmation, request: Request, background_tasks:
             imported.append({'event_id': event.event_id, 'title': event.title, 'occurred_at_utc': event.to_dict()['occurred_at_utc']})
         result = {'import_id': confirmation_id, 'coverage_month': body.coverage_month, 'imported': imported, 'pending_items': pending, 'duplicates': [], 'unresolved_items': proposal.get('unresolved_items', []), 'blank_days': []}
         result['baseline'] = _generate_month_baseline(service.store, body)
+        from app.services.commute import sync_commutes
+        row = conn.execute('SELECT profile_json FROM sleep_profiles WHERE user_id=?', (body.user_id,)).fetchone()
+        result['commute'] = sync_commutes(service.store, body.user_id, json.loads(row[0]) if row else {})
         if result['baseline']['status'] == 'generated':
             _queue_month_review(background_tasks, service.store, body)
         from datetime import datetime, timezone

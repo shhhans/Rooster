@@ -1,0 +1,926 @@
+{
+  "version": "understanding-v1",
+  "source_sha256": "8406095cbe290bf4ed0d084abac10849e98c1a7a88c61141fd6c7a16567b094a",
+  "visibility": "completed_sleep_immediate_report_v1",
+  "cases": [
+    {
+      "id": "Q01",
+      "now": "2026-11-12T21:00:00+08:00",
+      "question": "在 2026-11-12 07:00 至当前时刻，已有记录的实际睡眠共有几段、合计多少分钟？列出这些记录的 ID。",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q01"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "episode_count": {
+                "type": "integer"
+              },
+              "total_minutes": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "episode_count",
+              "total_minutes"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "episode_count": 2,
+        "total_minutes": 180
+      },
+      "evidence": [
+        "d0444cb3-7ed7-46d7-82a6-ec8abde8c7f3",
+        "1f0d0d26-6e17-43c4-9c60-32b8e91ee3a1"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q02",
+      "now": "2026-11-12T21:00:00+08:00",
+      "question": "从当前时刻起，班表中下一项尚未起飞的航班何时出发？按 Asia/Hong_Kong 返回时间、事件 ID，以及距现在的分钟数。",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q02"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "event_id": {
+                "type": "string"
+              },
+              "departure_local": {
+                "type": "string"
+              },
+              "timezone": {
+                "type": "string"
+              },
+              "minutes_until_departure": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "event_id",
+              "departure_local",
+              "timezone",
+              "minutes_until_departure"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "event_id": "bba88c0f-493c-454d-9774-9deb0a49ed1c",
+        "departure_local": "2026-11-13T00:15:00+08:00",
+        "timezone": "Asia/Hong_Kong",
+        "minutes_until_departure": 195
+      },
+      "evidence": [
+        "bba88c0f-493c-454d-9774-9deb0a49ed1c"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q03",
+      "now": "2026-11-12T21:00:00+08:00",
+      "question": "从当前时刻起，班表中下一项尚未起飞的航班，按班表计算的飞行时长是多少？\nA. 395 分钟\nB. 875 分钟\nC. 1,355 分钟\nD. 缺少到达时间，无法计算",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q03"
+          },
+          "answer": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": "B",
+      "evidence": [
+        "bba88c0f-493c-454d-9774-9deb0a49ed1c"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q04",
+      "now": "2026-11-14T12:00:00+00:00",
+      "question": "从 2026-11-13 00:00 Europe/London 到当前时刻，可见的实际睡眠共有几段、合计多少分钟？",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q04"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "episode_count": {
+                "type": "integer"
+              },
+              "total_minutes": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "episode_count",
+              "total_minutes"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "episode_count": 2,
+        "total_minutes": 600
+      },
+      "evidence": [
+        "731eace4-0e55-4e09-bf6f-684e93a72f97",
+        "78b501f1-1fa8-4b0c-b6b1-6b70129155ed"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q05",
+      "now": "2026-11-14T12:00:00+00:00",
+      "question": "最近一段已记录完成的实际睡眠何时开始、何时结束？用 Europe/London 表示，并给出分钟数。",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q05"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "start_local": {
+                "type": "string"
+              },
+              "end_local": {
+                "type": "string"
+              },
+              "timezone": {
+                "type": "string"
+              },
+              "duration_minutes": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "start_local",
+              "end_local",
+              "timezone",
+              "duration_minutes"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "start_local": "2026-11-13T18:00:00+00:00",
+        "end_local": "2026-11-14T01:00:00+00:00",
+        "timezone": "Europe/London",
+        "duration_minutes": 420
+      },
+      "evidence": [
+        "78b501f1-1fa8-4b0c-b6b1-6b70129155ed"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q06",
+      "now": "2026-11-14T12:00:00+00:00",
+      "question": "下一航班计划于今天 17:50 Europe/London 起飞。对当前时刻到起飞前这段时间，哪项陈述有记录支持？\nA. 已有一段完成的 5 小时实际睡眠记录\nB. 习惯睡眠时长为 8 小时，因此可以确认实际已经睡足 8 小时\nC. 该段未来时间的实际睡眠结果尚未知\nD. 航班尚未起飞，因此可以确认用户从上次醒来到现在始终清醒",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q06"
+          },
+          "answer": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": "C",
+      "evidence": [
+        "06d9d1b1-9638-4d2a-8f1c-d0febd338b63"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q07",
+      "now": "2026-11-18T12:00:00+08:00",
+      "question": "过去 24 小时内，已有实际睡眠记录覆盖多少分钟？最近一次记录的醒来时刻距现在多少分钟？",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q07"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "actual_sleep_minutes": {
+                "type": "integer"
+              },
+              "minutes_since_last_recorded_wake": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "actual_sleep_minutes",
+              "minutes_since_last_recorded_wake"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "actual_sleep_minutes": 480,
+        "minutes_since_last_recorded_wake": 300
+      },
+      "evidence": [
+        "66f305df-23e3-4976-8a94-654bf5a0720c"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q08",
+      "now": "2026-11-18T12:00:00+08:00",
+      "question": "根据可见轨道，是否能确定用户此刻的实际位置？\nA. 可以，睡眠事件使用 Asia/Shanghai，因此用户必在上海\nB. 可以，下一航班从香港出发，因此用户此刻必在香港\nC. 可以，上一个航班以香港为目的地，因此用户此刻必在香港\nD. 当前可见记录不足以确定实际位置",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q08"
+          },
+          "answer": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": "D",
+      "evidence": [],
+      "coverage": {
+        "track": "location",
+        "start": "2026-11-18T04:00:00Z",
+        "end": null
+      }
+    },
+    {
+      "id": "Q09",
+      "now": "2026-11-18T12:00:00+08:00",
+      "question": "今晚已有的 baseline 睡眠建议按 Asia/Shanghai 何时结束？从建议结束到下一航班计划起飞相隔多少分钟？",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q09"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "planned_wake_local": {
+                "type": "string"
+              },
+              "timezone": {
+                "type": "string"
+              },
+              "gap_minutes": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "planned_wake_local",
+              "timezone",
+              "gap_minutes"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "planned_wake_local": "2026-11-19T07:00:00+08:00",
+        "timezone": "Asia/Shanghai",
+        "gap_minutes": 105
+      },
+      "evidence": [
+        "13ea7bbe-0861-4314-98da-2e196a195840",
+        "5e1f7009-7464-4a29-8239-32c3c01eff36"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q10",
+      "now": "2026-11-19T22:00:00+11:00",
+      "question": "第一段开始时刻晚于现在的 baseline 睡眠建议，在 Australia/Sydney 的开始、结束时间及持续分钟数是什么？",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q10"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "start_local": {
+                "type": "string"
+              },
+              "end_local": {
+                "type": "string"
+              },
+              "timezone": {
+                "type": "string"
+              },
+              "duration_minutes": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "start_local",
+              "end_local",
+              "timezone",
+              "duration_minutes"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "start_local": "2026-11-20T02:00:00+11:00",
+        "end_local": "2026-11-20T10:00:00+11:00",
+        "timezone": "Australia/Sydney",
+        "duration_minutes": 480
+      },
+      "evidence": [
+        "7525c90b-f94c-4c2c-9833-bcef914b430f"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q11",
+      "now": "2026-11-19T22:00:00+11:00",
+      "question": "对第一段开始时刻晚于现在的 baseline 睡眠建议，哪些陈述得到当前记录支持？\nA. 其来源为 baseline\nB. 用户已经接受这项建议\nC. 用户已经实际完成这段睡眠\nD. 它是一项尚未接受的未来睡眠建议",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q11"
+          },
+          "answer": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": [
+        "A",
+        "D"
+      ],
+      "evidence": [
+        "7525c90b-f94c-4c2c-9833-bcef914b430f"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q12",
+      "now": "2026-11-19T22:00:00+11:00",
+      "question": "班表中最近一项计划到达时间不晚于现在的航班，其到达时刻换算为 Asia/Hong_Kong 是何时？",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q12"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "event_id": {
+                "type": "string"
+              },
+              "arrival_local": {
+                "type": "string"
+              },
+              "timezone": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "event_id",
+              "arrival_local",
+              "timezone"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "event_id": "5e1f7009-7464-4a29-8239-32c3c01eff36",
+        "arrival_local": "2026-11-19T17:50:00+08:00",
+        "timezone": "Asia/Hong_Kong"
+      },
+      "evidence": [
+        "5e1f7009-7464-4a29-8239-32c3c01eff36"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q13",
+      "now": "2026-11-20T23:00:00+11:00",
+      "question": "对于已经过去的 2026-11-20 02:00—10:00 Australia/Sydney，根据当前记录，可以确认什么？\nA. 有建议覆盖这段时间，但实际是否睡过及睡了多久未知\nB. 可以确认实际睡了 480 分钟\nC. 可以确认实际睡了 0 分钟\nD. 可以确认实际睡了 240 分钟",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q13"
+          },
+          "answer": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": "A",
+      "evidence": [
+        "7525c90b-f94c-4c2c-9833-bcef914b430f"
+      ],
+      "coverage": {
+        "track": "activity",
+        "start": "2026-11-19T15:00:00Z",
+        "end": "2026-11-19T23:00:00Z"
+      }
+    },
+    {
+      "id": "Q14",
+      "now": "2026-11-20T23:00:00+11:00",
+      "question": "接下来从 2026-11-20 23:00 Asia/Shanghai 开始的 baseline 睡眠建议，与班表中的航班是否重叠？返回重叠的航班事件 ID 以及重叠分钟数。",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q14"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "overlaps": {
+                "type": "boolean"
+              },
+              "flight_event_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "overlap_minutes": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "overlaps",
+              "flight_event_ids",
+              "overlap_minutes"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "overlaps": true,
+        "flight_event_ids": [
+          "645345d0-975e-4939-ad10-4be5c1c8fc64"
+        ],
+        "overlap_minutes": 325
+      },
+      "evidence": [
+        "db5283f6-f473-41e5-83bf-46d1c2e17589",
+        "645345d0-975e-4939-ad10-4be5c1c8fc64"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q15",
+      "now": "2026-11-20T23:00:00+11:00",
+      "question": "班表中 2026-11-20 22:20 Australia/Sydney 起飞的航班，在当前冻结时刻处于哪个计划时间阶段？\nA. 距计划起飞尚有 40 分钟\nB. 已过计划到达时间 40 分钟\nC. 已过计划起飞时间 40 分钟，尚未到计划到达时间\nD. 计划起飞和计划到达均在当前时刻",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q15"
+          },
+          "answer": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": "C",
+      "evidence": [
+        "645345d0-975e-4939-ad10-4be5c1c8fc64"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q16",
+      "now": "2026-11-30T13:00:00+08:00",
+      "question": "过去 24 小时内，系统可见的已完成实际睡眠记录为空，但存在一段已过结束时间的 baseline 睡眠建议。哪项结论成立？\nA. 用户这 24 小时实际睡眠为 0 分钟\nB. 实际睡眠时长未知，建议不能充当实际睡眠记录\nC. 用户这 24 小时实际睡眠为 480 分钟\nD. 可以确认用户连续清醒至少 24 小时",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q16"
+          },
+          "answer": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ]
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": "B",
+      "evidence": [
+        "98560038-fb78-4cd1-b019-1505f58c68b6"
+      ],
+      "coverage": {
+        "track": "activity",
+        "start": "2026-11-29T05:00:00Z",
+        "end": "2026-11-30T05:00:00Z"
+      }
+    },
+    {
+      "id": "Q17",
+      "now": "2026-11-30T13:00:00+08:00",
+      "question": "今天两项相邻航班之间，从前一项计划到达到后一项计划起飞，相隔多少分钟？从当前时刻到后一项计划起飞还有多少分钟？",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q17"
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "between_flights_minutes": {
+                "type": "integer"
+              },
+              "minutes_until_next_departure": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "between_flights_minutes",
+              "minutes_until_next_departure"
+            ],
+            "additionalProperties": false
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "between_flights_minutes": 75,
+        "minutes_until_next_departure": 45
+      },
+      "evidence": [
+        "02a3f204-572e-4614-a7a1-bd31f984d80c",
+        "2acc39b1-14b7-45be-8e8c-327c2175f3a0"
+      ],
+      "coverage": null
+    },
+    {
+      "id": "Q18",
+      "now": "2026-11-30T13:00:00+08:00",
+      "question": "按 Asia/Hong_Kong，哪些班表航班与今天 12:00—14:00 的时间窗相交？\nA. 09:10—12:30 的航班\nB. 13:45—17:30 的航班\nC. 两项都不相交\nD. 仅结束时刻等于 12:00 的事件也应计入",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "const": "Q18"
+          },
+          "answer": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "evidence_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "question_id",
+          "answer",
+          "evidence_event_ids"
+        ],
+        "additionalProperties": false
+      },
+      "expected": [
+        "A",
+        "B"
+      ],
+      "evidence": [
+        "02a3f204-572e-4614-a7a1-bd31f984d80c",
+        "2acc39b1-14b7-45be-8e8c-327c2175f3a0"
+      ],
+      "coverage": null
+    }
+  ]
+}

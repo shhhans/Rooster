@@ -98,6 +98,15 @@ def _map_error(e: Exception) -> HTTPException:
 
 # ---------- endpoints ----------
 
+def _sync_flight_commutes(svc, user_id, background_tasks):
+    import json
+    from app.services.commute import sync_commutes
+    from app.api.commute_routes import refresh
+    row = svc.store.connection.execute('SELECT profile_json FROM sleep_profiles WHERE user_id=?', (user_id,)).fetchone()
+    result = sync_commutes(svc.store, user_id, json.loads(row[0]) if row else {})
+    if result['created'] or result['removed']:
+        background_tasks.add_task(refresh, svc.store, user_id)
+
 
 @router.post("/events", response_model=Dict[str, Any])
 def ingest_event(req: IngestRequest, background_tasks: BackgroundTasks, svc: TimelineService = Depends(_get_service)):
@@ -110,6 +119,8 @@ def ingest_event(req: IngestRequest, background_tasks: BackgroundTasks, svc: Tim
             e = svc.ingest_schedule_event(user_id=req.user_id, dedupe_key=req.dedupe_key,
                 occurred_at=req.occurred_at, timezone=req.timezone, source=source,
                 status=req.status, title=req.title, payload=req.payload)
+            if e.title == 'flight':
+                _sync_flight_commutes(svc, e.user_id, background_tasks)
             if revision != svc.store.get_input_revision(e.user_id):
                 queue_input_review(svc.store, background_tasks, [e], 'personal_event_added')
     except (
@@ -130,9 +141,13 @@ def correct_event(
     try:
         with svc.store.transaction():
             old = svc.store.get_by_id(event_id)
+            if old and old.title == 'commute' and old.payload.get('generated_commute'):
+                raise InvalidInputError('系统生成的通勤不能手动修改')
             revision = svc.store.get_input_revision(old.user_id) if old else None
             e = svc.correct_schedule_event(event_id=event_id, occurred_at=req.occurred_at,
                 timezone=req.timezone, status=req.status, title=req.title, payload=req.payload)
+            if e.title == 'flight' or (old and old.title == 'flight'):
+                _sync_flight_commutes(svc, e.user_id, background_tasks)
             if revision != svc.store.get_input_revision(e.user_id):
                 queue_input_review(svc.store, background_tasks, [old, e], 'personal_event_added')
     except (
@@ -153,8 +168,12 @@ def retract_event(
     try:
         with svc.store.transaction():
             old = svc.store.get_by_id(event_id)
+            if old and old.title == 'commute' and old.payload.get('generated_commute'):
+                raise InvalidInputError('系统生成的通勤不能手动删除')
             revision = svc.store.get_input_revision(old.user_id) if old else None
             e = svc.retract_schedule_event(event_id=event_id, reason=req.reason)
+            if old and old.title == 'flight':
+                _sync_flight_commutes(svc, old.user_id, background_tasks)
             if revision != svc.store.get_input_revision(e.user_id):
                 queue_input_review(svc.store, background_tasks, [old], 'personal_event_added')
     except (

@@ -20,7 +20,8 @@ def issues(request: Request, user_id: str):
     with store.lock:
         now = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
         rows = store.connection.execute("SELECT issue_key, issue_json FROM reactive_issues WHERE user_id=? AND status='active' AND end_utc>? ORDER BY start_utc", (user_id, now)).fetchall()
-        return {'issues': [{'issue_id': row['issue_key'], **json.loads(row['issue_json'])} for row in rows]}
+        status = store.connection.execute('SELECT error,updated_at FROM reactive_detection_status WHERE user_id=?', (user_id,)).fetchone()
+        return {'issues': [{'issue_id': row['issue_key'], **json.loads(row['issue_json'])} for row in rows], 'detection_error': dict(status) if status and status['error'] else None}
 
 
 @router.get('/jobs')

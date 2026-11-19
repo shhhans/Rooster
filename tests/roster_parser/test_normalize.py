@@ -34,6 +34,13 @@ def codes(items):
 
 
 class TestFlightEvents:
+    def test_flight_duty_times_resolve_against_airports(self):
+        result = run([flight_event(duty_start='22:00', duty_end='07:00')])
+        payload = result['proposed_events'][0]['schedule_payload']
+        assert payload['duty_start_printed'] == '22:00'
+        assert payload['duty_start_utc'] == '2026-11-03T14:00:00Z'
+        assert payload['duty_end_utc'] == '2026-11-04T07:00:00Z'
+
     def test_full_flight_with_offsets_and_cross_day(self):
         result = run([flight_event()])
         assert result["unresolved_items"] == []
@@ -223,15 +230,14 @@ class TestDutyEvents:
 
 
 class TestMarkersAndBlanks:
-    def test_g_marker_becomes_unresolved_not_rest(self):
+    def test_g_rest_marker_creates_no_event_or_unresolved(self):
         marker = {
             "type": "marker", "page": 1, "raw_row": "G", "code": "G",
             "date": "2026-11-08", "markers": ["G"],
         }
         result = run([marker])
         assert result["proposed_events"] == []
-        assert codes(result["unresolved_items"]) == ["marker_without_times"]
-        assert result["unresolved_items"][0]["raw"]["code"] == "G"
+        assert codes(result["unresolved_items"]) == []
         # No rest/sleep/duty event fabricated
         assert not any(
             e["event_type"] in {"rest", "sleep"} for e in result["proposed_events"]
